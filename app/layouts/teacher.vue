@@ -18,6 +18,9 @@ const handleLogout = async () => {
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
           <li>
+            <NuxtLink to="/teacher/problems">Manage Problems</NuxtLink>
+          </li>
+          <li>
             <NuxtLink to="/teacher/problems/create">Create Problem</NuxtLink>
           </li>
           <li>
