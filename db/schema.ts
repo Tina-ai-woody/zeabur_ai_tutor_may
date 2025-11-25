@@ -83,6 +83,19 @@ export const classrooms = pgTable("classrooms", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const classroomStudents = pgTable("classroom_students", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  classroomId: text("classroom_id")
+    .notNull()
+    .references(() => classrooms.id),
+  studentId: text("student_id")
+    .notNull()
+    .references(() => user.id),
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
+});
+
 export const submissions = pgTable("submissions", {
   id: text("id")
     .primaryKey()
