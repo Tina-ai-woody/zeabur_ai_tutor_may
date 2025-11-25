@@ -98,7 +98,7 @@ const askAI = async () => {
           </div>
         </div>
 
-        <p class="py-4 text-lg whitespace-pre-wrap">{{ problem.content }}</p>
+        <MarkdownRenderer :content="problem.content" class="py-4 text-lg" />
 
         <div class="divider"></div>
 
@@ -193,7 +193,7 @@ const askAI = async () => {
               Official Solution
             </div>
             <div class="collapse-content">
-              <p>{{ submissionResult.explanation }}</p>
+              <MarkdownRenderer :content="submissionResult.explanation || ''" />
             </div>
           </div>
 
