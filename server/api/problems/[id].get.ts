@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
       choices: problems.choices,
       difficulty: problems.difficulty,
       source: problems.source,
+      imageUrl: problems.imageUrl,
       // We explicitly DO NOT return correctAnswer or explanation here
     })
     .from(problems)

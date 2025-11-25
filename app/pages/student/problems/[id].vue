@@ -100,6 +100,15 @@ const askAI = async () => {
 
         <MarkdownRenderer :content="problem.content" class="py-4 text-lg" />
 
+        <!-- Problem Image -->
+        <div v-if="problem.imageUrl" class="my-4 flex justify-center">
+          <img
+            :src="problem.imageUrl"
+            alt="Problem Image"
+            class="max-h-96 rounded-lg shadow-md object-contain"
+          />
+        </div>
+
         <div class="divider"></div>
 
         <!-- Choices -->
