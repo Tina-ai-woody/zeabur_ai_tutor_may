@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { marked } from "marked";
 import katex from "katex";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 import "katex/dist/katex.min.css";
 
 const props = defineProps<{
@@ -80,9 +80,12 @@ const renderedContent = computed(() => {
   const sanitized = DOMPurify.sanitize(html);
 
   // Restore math blocks
-  return sanitized.replace(/%%%MATH_BLOCK_(\d+)%%%/g, (match, id) => {
-    return mathBlocks[parseInt(id)];
-  });
+  return sanitized.replace(
+    /%%%MATH_BLOCK_(\d+)%%%/g,
+    (match: string, id: string) => {
+      return mathBlocks[parseInt(id)];
+    }
+  );
 });
 </script>
 
