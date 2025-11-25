@@ -214,10 +214,26 @@ const updateProblem = async () => {
                 <button
                   type="button"
                   @click="addHashtag"
-                  class="btn btn-secondary"
+                  class="btn btn-secondary p-2"
                 >
                   Add
                 </button>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <div
+                  v-for="(tag, index) in hashtags"
+                  :key="index"
+                  class="badge badge-lg badge-primary gap-2"
+                >
+                  {{ tag }}
+                  <button
+                    type="button"
+                    @click="removeHashtag(index)"
+                    class="btn btn-xs btn-circle btn-ghost"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -227,7 +243,7 @@ const updateProblem = async () => {
             <br />
             <textarea
               v-model="content"
-              class="textarea textarea-bordered overflow-hidden h-64 font-mono"
+              class="textarea textarea-bordered overflow-hidden h-64 w-full font-mono"
               required
             ></textarea>
           </div>
@@ -287,7 +303,7 @@ const updateProblem = async () => {
             <br />
             <textarea
               v-model="explanation"
-              class="textarea textarea-bordered overflow-hidden h-64 font-mono"
+              class="textarea textarea-bordered overflow-hidden h-64 w-full font-mono"
             ></textarea>
           </div>
 
