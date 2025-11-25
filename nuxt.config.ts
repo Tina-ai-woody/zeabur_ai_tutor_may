@@ -7,6 +7,11 @@ export default defineNuxtConfig({
     databaseUrl: process.env.DATABASE_URL,
     authSecret: process.env.BETTER_AUTH_SECRET,
     openaiApiKey: process.env.OPENAI_API_KEY,
+    r2AccountId: process.env.R2_ACCOUNT_ID,
+    r2AccessKeyId: process.env.R2_ACCESS_KEY_ID,
+    r2SecretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    r2BucketName: process.env.R2_BUCKET_NAME,
+    r2PublicDomain: process.env.R2_PUBLIC_DOMAIN,
   },
   css: ["~/assets/css/main.css"],
 });

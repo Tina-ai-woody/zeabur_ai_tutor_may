@@ -64,6 +64,7 @@ export const problems = pgTable("problems", {
   explanation: text("explanation"),
   difficulty: text("difficulty"),
   source: text("source"), // Added per user request
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
