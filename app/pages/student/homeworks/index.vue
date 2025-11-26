@@ -83,6 +83,12 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
                     }}
                   </span>
                 </p>
+                <NuxtLink
+                  :to="`/student/homeworks/${hw.id}`"
+                  class="btn btn-sm btn-primary"
+                >
+                  View HW
+                </NuxtLink>
                 <!-- Future enhancement: Add link to homework details/submission page -->
                 <!-- <div class="card-actions justify-end mt-4">
                   <NuxtLink :to="`/student/homeworks/${hw.id}`" class="btn btn-primary btn-sm">View</NuxtLink>
