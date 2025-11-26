@@ -19,7 +19,7 @@ const handleLogout = async () => {
         <ul class="menu menu-horizontal px-1">
           <li>
             <NuxtLink class="btn btn-ghost" to="/student/problems"
-              >Problems</NuxtLink
+              >Testbank</NuxtLink
             >
           </li>
           <li>
