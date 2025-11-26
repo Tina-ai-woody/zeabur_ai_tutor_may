@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { problemId, userAnswer } = body;
 
-  if (!problemId || !userAnswer) {
+  if (!problemId || userAnswer === undefined || userAnswer === null) {
     throw createError({
       statusCode: 400,
       statusMessage: "Missing problemId or userAnswer",

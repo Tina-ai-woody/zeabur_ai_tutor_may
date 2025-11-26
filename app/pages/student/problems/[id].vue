@@ -23,7 +23,7 @@ const aiExplanation = ref<string | null>(null);
 
 // Submit Answer
 const submitAnswer = async () => {
-  if (!selectedAnswer.value) return;
+  if (selectedAnswer.value === null) return;
 
   isSubmitting.value = true;
   try {
@@ -44,7 +44,7 @@ const submitAnswer = async () => {
 
 // Ask AI
 const askAI = async () => {
-  if (!selectedAnswer.value) return;
+  if (selectedAnswer.value === null) return;
 
   isExplaining.value = true;
   try {
@@ -147,7 +147,7 @@ const askAI = async () => {
             v-if="!submissionResult"
             class="btn btn-primary"
             @click="submitAnswer"
-            :disabled="!selectedAnswer || isSubmitting"
+            :disabled="selectedAnswer === null || isSubmitting"
           >
             <span v-if="isSubmitting" class="loading loading-spinner"></span>
             Submit Answer

@@ -50,7 +50,7 @@ const startHomework = () => {
 };
 
 const submitAnswer = async () => {
-  if (!selectedAnswer.value || !currentProblem.value) return;
+  if (selectedAnswer.value === null || !currentProblem.value) return;
 
   isSubmitting.value = true;
   try {
@@ -194,7 +194,7 @@ const finishHomework = async () => {
               v-if="!submissionResult"
               class="btn btn-primary"
               @click="submitAnswer"
-              :disabled="!selectedAnswer || isSubmitting"
+              :disabled="selectedAnswer === null || isSubmitting"
             >
               <span v-if="isSubmitting" class="loading loading-spinner"></span>
               Submit Answer
