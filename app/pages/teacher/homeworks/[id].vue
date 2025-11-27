@@ -27,7 +27,7 @@ interface HomeworkDetails {
   }[];
 }
 
-const { data, pending, error } = await useFetch<HomeworkDetails>(
+const { data, pending, error, refresh } = await useFetch<HomeworkDetails>(
   `/api/teacher/homeworks/${homeworkId}`
 );
 
