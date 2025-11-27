@@ -236,9 +236,31 @@ const updateHomework = async () => {
 
           <!-- Problems List -->
           <div>
-            <h2 class="text-2xl font-bold mb-4">
-              Assigned Problems ({{ data.problems.length }})
-            </h2>
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-bold">
+                Assigned Problems ({{ data.problems.length }})
+              </h2>
+              <NuxtLink
+                :to="`/teacher/homeworks/${homeworkId}/add`"
+                class="btn btn-primary btn-sm gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Add Problems
+              </NuxtLink>
+            </div>
 
             <div v-if="data.problems.length === 0" class="alert alert-info">
               <svg
