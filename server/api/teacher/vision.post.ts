@@ -1,0 +1,58 @@
+export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
+  const apiKey = config.googleVisionApiKey || process.env.GOOGLE_VISION_API_KEY;
+
+  if (!apiKey) {
+    throw createError({
+      statusCode: 500,
+      message: "Google Vision API key is not configured",
+    });
+  }
+
+  const body = await readBody(event);
+  const { image } = body; // Expecting base64 string
+
+  if (!image) {
+    throw createError({
+      statusCode: 400,
+      message: "Image data is required",
+    });
+  }
+
+  try {
+    const response = await $fetch(
+      `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`,
+      {
+        method: "POST",
+        body: {
+          requests: [
+            {
+              image: {
+                content: image.split(",")[1] || image, // Remove data URL prefix if present
+              },
+              features: [
+                {
+                  type: "TEXT_DETECTION",
+                },
+              ],
+            },
+          ],
+        },
+      }
+    );
+
+    const textAnnotations = (response as any).responses[0]?.textAnnotations;
+    const extractedText = textAnnotations?.[0]?.description || "";
+
+    return { text: extractedText };
+  } catch (error: any) {
+    console.error("Google Vision API Error:", error);
+    if (error.data) {
+      console.error("Error Data:", JSON.stringify(error.data, null, 2));
+    }
+    throw createError({
+      statusCode: 500,
+      message: "Failed to process image with Google Vision API",
+    });
+  }
+});

@@ -17,6 +17,8 @@ interface ProblemData {
   hashtags: string[];
 }
 
+import VisionTool from "./VisionTool.vue";
+
 const props = defineProps<{
   modelValue: ProblemData;
   isUploading: boolean;
@@ -37,6 +39,12 @@ const updateField = <K extends keyof ProblemData>(
   value: ProblemData[K]
 ) => {
   emit("update:modelValue", { ...props.modelValue, [field]: value });
+};
+
+const handleTextExtracted = (text: string) => {
+  const currentContent = props.modelValue.content;
+  const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
+  updateField("content", newContent);
 };
 
 const addChoice = () => {
@@ -217,6 +225,7 @@ const handleSubmit = () => {
 
     <div class="form-control">
       <label class="label mb-2">Content (Markdown supported)</label>
+      <VisionTool @text-extracted="handleTextExtracted" />
       <br />
       <textarea
         :value="modelValue.content"
