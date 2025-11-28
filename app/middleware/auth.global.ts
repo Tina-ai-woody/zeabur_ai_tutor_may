@@ -14,6 +14,21 @@ export default defineNuxtRouteMiddleware(async (to) => {
     console.log("User Role:", userRole);
   }
 
+  // Pending user routes
+  if (userRole === "user") {
+    if (to.path !== "/pending" && to.path !== "/") {
+      return navigateTo("/pending");
+    }
+  }
+
+  // Prevent other roles from accessing pending page
+  if (to.path === "/pending" && userRole !== "user") {
+    if (userRole === "admin") return navigateTo("/admin/dashboard");
+    if (userRole === "teacher") return navigateTo("/teacher/dashboard");
+    if (userRole === "student") return navigateTo("/student/dashboard");
+    return navigateTo("/");
+  }
+
   // Admin routes
   if (to.path.startsWith("/admin")) {
     console.log(userRole);
