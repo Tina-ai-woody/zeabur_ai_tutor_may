@@ -6,6 +6,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
     authSecret: process.env.BETTER_AUTH_SECRET,
+    betterAuthSecret: process.env.BETTER_AUTH_SECRET,
+    googleVisionApiKey: process.env.GOOGLE_VISION_API_KEY,
     openaiApiKey: process.env.OPENAI_API_KEY,
     r2AccountId: process.env.R2_ACCOUNT_ID,
     r2AccessKeyId: process.env.R2_ACCESS_KEY_ID,
