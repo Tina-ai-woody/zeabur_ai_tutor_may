@@ -32,12 +32,12 @@ const handleLineLogin = async () => {
             <button @click="handleGoogleLogin" class="btn btn-primary">
               Login with Google
             </button>
-            <button
+            <!-- <button
               @click="handleLineLogin"
               class="btn btn-primary bg-[#06C755] hover:bg-[#05b34c] border-[#06C755] hover:border-[#05b34c] text-white"
             >
               Login with Line
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
