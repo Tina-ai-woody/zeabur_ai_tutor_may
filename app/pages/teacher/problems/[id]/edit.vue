@@ -31,7 +31,7 @@ interface FetchedProblem {
   id: string;
   title: string;
   content: string;
-  choices: string[];
+  choices: string[] | Record<string, string>;
   correctAnswer: string;
   explanation: string | null;
   difficulty: "easy" | "medium" | "hard";
@@ -65,10 +65,17 @@ watchEffect(() => {
     formData.value = {
       title: problem.value.title,
       content: problem.value.content,
-      choices: problem.value.choices.map((c) => ({
-        text: c,
-        isCorrect: c === problem.value.correctAnswer,
-      })),
+      choices: Array.isArray(problem.value.choices)
+        ? problem.value.choices.map((c) => ({
+            text: c,
+            isCorrect: false, // Not used anymore
+          }))
+        : Object.entries(problem.value.choices)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([_, text]) => ({
+              text: text as string,
+              isCorrect: false,
+            })),
       correctAnswer: problem.value.correctAnswer,
       explanation: problem.value.explanation || "",
       difficulty: problem.value.difficulty,
@@ -107,7 +114,10 @@ const updateProblem = async () => {
       body: {
         title: formData.value.title,
         content: formData.value.content,
-        choices: formData.value.choices.map((c) => c.text),
+        choices: formData.value.choices.reduce((acc, choice, index) => {
+          acc[String.fromCharCode(65 + index)] = choice.text;
+          return acc;
+        }, {} as Record<string, string>),
         correctAnswer: formData.value.correctAnswer,
         explanation: formData.value.explanation,
         difficulty: formData.value.difficulty,

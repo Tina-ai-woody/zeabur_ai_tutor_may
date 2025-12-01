@@ -65,7 +65,10 @@ const submitProblem = async () => {
       body: {
         title: formData.value.title,
         content: formData.value.content,
-        choices: formData.value.choices.map((c) => c.text),
+        choices: formData.value.choices.reduce((acc, choice, index) => {
+          acc[String.fromCharCode(65 + index)] = choice.text;
+          return acc;
+        }, {} as Record<string, string>),
         correctAnswer: formData.value.correctAnswer,
         explanation: formData.value.explanation,
         difficulty: formData.value.difficulty,

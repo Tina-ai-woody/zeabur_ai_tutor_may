@@ -127,9 +127,10 @@ const askAI = async () => {
                 key === selectedAnswer,
             }"
           >
-            <span class="label-text text-base flex-1">
-              <span class="font-bold mr-2">{{ key }}.</span> {{ text }}
-            </span>
+            <div class="label-text text-base flex-1 flex items-start">
+              <span class="font-bold mr-2">{{ key }}.</span>
+              <MarkdownRenderer :content="text" class="flex-1" />
+            </div>
             <input
               type="radio"
               name="radio-10"

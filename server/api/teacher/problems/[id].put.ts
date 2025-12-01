@@ -5,7 +5,7 @@ import { z } from "zod";
 const updateProblemSchema = z.object({
   title: z.string().min(1),
   content: z.string().min(1),
-  choices: z.array(z.string()).min(2),
+  choices: z.record(z.string(), z.string()),
   correctAnswer: z.string(),
   explanation: z.string().optional(),
   difficulty: z.enum(["easy", "medium", "hard"]),

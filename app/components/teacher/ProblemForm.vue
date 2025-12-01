@@ -262,8 +262,11 @@ const handleSubmit = () => {
       <div
         v-for="(choice, index) in modelValue.choices"
         :key="index"
-        class="flex gap-2 mb-2"
+        class="flex gap-2 mb-2 items-start"
       >
+        <div class="pt-3 font-bold w-6">
+          {{ String.fromCharCode(65 + index) }}.
+        </div>
         <input
           :value="choice.text"
           @input="
@@ -277,9 +280,13 @@ const handleSubmit = () => {
         <input
           type="radio"
           name="correctAnswer"
-          :value="choice.text"
-          :checked="modelValue.correctAnswer === choice.text"
-          @change="updateField('correctAnswer', choice.text)"
+          :value="String.fromCharCode(65 + index)"
+          :checked="
+            modelValue.correctAnswer === String.fromCharCode(65 + index)
+          "
+          @change="
+            updateField('correctAnswer', String.fromCharCode(65 + index))
+          "
           class="radio radio-primary mt-3"
           required
         />
