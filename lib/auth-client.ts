@@ -9,7 +9,7 @@ const getBaseURL = () => {
   const env = process.env.VERCEL_ENV;
 
   if (env === "production") return "https://studywithwoody.site";
-  if (env === "preview") return "https://preview.studywithwoody.site";
+  if (env === "preview") return "https://staging.studywithwoody.site";
 
   return "http://localhost:3000";
 };
