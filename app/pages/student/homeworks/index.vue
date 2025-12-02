@@ -57,7 +57,10 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
             No homework assigned in this classroom.
           </div>
 
-          <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            v-else
+            class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          >
             <div
               v-for="hw in group.homeworks"
               :key="hw.id"

@@ -67,7 +67,7 @@ defineEmits<{
       </button>
     </div>
 
-    <div class="card-body pt-12">
+    <div class="card-body pt-12 p-4 md:p-8 md:pt-12">
       <h2 class="card-title text-2xl justify-center">
         {{ problem.title }}
       </h2>

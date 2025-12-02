@@ -83,14 +83,17 @@ const renderedContent = computed(() => {
   return sanitized.replace(
     /%%%MATH_BLOCK_(\d+)%%%/g,
     (match: string, id: string) => {
-      return mathBlocks[parseInt(id)];
+      return mathBlocks[parseInt(id)] || match;
     }
   );
 });
 </script>
 
 <template>
-  <div class="markdown-body prose max-w-none" v-html="renderedContent"></div>
+  <div
+    class="markdown-body prose prose-sm md:prose-base max-w-none"
+    v-html="renderedContent"
+  ></div>
 </template>
 
 <style>

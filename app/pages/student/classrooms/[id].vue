@@ -20,7 +20,7 @@ const { data: homeworks } = await useFetch(
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto p-4 md:p-6">
     <div class="mb-4">
       <NuxtLink to="/student/classrooms" class="btn btn-ghost btn-sm gap-2">
         <svg
@@ -43,7 +43,7 @@ const { data: homeworks } = await useFetch(
 
     <div v-if="classroom" class="space-y-8">
       <!-- Header -->
-      <div class="flex justify-between items-start">
+      <div class="flex flex-col md:flex-row justify-between items-start gap-4">
         <div>
           <h1 class="text-3xl font-bold">{{ classroom.name }}</h1>
           <p class="text-lg opacity-70 mt-2">{{ classroom.description }}</p>
@@ -119,7 +119,8 @@ const { data: homeworks } = await useFetch(
                   <td>
                     <span
                       :class="{
-                        'text-error': new Date(hw.deadline) < new Date(),
+                        'text-error':
+                          hw.deadline && new Date(hw.deadline) < new Date(),
                       }"
                     >
                       {{

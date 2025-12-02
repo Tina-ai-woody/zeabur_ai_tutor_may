@@ -144,10 +144,12 @@ const finishHomework = async () => {
 
     <!-- Start Screen -->
     <div v-else-if="!started && data" class="card bg-base-100 shadow-xl mt-10">
-      <div class="card-body text-center">
+      <div class="card-body text-center p-4 md:p-8">
         <h1 class="text-4xl font-bold mb-4">{{ data.homework.title }}</h1>
         <p class="text-xl mb-6">Subject: {{ data.homework.subject }}</p>
-        <div class="stats shadow mb-8">
+        <div
+          class="stats stats-vertical lg:stats-horizontal shadow mb-8 w-full"
+        >
           <div class="stat">
             <div class="stat-title">Questions</div>
             <div class="stat-value">{{ data.problems.length }}</div>
@@ -174,7 +176,7 @@ const finishHomework = async () => {
     <!-- Problem View -->
     <div v-else-if="currentProblem && data" class="space-y-6">
       <HomeworkHeader
-        :title="data.homework.title"
+        :title="data.homework.title || 'Untitled'"
         :current-index="currentProblemIndex"
         :problems="data.problems"
         mode="take"

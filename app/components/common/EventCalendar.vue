@@ -26,6 +26,28 @@ const closeModal = () => {
   selectedDateInfo.value = null;
 };
 
+const handleDateClick = (info: any) => {
+  // Adapt dateClick info to selectInfo format
+  let endStr = info.dateStr;
+  if (info.allDay) {
+    const endDate = new Date(info.date);
+    endDate.setDate(endDate.getDate() + 1);
+    endStr = endDate.toISOString().split("T")[0];
+  }
+
+  const selectInfo = {
+    start: info.date,
+    end: info.date, // Approximation
+    startStr: info.dateStr,
+    endStr: endStr,
+    allDay: info.allDay,
+    view: info.view,
+    jsEvent: info.jsEvent,
+  };
+
+  handleDateSelect(selectInfo);
+};
+
 const createEvent = async () => {
   if (!newEventTitle.value || !selectedDateInfo.value) return;
 
@@ -101,8 +123,39 @@ const calendarOptions = ref({
   dayMaxEvents: true,
   weekends: true,
   select: handleDateSelect,
+  dateClick: handleDateClick, // Handle single clicks (especially on mobile)
+  selectLongPressDelay: 200, // Reduce delay for touch selection
   eventDrop: updateEvent,
   eventResize: updateEvent,
+  height: "auto", // Let it adapt to container
+});
+
+const updateCalendarOptions = () => {
+  const isMobile = window.innerWidth < 768;
+
+  calendarOptions.value.headerToolbar = isMobile
+    ? {
+        left: "prev,next",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay",
+      }
+    : {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay",
+      };
+
+  // Adjust aspect ratio for mobile to make it more compact if needed
+  // calendarOptions.value.aspectRatio = isMobile ? 0.8 : 1.35;
+};
+
+onMounted(() => {
+  updateCalendarOptions();
+  window.addEventListener("resize", updateCalendarOptions);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateCalendarOptions);
 });
 </script>
 
@@ -134,8 +187,8 @@ const calendarOptions = ref({
           </label>
         </div>
 
-        <div v-if="!isAllDay" class="flex gap-4 mt-4">
-          <div class="form-control w-1/2">
+        <div v-if="!isAllDay" class="flex flex-col md:flex-row gap-4 mt-4">
+          <div class="form-control w-full md:w-1/2">
             <label class="label">
               <span class="label-text">Start Time</span>
             </label>
@@ -145,7 +198,7 @@ const calendarOptions = ref({
               class="input input-bordered w-full"
             />
           </div>
-          <div class="form-control w-1/2">
+          <div class="form-control w-full md:w-1/2">
             <label class="label">
               <span class="label-text">End Time</span>
             </label>
@@ -204,5 +257,28 @@ const calendarOptions = ref({
 /* Remove default shadows/outlines if needed */
 .fc-daisy .fc-button:focus {
   box-shadow: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .fc-daisy .fc-toolbar-title {
+    font-size: 1.25rem; /* Smaller title */
+  }
+
+  .fc-daisy .fc-button {
+    padding: 0.2rem 0.5rem; /* Smaller buttons */
+    font-size: 0.875rem;
+  }
+
+  .fc-daisy .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .fc-daisy .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 }
 </style>
