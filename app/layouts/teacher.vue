@@ -52,16 +52,16 @@ const closeDrawer = () => {
           <ul class="menu menu-horizontal px-1">
             <!-- Navbar menu content here -->
             <li>
-              <NuxtLink to="/teacher/problems">Manage Problems</NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/teacher/problems/create">Create Problem</NuxtLink>
+              <NuxtLink to="/teacher/problems">Problems</NuxtLink>
             </li>
             <li>
               <NuxtLink to="/teacher/classrooms">Classrooms</NuxtLink>
             </li>
             <li>
               <NuxtLink to="/teacher/homeworks">Homeworks</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/teacher/students_dashboard">Students</NuxtLink>
             </li>
             <li>
               <button @click="handleLogout" class="btn btn-secondary ml-2">
@@ -108,6 +108,11 @@ const closeDrawer = () => {
         <li>
           <NuxtLink to="/teacher/homeworks" @click="closeDrawer"
             >Homeworks</NuxtLink
+          >
+        </li>
+        <li>
+          <NuxtLink to="/teacher/students_dashboard" @click="closeDrawer"
+            >Students</NuxtLink
           >
         </li>
         <li class="mt-auto">
