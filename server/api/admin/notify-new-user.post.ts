@@ -1,4 +1,10 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+// Load .env first
+dotenv.config();
+// Load .env.local to override
+dotenv.config({ path: ".env.local", override: true });
 
 export default defineEventHandler(async (event) => {
   const session = await auth.api.getSession({
@@ -46,6 +52,21 @@ export default defineEventHandler(async (event) => {
           <li><strong>Email:</strong> ${user.email}</li>
           <li><strong>ID:</strong> ${user.id}</li>
         </ul>
+        <a href=${config.public.baseURL || process.env.PUBLIC_BASE_URL}
+            style="
+              display: inline-block;
+              padding: 12px 20px;
+              margin-top: 16px;
+              background-color: #2563eb;
+              color: white;
+              text-decoration: none;
+              border-radius: 6px;
+              font-weight: bold;
+            "
+          target="_blank">
+          Go to Admin Panel
+        </a>
+        
         <p>Please login to the admin dashboard to assign a role.</p>
       `,
     });
