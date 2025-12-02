@@ -27,7 +27,12 @@ interface ProblemData {
 const formData = ref<ProblemData>({
   title: "",
   content: "",
-  choices: [{ text: "", isCorrect: false }],
+  choices: [
+    { text: "", isCorrect: false },
+    { text: "", isCorrect: false },
+    { text: "", isCorrect: false },
+    { text: "", isCorrect: false },
+  ],
   correctAnswer: "",
   explanation: "",
   difficulty: "medium",
