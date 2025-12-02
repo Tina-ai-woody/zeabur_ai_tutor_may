@@ -65,7 +65,7 @@ const askAI = async () => {
 </script>
 
 <template>
-  <div class="container mx-auto max-w-3xl pb-20">
+  <div class="container mx-auto max-w-3xl pb-20 p-4">
     <div class="mb-4">
       <NuxtLink to="/student/problems" class="btn btn-ghost btn-sm gap-2">
         <svg
@@ -87,7 +87,7 @@ const askAI = async () => {
     </div>
 
     <div v-if="problem" class="card bg-base-100 shadow-xl">
-      <div class="card-body">
+      <div class="card-body p-4 md:p-8">
         <div class="flex justify-between items-start">
           <h1 class="card-title text-2xl">{{ problem.title }}</h1>
           <div class="flex gap-2">

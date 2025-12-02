@@ -118,7 +118,10 @@ const renderedContent = computed(() => {
 </script>
 
 <template>
-  <div class="markdown-body prose max-w-none" v-html="renderedContent"></div>
+  <div
+    class="markdown-body prose prose-sm md:prose-base max-w-none"
+    v-html="renderedContent"
+  ></div>
 </template>
 
 <style>

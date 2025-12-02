@@ -48,7 +48,9 @@ const getCircleClass = (problem: ProblemStatus, index: number) => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex justify-between items-center">
+    <div
+      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2"
+    >
       <div class="text-sm breadcrumbs">
         <ul>
           <li><NuxtLink to="/student/homeworks">Homeworks</NuxtLink></li>

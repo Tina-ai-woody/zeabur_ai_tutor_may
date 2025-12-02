@@ -25,7 +25,7 @@ const clearSearch = () => {
 
 <template>
   <div class="card bg-base-100 shadow-sm border border-base-200 mb-8">
-    <div class="card-body">
+    <div class="card-body p-4 md:p-6">
       <h2 class="card-title text-lg mb-4">Search Problems</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="form-control">

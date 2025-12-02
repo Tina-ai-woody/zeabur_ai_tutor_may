@@ -7,15 +7,15 @@ const { data: classrooms, refresh } = await useFetch("/api/student/classrooms");
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto p-4 md:p-6">
     <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold">My Classrooms</h1>
+      <h1 class="text-2xl md:text-3xl font-bold">My Classrooms</h1>
     </div>
 
     <!-- Classroom List -->
     <div
       v-if="classrooms && classrooms.length > 0"
-      class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+      class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
     >
       <div
         v-for="classroom in classrooms"
