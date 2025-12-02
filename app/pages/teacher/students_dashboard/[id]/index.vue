@@ -89,10 +89,16 @@ const {
             </div>
           </div>
           <div class="card-actions justify-end mt-4">
-            <span class="text-xs opacity-50"
+            <span class="text-xs opacity-50 mr-auto self-center"
               >Joined:
               {{ new Date(classroom.joinedAt).toLocaleDateString() }}</span
             >
+            <NuxtLink
+              :to="`/teacher/students_dashboard/${studentId}/${classroom.id}`"
+              class="btn btn-primary btn-sm"
+            >
+              View Performance
+            </NuxtLink>
           </div>
         </div>
       </div>
