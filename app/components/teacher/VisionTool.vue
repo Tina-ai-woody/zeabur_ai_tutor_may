@@ -8,20 +8,51 @@ const isProcessing = ref(false);
 const imageFile = ref<File | null>(null);
 const imagePreview = ref<string | null>(null);
 
+const processFile = (file: File) => {
+  if (!file.type.startsWith("image/")) return;
+
+  imageFile.value = file;
+
+  // Create preview
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    imagePreview.value = e.target?.result as string;
+  };
+  reader.readAsDataURL(file);
+};
+
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files[0]) {
-    const file = target.files[0];
-    imageFile.value = file;
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.value = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+    processFile(target.files[0]);
   }
 };
+
+const handlePaste = (event: ClipboardEvent) => {
+  if (!isOpen.value) return;
+
+  const items = event.clipboardData?.items;
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type.indexOf("image") !== -1) {
+      const file = item.getAsFile();
+      if (file) {
+        processFile(file);
+        event.preventDefault();
+        break;
+      }
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("paste", handlePaste);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("paste", handlePaste);
+});
 
 const extractText = async () => {
   if (!imagePreview.value) return;
@@ -80,7 +111,8 @@ const clearImage = () => {
         />
         <label class="label">
           <span class="label-text-alt text-gray-500"
-            >Upload an image to extract text from it</span
+            >Upload an image or paste from clipboard (Ctrl+V) to extract
+            text</span
           >
         </label>
       </div>
