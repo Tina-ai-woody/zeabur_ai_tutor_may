@@ -92,6 +92,12 @@ const session = useSession();
               class="btn btn-primary"
               >Go to Student</NuxtLink
             >
+            <NuxtLink
+              v-if="session.data.user.role === 'parent'"
+              to="/parent"
+              class="btn btn-primary"
+              >Go to Parent</NuxtLink
+            >
           </div>
         </div>
 

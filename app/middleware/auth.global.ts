@@ -26,6 +26,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (userRole === "admin") return navigateTo("/admin/dashboard");
     if (userRole === "teacher") return navigateTo("/teacher/dashboard");
     if (userRole === "student") return navigateTo("/student/dashboard");
+    if (userRole === "parent") return navigateTo("/parent");
     return navigateTo("/");
   }
 
@@ -47,6 +48,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // Student routes
   if (to.path.startsWith("/student")) {
     if (userRole !== "student" && userRole !== "admin") {
+      return navigateTo("/unauthorized");
+    }
+  }
+
+  // Parent routes
+  if (to.path.startsWith("/parent")) {
+    if (userRole !== "parent" && userRole !== "admin") {
       return navigateTo("/unauthorized");
     }
   }

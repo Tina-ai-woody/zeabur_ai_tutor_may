@@ -10,14 +10,28 @@ const client = createAuthClient({
   plugins: [adminClient()],
 });
 
-const users = ref([]);
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  role?: string;
+  createdAt: Date;
+  emailVerified: boolean;
+}
+
+const users = ref<User[]>([]);
 const loading = ref(true);
 
 const fetchUsers = async () => {
   loading.value = true;
   try {
-    const res = await client.admin.listUsers();
-    users.value = res.data.users;
+    const res = await client.admin.listUsers({
+      query: {},
+    });
+    if (res.data) {
+      users.value = res.data.users as unknown as User[];
+    }
   } catch (error) {
     console.error("Failed to fetch users", error);
   } finally {
@@ -29,7 +43,7 @@ const updateUserRole = async (userId: string, newRole: string) => {
   try {
     await client.admin.setRole({
       userId,
-      role: newRole,
+      role: newRole as any,
     });
     // Refresh list
     await fetchUsers();
@@ -102,6 +116,13 @@ onMounted(() => {
                 :disabled="user.role === 'teacher'"
               >
                 Teacher
+              </button>
+              <button
+                class="btn btn-xs btn-outline btn-secondary"
+                @click="updateUserRole(user.id, 'parent')"
+                :disabled="user.role === 'parent'"
+              >
+                Parent
               </button>
               <button
                 class="btn btn-xs btn-outline btn-warning"
