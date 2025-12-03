@@ -2,6 +2,16 @@
 definePageMeta({
   layout: "parent",
 });
+
+const { data: status, pending } = await useFetch("/api/parent/status");
+
+if (status.value) {
+  if (status.value.isPending) {
+    navigateTo("/parent/pending");
+  } else if (!status.value.isLinked) {
+    navigateTo("/parent/starter");
+  }
+}
 </script>
 
 <template>

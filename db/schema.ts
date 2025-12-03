@@ -195,3 +195,16 @@ export const personalEvents = pgTable("personal_events", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const pendingParent = pgTable("pending_parent", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  parentId: text("parent_id")
+    .notNull()
+    .references(() => user.id),
+  studentName: text("student_name").notNull(),
+  studentEmail: text("student_email").notNull(),
+  status: text("status").default("pending").notNull(), // pending, approved, rejected
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
