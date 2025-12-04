@@ -52,6 +52,20 @@ const closeDrawer = () => {
           <ul class="menu menu-horizontal px-1">
             <!-- Navbar menu content here -->
             <li>
+              <details>
+                <summary class="list-none marker:content-none">
+                  External Links
+                </summary>
+                <ul class="bg-base-100 rounded-t-none p-2">
+                  <li>
+                    <NuxtLink to="https://physimhub.studywithwoody.site/"
+                      >PhysimHub</NuxtLink
+                    >
+                  </li>
+                </ul>
+              </details>
+            </li>
+            <li>
               <NuxtLink to="/student/problems">Testbank</NuxtLink>
             </li>
             <li>
