@@ -53,14 +53,20 @@ const linkStudent = async (studentId: string) => {
   if (!confirm("Are you sure you want to link this student to the parent?"))
     return;
 
-  // TODO: Implement the actual linking logic API call
-  console.log(
-    "Linking student",
-    studentId,
-    "to pending parent",
-    pendingParentId
-  );
-  alert("Linking functionality to be implemented. Student ID: " + studentId);
+  try {
+    await $fetch("/api/admin/link-parent-student", {
+      method: "POST",
+      body: {
+        pendingParentId,
+        studentId,
+      },
+    });
+    alert("Successfully linked student and parent!");
+    navigateTo("/admin/pending-parents");
+  } catch (error) {
+    console.error("Failed to link student", error);
+    alert("Failed to link student and parent");
+  }
 };
 </script>
 
