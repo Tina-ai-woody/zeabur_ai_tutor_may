@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "teacher",
+  layout: "parent",
 });
 
 const route = useRoute();
@@ -12,7 +12,7 @@ const {
   pending,
   error,
 } = await useFetch(
-  `/api/teacher/students/${studentId}/classrooms/${classroomId}/performance`
+  `/api/parent/students/${studentId}/classrooms/${classroomId}/performance`
 );
 </script>
 
@@ -20,7 +20,7 @@ const {
   <div class="container mx-auto p-4 md:p-6">
     <div class="mb-4">
       <NuxtLink
-        :to="`/teacher/students_dashboard/${studentId}`"
+        :to="`/parent/student_info/${studentId}`"
         class="btn btn-ghost btn-sm gap-2"
       >
         <svg

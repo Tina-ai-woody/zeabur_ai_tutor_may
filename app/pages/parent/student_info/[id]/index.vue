@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "teacher",
+  layout: "parent",
 });
 
 const route = useRoute();
@@ -11,23 +11,13 @@ const {
   data: classrooms,
   pending,
   error,
-} = await useFetch(`/api/teacher/students/${studentId}/classrooms`);
-
-// We might also want to fetch the student's basic info to display their name at the top
-// Since we don't have a dedicated single student endpoint that returns just info without auth checks for "my student" specifically logic again (though we could reuse one),
-// or we can just pass the name via query param or state, but fetching is cleaner.
-// For now, let's assume we just show "Student Details" or try to find the student name from the list if we had a store, but we don't.
-// Let's create a small helper or just display "Student Classrooms" for now.
-// Actually, the previous page had the student info.
+} = await useFetch(`/api/parent/students/${studentId}/classrooms`);
 </script>
 
 <template>
   <div class="container mx-auto p-4 md:p-6">
     <div class="mb-4">
-      <NuxtLink
-        to="/teacher/students_dashboard"
-        class="btn btn-ghost btn-sm gap-2"
-      >
+      <NuxtLink to="/parent/student_info" class="btn btn-ghost btn-sm gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-4 w-4"
@@ -59,7 +49,7 @@ const {
     <div v-else-if="classrooms && classrooms.length > 0">
       <StudentClassroomsList
         :classrooms="classrooms"
-        :base-link="`/teacher/students_dashboard/${studentId}`"
+        :base-link="`/parent/student_info/${studentId}`"
       />
     </div>
 

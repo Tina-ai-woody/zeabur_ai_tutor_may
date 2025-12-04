@@ -1,4 +1,4 @@
-import { classrooms, classroomStudents, user } from "../../../../../db/schema";
+import { parentStudents } from "../../../../../db/schema";
 import { eq, and } from "drizzle-orm";
 import { auth } from "../../../../../server/utils/auth";
 
@@ -7,14 +7,14 @@ export default defineEventHandler(async (event) => {
     headers: event.headers,
   });
 
-  if (!session || session.user.role !== "teacher") {
+  if (!session || session.user.role !== "parent") {
     throw createError({
       statusCode: 403,
       statusMessage: "Unauthorized",
     });
   }
 
-  const teacherId = session.user.id;
+  const parentId = session.user.id;
   const studentId = getRouterParam(event, "id");
 
   if (!studentId) {
@@ -24,21 +24,19 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Security check: Ensure the teacher has at least one common classroom with the student
-  // or simply check if the student is in any of the teacher's classrooms.
-  const isMyStudent = await useDrizzle()
-    .select({ id: classroomStudents.id })
-    .from(classroomStudents)
-    .innerJoin(classrooms, eq(classroomStudents.classroomId, classrooms.id))
+  // Security check: Ensure the parent is linked to the student
+  const isMyChild = await useDrizzle()
+    .select({ id: parentStudents.id })
+    .from(parentStudents)
     .where(
       and(
-        eq(classroomStudents.studentId, studentId),
-        eq(classrooms.teacherId, teacherId)
+        eq(parentStudents.parentId, parentId),
+        eq(parentStudents.studentId, studentId)
       )
     )
     .limit(1);
 
-  if (isMyStudent.length === 0) {
+  if (isMyChild.length === 0) {
     throw createError({
       statusCode: 403,
       statusMessage: "You are not authorized to view this student's details",

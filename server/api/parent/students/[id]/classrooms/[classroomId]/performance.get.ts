@@ -1,12 +1,5 @@
-import {
-  classrooms,
-  homeworks,
-  homeworkCompletions,
-  hwRecords,
-  homeworkProblems,
-  user,
-} from "../../../../../../../db/schema";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { parentStudents } from "../../../../../../../db/schema";
+import { eq, and } from "drizzle-orm";
 import { auth } from "../../../../../../../server/utils/auth";
 
 export default defineEventHandler(async (event) => {
@@ -14,14 +7,14 @@ export default defineEventHandler(async (event) => {
     headers: event.headers,
   });
 
-  if (!session || session.user.role !== "teacher") {
+  if (!session || session.user.role !== "parent") {
     throw createError({
       statusCode: 403,
       statusMessage: "Unauthorized",
     });
   }
 
-  const teacherId = session.user.id;
+  const parentId = session.user.id;
   const studentId = getRouterParam(event, "id");
   const classroomId = getRouterParam(event, "classroomId");
 
@@ -32,19 +25,22 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Security check: Ensure the teacher owns the classroom
-  const classroom = await useDrizzle()
-    .select()
-    .from(classrooms)
+  // Security check: Ensure the parent is linked to the student
+  const isMyChild = await useDrizzle()
+    .select({ id: parentStudents.id })
+    .from(parentStudents)
     .where(
-      and(eq(classrooms.id, classroomId), eq(classrooms.teacherId, teacherId))
+      and(
+        eq(parentStudents.parentId, parentId),
+        eq(parentStudents.studentId, studentId)
+      )
     )
     .limit(1);
 
-  if (classroom.length === 0) {
+  if (isMyChild.length === 0) {
     throw createError({
       statusCode: 403,
-      statusMessage: "You are not authorized to view this classroom",
+      statusMessage: "You are not authorized to view this student's details",
     });
   }
 

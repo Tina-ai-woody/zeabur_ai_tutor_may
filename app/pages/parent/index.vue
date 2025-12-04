@@ -46,7 +46,11 @@ if (status.value) {
             <h2 class="card-title">{{ student.name }}</h2>
             <p>{{ student.email }}</p>
             <div class="card-actions">
-              <button class="btn btn-primary btn-sm">View Details</button>
+              <button class="btn btn-primary btn-sm">
+                <nuxt-link :to="`/parent/student_info/${student.id}`">
+                  View Details
+                </nuxt-link>
+              </button>
             </div>
           </div>
         </div>
