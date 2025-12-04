@@ -18,6 +18,7 @@ interface User {
   role?: string;
   createdAt: Date;
   emailVerified: boolean;
+  requestedRole?: string;
 }
 
 const users = ref<User[]>([]);
@@ -26,11 +27,11 @@ const loading = ref(true);
 const fetchUsers = async () => {
   loading.value = true;
   try {
-    const res = await client.admin.listUsers({
-      query: {},
-    });
-    if (res.data) {
-      users.value = res.data.users as unknown as User[];
+    const res = await $fetch("/api/admin/users-with-role-requests");
+    console.log("API Response:", res);
+    if (res.users) {
+      users.value = res.users as unknown as User[];
+      console.log("Set users:", users.value);
     }
   } catch (error) {
     console.error("Failed to fetch users", error);
@@ -73,6 +74,7 @@ onMounted(() => {
             <th>Name</th>
             <th>Email</th>
             <th>Current Role</th>
+            <th>Requested Role</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -102,35 +104,45 @@ onMounted(() => {
                 user.role || "No Role"
               }}</span>
             </td>
-            <td class="flex gap-2">
-              <button
-                class="btn btn-xs btn-outline btn-info"
-                @click="updateUserRole(user.id, 'student')"
-                :disabled="user.role === 'student'"
+            <td>
+              <span
+                v-if="user.requestedRole"
+                class="badge badge-primary badge-sm"
+                >{{ user.requestedRole }}</span
               >
-                Student
-              </button>
-              <button
-                class="btn btn-xs btn-outline btn-success"
-                @click="updateUserRole(user.id, 'teacher')"
-                :disabled="user.role === 'teacher'"
-              >
-                Teacher
-              </button>
-              <button
-                class="btn btn-xs btn-outline btn-secondary"
-                @click="updateUserRole(user.id, 'parent')"
-                :disabled="user.role === 'parent'"
-              >
-                Parent
-              </button>
-              <button
-                class="btn btn-xs btn-outline btn-warning"
-                @click="updateUserRole(user.id, 'admin')"
-                :disabled="user.role === 'admin'"
-              >
-                Admin
-              </button>
+              <span v-else class="text-gray-400 text-sm">-</span>
+            </td>
+            <td>
+              <div class="flex items-center gap-2 h-full">
+                <button
+                  class="btn btn-xs btn-outline btn-info"
+                  @click="updateUserRole(user.id, 'student')"
+                  :disabled="user.role === 'student'"
+                >
+                  Student
+                </button>
+                <button
+                  class="btn btn-xs btn-outline btn-success"
+                  @click="updateUserRole(user.id, 'teacher')"
+                  :disabled="user.role === 'teacher'"
+                >
+                  Teacher
+                </button>
+                <button
+                  class="btn btn-xs btn-outline btn-secondary"
+                  @click="updateUserRole(user.id, 'parent')"
+                  :disabled="user.role === 'parent'"
+                >
+                  Parent
+                </button>
+                <button
+                  class="btn btn-xs btn-outline btn-warning"
+                  @click="updateUserRole(user.id, 'admin')"
+                  :disabled="user.role === 'admin'"
+                >
+                  Admin
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
