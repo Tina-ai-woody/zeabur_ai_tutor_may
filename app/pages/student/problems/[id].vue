@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "student",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const problemId = route.params.id as string;
@@ -67,7 +68,10 @@ const askAI = async () => {
 <template>
   <div class="container mx-auto max-w-3xl pb-20 p-4">
     <div class="mb-4">
-      <NuxtLink to="/student/problems" class="btn btn-ghost btn-sm gap-2">
+      <NuxtLink
+        :to="localePath('/student/problems')"
+        class="btn btn-ghost btn-sm gap-2"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-4 w-4"

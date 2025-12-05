@@ -5,6 +5,7 @@ import TeacherProblemPreview from "~/components/teacher/ProblemPreview.vue";
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 interface Choice {
   text: string;
@@ -84,7 +85,7 @@ const submitProblem = async () => {
     });
 
     alert(useNuxtApp().$i18n.t("teacher.problems.create.success"));
-    navigateTo("/teacher/problems");
+    navigateTo(localePath("/teacher/problems"));
   } catch (error: any) {
     console.error("Error creating problem:", error);
     alert(
@@ -98,7 +99,7 @@ const submitProblem = async () => {
 };
 
 const handleCancel = () => {
-  navigateTo("/teacher/problems");
+  navigateTo(localePath("/teacher/problems"));
 };
 </script>
 
@@ -109,7 +110,7 @@ const handleCancel = () => {
         {{ $t("teacher.problems.create.title") }}
       </h1>
       <NuxtLink
-        to="/teacher/problems/help"
+        :to="localePath('/teacher/problems/help')"
         class="btn btn-circle btn-ghost btn-sm"
         :title="$t('teacher.problems.create.help')"
       >

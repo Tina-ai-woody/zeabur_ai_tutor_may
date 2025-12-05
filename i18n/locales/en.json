@@ -375,5 +375,105 @@
         }
       }
     }
+  },
+  "parent": {
+    "dashboard": {
+      "title": "Parent Dashboard",
+      "your_students": "Your Students",
+      "view_details": "View Details",
+      "welcome": "Welcome, Parent!",
+      "no_students": "You don't have any students linked yet."
+    },
+    "pending": {
+      "title": "Request Pending",
+      "message": "Your request to link with a student account has been submitted and is waiting for admin confirmation.",
+      "notification": "You will be notified once your request is approved."
+    },
+    "starter": {
+      "title": "Link Student Account",
+      "description": "Please provide your child's name and the email address they use for this website.",
+      "student_name": "Student Name",
+      "student_name_placeholder": "e.g. John Doe",
+      "student_email": "Student Email",
+      "student_email_placeholder": "e.g. john{'@'}example.com",
+      "submit_error": "Failed to submit request",
+      "submit": "Submit Request"
+    },
+    "student_info": {
+      "title": "My Students",
+      "error_loading": "Error loading students:",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "actions": "Actions"
+      },
+      "view_info": "View Info",
+      "no_linked_students": "No students linked to your account.",
+      "back_to_students": "Back to Students",
+      "student_classrooms": "Student Classrooms",
+      "error_loading_classrooms": "Error loading classrooms:",
+      "no_classrooms": "This student is not enrolled in any classrooms.",
+      "back_to_student_classrooms": "Back to Student Classrooms",
+      "error_loading_performance": "Error loading performance data:"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "welcome": "Welcome, Admin! This is a protected area."
+    },
+    "link_student": {
+      "title": "Link Student to Parent",
+      "request_details": "Request Details",
+      "parent_account": "Parent Account",
+      "requested_student_info": "Requested Student Info",
+      "name": "Name:",
+      "email": "Email:",
+      "search_student": "Search Student",
+      "no_users_found": "No users found matching your search.",
+      "confirm_link": "Are you sure you want to link this student to the parent?",
+      "success_link": "Successfully linked student and parent!",
+      "failed_link": "Failed to link student and parent",
+      "table": {
+        "avatar": "Avatar",
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "action": "Action",
+        "link": "Link"
+      }
+    },
+    "pending_parents": {
+      "title": "Pending Parent Links",
+      "search_placeholder": "Search by name, email or status...",
+      "table": {
+        "parent": "Parent",
+        "student_info": "Student Info (Provided)",
+        "status": "Status",
+        "actions": "Actions",
+        "link": "link"
+      },
+      "failed_fetch": "Failed to fetch pending parents",
+      "failed_update": "Failed to update status"
+    },
+    "users": {
+      "title": "User Management",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "current_role": "Current Role",
+        "requested_role": "Requested Role",
+        "actions": "Actions"
+      },
+      "roles": {
+        "student": "Student",
+        "teacher": "Teacher",
+        "parent": "Parent",
+        "admin": "Admin",
+        "no_role": "No Role"
+      },
+      "failed_fetch": "Failed to fetch users",
+      "failed_update": "Failed to update role"
+    }
   }
 }

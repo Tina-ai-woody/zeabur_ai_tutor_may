@@ -375,5 +375,105 @@
         }
       }
     }
+  },
+  "parent": {
+    "dashboard": {
+      "title": "家長儀表板",
+      "your_students": "您的學生",
+      "view_details": "查看詳情",
+      "welcome": "歡迎，家長！",
+      "no_students": "您尚未連結任何學生。"
+    },
+    "pending": {
+      "title": "請求待處理",
+      "message": "您連結學生帳號的請求已送出，正等待管理員確認。",
+      "notification": "請求核准後，您將收到通知。"
+    },
+    "starter": {
+      "title": "連結學生帳號",
+      "description": "請提供您孩子的姓名以及他們在此網站使用的電子郵件地址。",
+      "student_name": "學生姓名",
+      "student_name_placeholder": "例如：王小明",
+      "student_email": "學生電子郵件",
+      "student_email_placeholder": "例如:wang{'@'}example.com",
+      "submit_error": "提交請求失敗",
+      "submit": "提交請求"
+    },
+    "student_info": {
+      "title": "我的學生",
+      "error_loading": "載入學生時發生錯誤：",
+      "table": {
+        "name": "姓名",
+        "email": "電子郵件",
+        "actions": "操作"
+      },
+      "view_info": "查看資訊",
+      "no_linked_students": "您的帳號尚未連結任何學生。",
+      "back_to_students": "返回學生列表",
+      "student_classrooms": "學生教室",
+      "error_loading_classrooms": "載入教室時發生錯誤：",
+      "no_classrooms": "此學生尚未加入任何教室。",
+      "back_to_student_classrooms": "返回學生教室列表",
+      "error_loading_performance": "載入表現資料時發生錯誤："
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "管理員儀表板",
+      "welcome": "歡迎，管理員！這是受保護的區域。"
+    },
+    "link_student": {
+      "title": "連結學生與家長",
+      "request_details": "請求詳情",
+      "parent_account": "家長帳號",
+      "requested_student_info": "請求的學生資訊",
+      "name": "姓名：",
+      "email": "電子郵件：",
+      "search_student": "搜尋學生",
+      "no_users_found": "沒有找到符合條件的使用者。",
+      "confirm_link": "您確定要將此學生連結到家長嗎？",
+      "success_link": "成功連結學生與家長！",
+      "failed_link": "連結學生與家長失敗",
+      "table": {
+        "avatar": "頭像",
+        "name": "姓名",
+        "email": "電子郵件",
+        "role": "角色",
+        "action": "操作",
+        "link": "連結"
+      }
+    },
+    "pending_parents": {
+      "title": "待處理的家長連結",
+      "search_placeholder": "搜尋姓名、電子郵件或狀態...",
+      "table": {
+        "parent": "家長",
+        "student_info": "學生資訊（提供）",
+        "status": "狀態",
+        "actions": "操作",
+        "link": "連結"
+      },
+      "failed_fetch": "無法取得待處理的家長",
+      "failed_update": "無法更新狀態"
+    },
+    "users": {
+      "title": "使用者管理",
+      "table": {
+        "name": "姓名",
+        "email": "電子郵件",
+        "current_role": "目前角色",
+        "requested_role": "請求角色",
+        "actions": "操作"
+      },
+      "roles": {
+        "student": "學生",
+        "teacher": "教師",
+        "parent": "家長",
+        "admin": "管理員",
+        "no_role": "無角色"
+      },
+      "failed_fetch": "無法取得使用者",
+      "failed_update": "無法更新角色"
+    }
   }
 }

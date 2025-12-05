@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "parent",
 });
+const localePath = useLocalePath();
 
 const {
   data: students,
@@ -12,14 +13,18 @@ const {
 
 <template>
   <div class="container mx-auto p-4 md:p-6">
-    <h1 class="text-2xl md:text-3xl font-bold mb-6">My Students</h1>
+    <h1 class="text-2xl md:text-3xl font-bold mb-6">
+      {{ $t("parent.student_info.title") }}
+    </h1>
 
     <div v-if="pending" class="flex justify-center py-10">
       <span class="loading loading-spinner loading-lg"></span>
     </div>
 
     <div v-else-if="error" class="alert alert-error">
-      <span>Error loading students: {{ error.message }}</span>
+      <span
+        >{{ $t("parent.student_info.error_loading") }} {{ error.message }}</span
+      >
     </div>
 
     <div
@@ -31,9 +36,9 @@ const {
           <table class="table w-full">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Actions</th>
+                <th>{{ $t("parent.student_info.table.name") }}</th>
+                <th>{{ $t("parent.student_info.table.email") }}</th>
+                <th>{{ $t("parent.student_info.table.actions") }}</th>
               </tr>
             </thead>
             <tbody>
@@ -58,10 +63,10 @@ const {
                 <td>{{ student.email }}</td>
                 <td>
                   <NuxtLink
-                    :to="`/parent/student_info/${student.id}`"
+                    :to="localePath(`/parent/student_info/${student.id}`)"
                     class="btn btn-sm btn-primary"
                   >
-                    View Info
+                    {{ $t("parent.student_info.view_info") }}
                   </NuxtLink>
                 </td>
               </tr>
@@ -72,7 +77,7 @@ const {
     </div>
 
     <div v-else class="text-center py-10 opacity-50">
-      <p>No students linked to your account.</p>
+      <p>{{ $t("parent.student_info.no_linked_students") }}</p>
     </div>
   </div>
 </template>

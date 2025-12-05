@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { authClient } from "../../lib/auth-client";
 
+const localePath = useLocalePath();
+
 const selectedRole = ref<"teacher" | "student" | "parent" | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
@@ -16,7 +18,7 @@ const handleSubmit = async () => {
       method: "POST",
       body: { role: selectedRole.value },
     });
-    navigateTo("/pending");
+    navigateTo(localePath("/pending"));
   } catch (e: any) {
     console.error("Failed to submit role request", e);
     error.value = e.statusMessage || "Failed to submit role request";
@@ -29,7 +31,7 @@ const handleLogout = async () => {
   await authClient.signOut({
     fetchOptions: {
       onSuccess: () => {
-        navigateTo("/");
+        navigateTo(localePath("/"));
       },
     },
   });

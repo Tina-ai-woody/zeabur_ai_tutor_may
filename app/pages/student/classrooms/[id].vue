@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "student",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const classroomId = route.params.id as string;
@@ -22,7 +23,10 @@ const { data: homeworks } = await useFetch(
 <template>
   <div class="container mx-auto p-4 md:p-6">
     <div class="mb-4">
-      <NuxtLink to="/student/classrooms" class="btn btn-ghost btn-sm gap-2">
+      <NuxtLink
+        :to="localePath('/student/classrooms')"
+        class="btn btn-ghost btn-sm gap-2"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-4 w-4"
@@ -139,7 +143,7 @@ const { data: homeworks } = await useFetch(
                   <td>{{ new Date(hw.createdAt).toLocaleDateString() }}</td>
                   <td>
                     <NuxtLink
-                      :to="`/student/homeworks/${hw.id}`"
+                      :to="localePath(`/student/homeworks/${hw.id}`)"
                       class="btn btn-sm btn-primary"
                     >
                       {{ $t("student.classrooms.view_hw") }}

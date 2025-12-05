@@ -1,7 +1,11 @@
+<script setup lang="ts">
+const localePath = useLocalePath();
+</script>
+
 <template>
   <div class="p-4 md:p-8 max-w-4xl mx-auto">
     <div class="flex items-center gap-4 mb-8">
-      <NuxtLink to="/student" class="btn btn-circle btn-ghost">
+      <NuxtLink :to="localePath('/student')" class="btn btn-circle btn-ghost">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

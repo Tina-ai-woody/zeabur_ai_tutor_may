@@ -2,11 +2,13 @@
 definePageMeta({
   layout: "admin",
 });
+
+const localePath = useLocalePath();
 </script>
 
 <template>
   <div class="p-8">
-    <h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
-    <p>Welcome, Admin! This is a protected area.</p>
+    <h1 class="text-2xl font-bold mb-4">{{ $t("admin.dashboard.title") }}</h1>
+    <p>{{ $t("admin.dashboard.welcome") }}</p>
   </div>
 </template>

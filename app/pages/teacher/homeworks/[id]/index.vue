@@ -5,6 +5,7 @@ definePageMeta({
   layout: "teacher",
 });
 
+const localePath = useLocalePath();
 const route = useRoute();
 const homeworkId = route.params.id as string;
 
@@ -110,7 +111,7 @@ const deleteHomework = async () => {
       method: "DELETE",
     });
     // Redirect to homeworks list
-    await navigateTo("/teacher/homeworks");
+    await navigateTo(localePath("/teacher/homeworks"));
   } catch (e: any) {
     settingsError.value =
       e.message || useNuxtApp().$i18n.t("teacher.homeworks.delete_error");
@@ -130,7 +131,10 @@ const deleteHomework = async () => {
     <div class="drawer-content">
       <div class="container mx-auto p-4 md:p-6">
         <div class="mb-6 flex justify-between items-center">
-          <NuxtLink to="/teacher/homeworks" class="btn btn-ghost gap-2 pl-0">
+          <NuxtLink
+            :to="localePath('/teacher/homeworks')"
+            class="btn btn-ghost gap-2 pl-0"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
@@ -278,7 +282,7 @@ const deleteHomework = async () => {
                 }})
               </h2>
               <NuxtLink
-                :to="`/teacher/homeworks/${homeworkId}/add`"
+                :to="localePath(`/teacher/homeworks/${homeworkId}/add`)"
                 class="btn btn-primary btn-sm gap-2"
               >
                 <svg
@@ -340,7 +344,7 @@ const deleteHomework = async () => {
                   </div>
                   <div class="mt-4 flex justify-end">
                     <NuxtLink
-                      :to="`/teacher/problems/${problem.id}/edit`"
+                      :to="localePath(`/teacher/problems/${problem.id}/edit`)"
                       class="btn btn-sm btn-outline btn-primary"
                     >
                       {{ $t("teacher.homeworks.detail.edit_problem") }}

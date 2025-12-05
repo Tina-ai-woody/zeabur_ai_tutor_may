@@ -26,13 +26,14 @@ definePageMeta({
             </svg>
           </div>
         </div>
-        <h2 class="card-title text-2xl justify-center mb-2">Request Pending</h2>
+        <h2 class="card-title text-2xl justify-center mb-2">
+          {{ $t("parent.pending.title") }}
+        </h2>
         <p class="text-gray-600">
-          Your request to link with a student account has been submitted and is
-          waiting for admin confirmation.
+          {{ $t("parent.pending.message") }}
         </p>
         <p class="text-sm text-gray-500 mt-4">
-          You will be notified once your request is approved.
+          {{ $t("parent.pending.notification") }}
         </p>
       </div>
     </div>

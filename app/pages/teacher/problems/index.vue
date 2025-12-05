@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 const searchParams = ref({
   title: "",
@@ -50,13 +51,13 @@ const deleteProblem = async (id: string) => {
           </h1>
           <div class="flex gap-2 w-full md:w-auto">
             <NuxtLink
-              to="/teacher/homeworks/create"
+              :to="localePath('/teacher/homeworks/create')"
               class="btn btn-secondary flex-1 md:flex-none"
             >
               {{ $t("teacher.problems.create_hw") }}
             </NuxtLink>
             <NuxtLink
-              to="/teacher/problems/create"
+              :to="localePath('/teacher/problems/create')"
               class="btn btn-primary flex-1 md:flex-none"
             >
               {{ $t("teacher.problems.create_new") }}
@@ -98,7 +99,7 @@ const deleteProblem = async (id: string) => {
               </div>
               <div class="card-actions justify-end mt-4">
                 <NuxtLink
-                  :to="`/teacher/problems/${problem.id}/edit`"
+                  :to="localePath(`/teacher/problems/${problem.id}/edit`)"
                   class="btn btn-warning btn-sm"
                 >
                   {{ $t("teacher.problems.edit_button") }}

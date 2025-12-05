@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const localePath = useLocalePath();
+</script>
+
 <template>
   <div class="hero min-h-screen bg-base-200">
     <div class="hero-content text-center">
@@ -7,7 +11,9 @@
           You do not have permission to access this page. Please contact an
           administrator if you believe this is an error.
         </p>
-        <NuxtLink to="/" class="btn btn-primary">Go Home</NuxtLink>
+        <NuxtLink :to="localePath('/')" class="btn btn-primary"
+          >Go Home</NuxtLink
+        >
       </div>
     </div>
   </div>

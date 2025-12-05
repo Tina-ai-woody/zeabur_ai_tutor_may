@@ -4,6 +4,7 @@ import EventCalendar from "~/components/common/EventCalendar.vue";
 definePageMeta({
   layout: "student",
 });
+const localePath = useLocalePath();
 </script>
 
 <template>
@@ -11,7 +12,7 @@ definePageMeta({
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">{{ $t("student.dashboard.title") }}</h1>
       <NuxtLink
-        to="/student/calendar-help"
+        :to="localePath('/student/calendar-help')"
         class="btn btn-circle btn-ghost"
         :title="$t('student.dashboard.calendar_help')"
       >

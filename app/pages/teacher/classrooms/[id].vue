@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const classroomId = route.params.id as string;
@@ -124,7 +125,7 @@ const deleteClassroom = async () => {
       method: "DELETE",
     });
     // Redirect to classrooms list
-    await navigateTo("/teacher/classrooms");
+    await navigateTo(localePath("/teacher/classrooms"));
   } catch (e: any) {
     settingsError.value = e.message || "Failed to delete classroom";
     isDeleting.value = false;
@@ -143,7 +144,10 @@ const deleteClassroom = async () => {
     <div class="drawer-content">
       <div class="container mx-auto p-4 md:p-6">
         <div class="mb-4">
-          <NuxtLink to="/teacher/classrooms" class="btn btn-ghost btn-sm gap-2">
+          <NuxtLink
+            :to="localePath('/teacher/classrooms')"
+            class="btn btn-ghost btn-sm gap-2"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-4 w-4"
@@ -336,7 +340,7 @@ const deleteClassroom = async () => {
                       </td>
                       <td>
                         <NuxtLink
-                          :to="`/teacher/homeworks/${hw.id}`"
+                          :to="localePath(`/teacher/homeworks/${hw.id}`)"
                           class="btn btn-sm btn-primary"
                         >
                           {{ $t("teacher.classrooms.view_hw") }}
@@ -350,7 +354,7 @@ const deleteClassroom = async () => {
               <div v-else class="text-center py-10 opacity-50">
                 <p>{{ $t("teacher.classrooms.no_homeworks") }}</p>
                 <NuxtLink
-                  to="/teacher/problems"
+                  :to="localePath('/teacher/problems')"
                   class="btn btn-link btn-sm mt-2"
                 >
                   {{ $t("teacher.classrooms.go_to_problems") }}

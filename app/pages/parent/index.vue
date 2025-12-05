@@ -2,25 +2,28 @@
 definePageMeta({
   layout: "parent",
 });
+const localePath = useLocalePath();
 
 const { data: status, pending } = await useFetch("/api/parent/status");
 const { data: students } = await useFetch("/api/parent/students");
 
 if (status.value) {
   if (status.value.isPending) {
-    navigateTo("/parent/pending");
+    navigateTo(localePath("/parent/pending"));
   } else if (!status.value.isLinked) {
-    navigateTo("/parent/starter");
+    navigateTo(localePath("/parent/starter"));
   }
 }
 </script>
 
 <template>
   <div>
-    <h1 class="text-3xl font-bold mb-6">Parent Dashboard</h1>
+    <h1 class="text-3xl font-bold mb-6">{{ $t("parent.dashboard.title") }}</h1>
 
     <div v-if="students && students.length > 0">
-      <h2 class="text-2xl font-semibold mb-4">Your Students</h2>
+      <h2 class="text-2xl font-semibold mb-4">
+        {{ $t("parent.dashboard.your_students") }}
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
           v-for="student in students"
@@ -47,8 +50,10 @@ if (status.value) {
             <p>{{ student.email }}</p>
             <div class="card-actions">
               <button class="btn btn-primary btn-sm">
-                <nuxt-link :to="`/parent/student_info/${student.id}`">
-                  View Details
+                <nuxt-link
+                  :to="localePath(`/parent/student_info/${student.id}`)"
+                >
+                  {{ $t("parent.dashboard.view_details") }}
                 </nuxt-link>
               </button>
             </div>
@@ -59,8 +64,8 @@ if (status.value) {
 
     <div v-else class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title">Welcome, Parent!</h2>
-        <p>You don't have any students linked yet.</p>
+        <h2 class="card-title">{{ $t("parent.dashboard.welcome") }}</h2>
+        <p>{{ $t("parent.dashboard.no_students") }}</p>
       </div>
     </div>
   </div>

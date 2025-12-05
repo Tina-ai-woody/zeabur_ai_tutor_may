@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { authClient } from "../../lib/auth-client";
+const localePath = useLocalePath();
 
 // definePageMeta({
 //   layout: "default",
@@ -9,7 +10,7 @@ const handleLogout = async () => {
   await authClient.signOut({
     fetchOptions: {
       onSuccess: () => {
-        navigateTo("/");
+        navigateTo(localePath("/"));
       },
     },
   });

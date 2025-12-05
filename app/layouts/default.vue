@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const localePath = useLocalePath();
+</script>
 
 <template>
   <div class="flex flex-col min-h-screen">
@@ -26,21 +28,25 @@
             tabindex="0"
             class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li><NuxtLink to="/">Home</NuxtLink></li>
-            <li><NuxtLink to="/about">About</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/')">Home</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/about')">About</NuxtLink></li>
           </ul>
         </div>
-        <NuxtLink to="/" class="btn btn-ghost text-xl">AI Tutor</NuxtLink>
+        <NuxtLink :to="localePath('/')" class="btn btn-ghost text-xl"
+          >AI Tutor</NuxtLink
+        >
       </div>
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li><NuxtLink to="/">Home</NuxtLink></li>
-          <li><NuxtLink to="/about">About</NuxtLink></li>
+          <li><NuxtLink :to="localePath('/')">Home</NuxtLink></li>
+          <li><NuxtLink :to="localePath('/about')">About</NuxtLink></li>
         </ul>
       </div>
       <div class="navbar-end gap-2">
         <LangSwitcher />
-        <NuxtLink to="/auth" class="btn btn-primary">Get Started</NuxtLink>
+        <NuxtLink :to="localePath('/auth')" class="btn btn-primary"
+          >Get Started</NuxtLink
+        >
       </div>
     </div>
 
@@ -54,7 +60,9 @@
       class="footer footer-center p-10 bg-base-200 text-base-content rounded"
     >
       <nav class="grid grid-flow-col gap-4">
-        <NuxtLink to="/about" class="link link-hover">About us</NuxtLink>
+        <NuxtLink :to="localePath('/about')" class="link link-hover"
+          >About us</NuxtLink
+        >
         <a class="link link-hover">Contact</a>
         <a class="link link-hover">Privacy Policy</a>
       </nav>

@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "default",
 });
+const localePath = useLocalePath();
 </script>
 
 <template>
@@ -15,7 +16,9 @@ definePageMeta({
             Experience a new way of learning with instant feedback, personalized
             homework reviews, and comprehensive progress tracking.
           </p>
-          <NuxtLink to="/auth" class="btn btn-primary">Get Started</NuxtLink>
+          <NuxtLink :to="localePath('/auth')" class="btn btn-primary"
+            >Get Started</NuxtLink
+          >
         </div>
       </div>
     </div>

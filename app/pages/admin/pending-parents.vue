@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "admin",
 });
+const { t } = useI18n();
 
 interface PendingParent {
   id: string;
@@ -50,7 +51,7 @@ const updateStatus = async (id: string, status: string) => {
     await fetchPendingParents();
   } catch (error) {
     console.error("Failed to update status", error);
-    alert("Failed to update status");
+    alert(t("admin.pending_parents.failed_update"));
   }
 };
 
@@ -62,11 +63,13 @@ onMounted(() => {
 <template>
   <div class="p-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Pending Parent Links</h1>
+      <h1 class="text-2xl font-bold">
+        {{ $t("admin.pending_parents.title") }}
+      </h1>
       <input
         v-model="search"
         type="text"
-        placeholder="Search by name, email or status..."
+        :placeholder="$t('admin.pending_parents.search_placeholder')"
         class="input input-bordered w-full max-w-xs"
       />
     </div>
@@ -79,10 +82,10 @@ onMounted(() => {
       <table class="table w-full">
         <thead>
           <tr>
-            <th>Parent</th>
-            <th>Student Info (Provided)</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>{{ $t("admin.pending_parents.table.parent") }}</th>
+            <th>{{ $t("admin.pending_parents.table.student_info") }}</th>
+            <th>{{ $t("admin.pending_parents.table.status") }}</th>
+            <th>{{ $t("admin.pending_parents.table.actions") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -114,7 +117,7 @@ onMounted(() => {
                   class="btn btn-xs btn-success text-white"
                   :to="'/admin/link-student-parent?id=' + item.id"
                 >
-                  link
+                  {{ $t("admin.pending_parents.table.link") }}
                 </NuxtLink>
               </div>
             </td>

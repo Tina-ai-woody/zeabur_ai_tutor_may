@@ -2,6 +2,7 @@
 import { useSession } from "../../lib/auth-client";
 
 const session = useSession();
+const localePath = useLocalePath();
 </script>
 
 <template>
@@ -76,25 +77,25 @@ const session = useSession();
           <div class="card-actions justify-end mt-6">
             <NuxtLink
               v-if="session.data.user.role === 'admin'"
-              to="/admin"
+              :to="localePath('/admin')"
               class="btn btn-primary"
               >Go to Admin</NuxtLink
             >
             <NuxtLink
               v-if="session.data.user.role === 'teacher'"
-              to="/teacher"
+              :to="localePath('/teacher')"
               class="btn btn-primary"
               >Go to Teacher</NuxtLink
             >
             <NuxtLink
               v-if="session.data.user.role === 'student'"
-              to="/student"
+              :to="localePath('/student')"
               class="btn btn-primary"
               >Go to Student</NuxtLink
             >
             <NuxtLink
               v-if="session.data.user.role === 'parent'"
-              to="/parent"
+              :to="localePath('/parent')"
               class="btn btn-primary"
               >Go to Parent</NuxtLink
             >

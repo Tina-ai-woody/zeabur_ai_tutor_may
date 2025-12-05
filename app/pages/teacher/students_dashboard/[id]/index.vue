@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const studentId = route.params.id as string;
@@ -25,7 +26,7 @@ const {
   <div class="container mx-auto p-4 md:p-6">
     <div class="mb-4">
       <NuxtLink
-        to="/teacher/students_dashboard"
+        :to="localePath('/teacher/students_dashboard')"
         class="btn btn-ghost btn-sm gap-2"
       >
         <svg
@@ -59,7 +60,7 @@ const {
     <div v-else-if="classrooms && classrooms.length > 0">
       <StudentClassroomsList
         :classrooms="classrooms"
-        :base-link="`/teacher/students_dashboard/${studentId}`"
+        :base-link="localePath(`/teacher/students_dashboard/${studentId}`)"
       />
     </div>
 

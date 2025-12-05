@@ -6,6 +6,7 @@ import ProblemCard from "~/components/student/ProblemCard.vue";
 definePageMeta({
   layout: "student",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const homeworkId = route.params.id as string;
@@ -96,10 +97,11 @@ const askAI = async () => {
     <!-- Error State -->
     <div v-else-if="error" class="alert alert-error">
       <span
-        >{{ $t("homeworks.review.error_loading") }} {{ error.message }}</span
+        >{{ $t("student.homeworks.review.error_loading") }}
+        {{ error.message }}</span
       >
-      <NuxtLink to="/student/homeworks" class="btn btn-sm">{{
-        $t("homeworks.review.go_back")
+      <NuxtLink :to="localePath('/student/homeworks')" class="btn btn-sm">{{
+        $t("student.homeworks.review.go_back")
       }}</NuxtLink>
     </div>
 
@@ -144,12 +146,12 @@ const askAI = async () => {
             <span
               v-if="key === currentProblem.correctAnswer"
               class="badge badge-success ml-2"
-              >{{ $t("homeworks.review.correct_badge") }}</span
+              >{{ $t("student.homeworks.review.correct_badge") }}</span
             >
             <span
               v-if="key === currentProblem.submissionStatus?.userAnswer"
               class="badge badge-info ml-2"
-              >{{ $t("homeworks.review.your_answer_badge") }}</span
+              >{{ $t("student.homeworks.review.your_answer_badge") }}</span
             >
           </div>
         </div>
@@ -194,8 +196,8 @@ const askAI = async () => {
             </svg>
             <span>{{
               currentProblem.submissionStatus?.correct
-                ? $t("homeworks.review.correct_message")
-                : $t("homeworks.review.incorrect_message")
+                ? $t("student.homeworks.review.correct_message")
+                : $t("student.homeworks.review.incorrect_message")
             }}</span>
           </div>
 
@@ -203,13 +205,13 @@ const askAI = async () => {
           <div class="collapse collapse-arrow bg-base-200">
             <input type="checkbox" checked />
             <div class="collapse-title text-xl font-medium">
-              {{ $t("homeworks.review.official_solution") }}
+              {{ $t("student.homeworks.review.official_solution") }}
             </div>
             <div class="collapse-content">
               <MarkdownRenderer
                 :content="
                   currentProblem.explanation ||
-                  $t('homeworks.review.no_explanation')
+                  $t('student.homeworks.review.no_explanation')
                 "
               />
             </div>
@@ -220,10 +222,10 @@ const askAI = async () => {
             <div class="card-body">
               <h3 class="card-title flex items-center gap-2">
                 <span class="text-2xl">🤖</span>
-                {{ $t("homeworks.review.ai_tutor") }}
+                {{ $t("student.homeworks.review.ai_tutor") }}
               </h3>
               <p class="text-sm opacity-70">
-                {{ $t("homeworks.review.ai_tutor_desc") }}
+                {{ $t("student.homeworks.review.ai_tutor_desc") }}
               </p>
 
               <div v-if="aiExplanation" class="mt-4 prose">
@@ -248,7 +250,9 @@ const askAI = async () => {
                   :disabled="isExplaining"
                 >
                   <span v-if="isExplaining" class="loading loading-dots"></span>
-                  <span v-else>{{ $t("homeworks.review.ask_ai_button") }}</span>
+                  <span v-else>{{
+                    $t("student.homeworks.review.ask_ai_button")
+                  }}</span>
                 </button>
               </div>
             </div>

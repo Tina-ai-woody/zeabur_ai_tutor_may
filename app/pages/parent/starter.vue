@@ -2,6 +2,8 @@
 definePageMeta({
   layout: "parent",
 });
+const localePath = useLocalePath();
+const { t } = useI18n();
 
 const studentName = ref("");
 const studentEmail = ref("");
@@ -19,9 +21,9 @@ const submitRequest = async () => {
         studentEmail: studentEmail.value,
       },
     });
-    navigateTo("/parent/pending");
+    navigateTo(localePath("/parent/pending"));
   } catch (err: any) {
-    error.value = err.data?.statusMessage || "Failed to submit request";
+    error.value = err.data?.statusMessage || t("parent.starter.submit_error");
   } finally {
     loading.value = false;
   }
@@ -32,21 +34,24 @@ const submitRequest = async () => {
   <div class="max-w-md mx-auto mt-10">
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title text-2xl mb-4">Link Student Account</h2>
+        <h2 class="card-title text-2xl mb-4">
+          {{ $t("parent.starter.title") }}
+        </h2>
         <p class="mb-4 text-gray-600">
-          Please provide your child's name and the email address they use for
-          this website.
+          {{ $t("parent.starter.description") }}
         </p>
 
         <form @submit.prevent="submitRequest" class="space-y-4">
           <div class="form-control">
             <label class="label">
-              <span class="label-text">Student Name</span>
+              <span class="label-text">{{
+                $t("parent.starter.student_name")
+              }}</span>
             </label>
             <input
               v-model="studentName"
               type="text"
-              placeholder="e.g. John Doe"
+              :placeholder="$t('parent.starter.student_name_placeholder')"
               class="input input-bordered w-full"
               required
             />
@@ -54,12 +59,14 @@ const submitRequest = async () => {
 
           <div class="form-control">
             <label class="label">
-              <span class="label-text">Student Email</span>
+              <span class="label-text">{{
+                $t("parent.starter.student_email")
+              }}</span>
             </label>
             <input
               v-model="studentEmail"
               type="email"
-              placeholder="e.g. john@example.com"
+              :placeholder="$t('parent.starter.student_email_placeholder')"
               class="input input-bordered w-full"
               required
             />
@@ -76,7 +83,7 @@ const submitRequest = async () => {
               :disabled="loading"
             >
               <span v-if="loading" class="loading loading-spinner"></span>
-              Submit Request
+              {{ $t("parent.starter.submit") }}
             </button>
           </div>
         </form>

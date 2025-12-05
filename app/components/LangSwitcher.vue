@@ -15,7 +15,7 @@ const onLocaleChanged = async (event: Event) => {
 <template>
   <div class="form-control">
     <select
-      v-model="locale"
+      :value="locale"
       @change="onLocaleChanged"
       class="select select-bordered select-sm w-full max-w-xs"
     >

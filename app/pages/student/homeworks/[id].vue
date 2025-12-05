@@ -6,6 +6,7 @@ import ProblemCard from "~/components/student/ProblemCard.vue";
 definePageMeta({
   layout: "student",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const homeworkId = route.params.id as string;
@@ -122,10 +123,10 @@ const finishHomework = async () => {
     await $fetch(`/api/student/homeworks/${homeworkId}/complete`, {
       method: "POST",
     });
-    await navigateTo("/student/homeworks");
+    await navigateTo(localePath("/student/homeworks"));
   } catch (e) {
     console.error("Failed to complete homework", e);
-    alert($t("homeworks.failed_complete"));
+    alert($t("student.homeworks.failed_complete"));
   }
 };
 </script>
@@ -139,7 +140,9 @@ const finishHomework = async () => {
 
     <!-- Error State -->
     <div v-else-if="error" class="alert alert-error">
-      <span>{{ $t("homeworks.error_loading") }} {{ error.message }}</span>
+      <span
+        >{{ $t("student.homeworks.error_loading") }} {{ error.message }}</span
+      >
     </div>
 
     <!-- Start Screen -->
@@ -147,29 +150,31 @@ const finishHomework = async () => {
       <div class="card-body text-center p-4 md:p-8">
         <h1 class="text-4xl font-bold mb-4">{{ data.homework.title }}</h1>
         <p class="text-xl mb-6">
-          {{ $t("homeworks.subject") }} {{ data.homework.subject }}
+          {{ $t("student.homeworks.subject") }} {{ data.homework.subject }}
         </p>
         <div
           class="stats stats-vertical lg:stats-horizontal shadow mb-8 w-full"
         >
           <div class="stat">
-            <div class="stat-title">{{ $t("homeworks.questions") }}</div>
+            <div class="stat-title">
+              {{ $t("student.homeworks.questions") }}
+            </div>
             <div class="stat-value">{{ data.problems.length }}</div>
           </div>
           <div class="stat">
-            <div class="stat-title">{{ $t("homeworks.deadline") }}</div>
+            <div class="stat-title">{{ $t("student.homeworks.deadline") }}</div>
             <div class="stat-value text-lg">
               {{
                 data.homework.deadline
                   ? new Date(data.homework.deadline).toLocaleDateString()
-                  : $t("homeworks.no_deadline")
+                  : $t("student.homeworks.no_deadline")
               }}
             </div>
           </div>
         </div>
         <div class="card-actions justify-center">
           <button @click="startHomework" class="btn btn-primary btn-lg">
-            {{ $t("homeworks.start_button") }}
+            {{ $t("student.homeworks.start_button") }}
           </button>
         </div>
       </div>
@@ -178,7 +183,7 @@ const finishHomework = async () => {
     <!-- Problem View -->
     <div v-else-if="currentProblem && data" class="space-y-6">
       <HomeworkHeader
-        :title="data.homework.title || $t('homeworks.untitled')"
+        :title="data.homework.title || $t('student.homeworks.untitled')"
         :current-index="currentProblemIndex"
         :problems="data.problems"
         mode="take"
@@ -235,7 +240,7 @@ const finishHomework = async () => {
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span>{{ $t("homeworks.answer_submitted") }}</span>
+            <span>{{ $t("student.homeworks.answer_submitted") }}</span>
           </div>
 
           <button
@@ -246,8 +251,8 @@ const finishHomework = async () => {
             <span v-if="isSubmitting" class="loading loading-spinner"></span>
             {{
               currentProblem.submissionStatus?.submitted
-                ? $t("homeworks.update_answer")
-                : $t("homeworks.submit_answer")
+                ? $t("student.homeworks.update_answer")
+                : $t("student.homeworks.submit_answer")
             }}
           </button>
         </div>
@@ -260,7 +265,7 @@ const finishHomework = async () => {
           @click="finishHomework"
           :disabled="!allProblemsSubmitted"
         >
-          {{ $t("homeworks.finish_homework") }}
+          {{ $t("student.homeworks.finish_homework") }}
           <span v-if="!allProblemsSubmitted" class="text-xs block mt-1">{{
             $t("student.homeworks.complete_all")
           }}</span>

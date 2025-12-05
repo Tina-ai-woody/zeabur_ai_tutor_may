@@ -6,6 +6,7 @@ import UserSearchBar from "~/components/admin/UserSearchBar.vue";
 definePageMeta({
   layout: "admin",
 });
+const { t } = useI18n();
 
 const client = createAuthClient({
   plugins: [adminClient()],
@@ -66,7 +67,7 @@ const updateUserRole = async (userId: string, newRole: string) => {
     await fetchUsers();
   } catch (error) {
     console.error("Failed to update role", error);
-    alert("Failed to update role");
+    alert(t("admin.users.failed_update"));
   }
 };
 
@@ -77,7 +78,7 @@ onMounted(() => {
 
 <template>
   <div class="p-8">
-    <h1 class="text-2xl font-bold mb-6">User Management</h1>
+    <h1 class="text-2xl font-bold mb-6">{{ $t("admin.users.title") }}</h1>
 
     <div class="mb-6">
       <UserSearchBar
@@ -95,11 +96,11 @@ onMounted(() => {
       <table class="table w-full">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Current Role</th>
-            <th>Requested Role</th>
-            <th>Actions</th>
+            <th>{{ $t("admin.users.table.name") }}</th>
+            <th>{{ $t("admin.users.table.email") }}</th>
+            <th>{{ $t("admin.users.table.current_role") }}</th>
+            <th>{{ $t("admin.users.table.requested_role") }}</th>
+            <th>{{ $t("admin.users.table.actions") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -125,7 +126,7 @@ onMounted(() => {
             <td>{{ user.email }}</td>
             <td>
               <span class="badge badge-ghost badge-sm">{{
-                user.role || "No Role"
+                user.role || $t("admin.users.roles.no_role")
               }}</span>
             </td>
             <td>
@@ -143,28 +144,28 @@ onMounted(() => {
                   @click="updateUserRole(user.id, 'student')"
                   :disabled="user.role === 'student'"
                 >
-                  Student
+                  {{ $t("admin.users.roles.student") }}
                 </button>
                 <button
                   class="btn btn-xs btn-outline btn-success"
                   @click="updateUserRole(user.id, 'teacher')"
                   :disabled="user.role === 'teacher'"
                 >
-                  Teacher
+                  {{ $t("admin.users.roles.teacher") }}
                 </button>
                 <button
                   class="btn btn-xs btn-outline btn-secondary"
                   @click="updateUserRole(user.id, 'parent')"
                   :disabled="user.role === 'parent'"
                 >
-                  Parent
+                  {{ $t("admin.users.roles.parent") }}
                 </button>
                 <button
                   class="btn btn-xs btn-outline btn-warning"
                   @click="updateUserRole(user.id, 'admin')"
                   :disabled="user.role === 'admin'"
                 >
-                  Admin
+                  {{ $t("admin.users.roles.admin") }}
                 </button>
               </div>
             </td>

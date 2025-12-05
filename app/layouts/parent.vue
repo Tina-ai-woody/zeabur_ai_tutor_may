@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { signOut } from "../../lib/auth-client";
+const localePath = useLocalePath();
 
 const handleLogout = async () => {
   await signOut();
-  await navigateTo("/");
+  await navigateTo(localePath("/"));
 };
 
 const closeDrawer = () => {
@@ -44,7 +45,7 @@ const closeDrawer = () => {
           </label>
         </div>
         <div class="flex-1 px-2 mx-2">
-          <NuxtLink to="/parent" class="btn btn-ghost text-xl"
+          <NuxtLink :to="localePath('/parent')" class="btn btn-ghost text-xl"
             >AI Tutor - Parent</NuxtLink
           >
         </div>
@@ -79,7 +80,9 @@ const closeDrawer = () => {
           <span class="text-xl font-bold px-4">Menu</span>
         </li>
         <li>
-          <NuxtLink to="/parent" @click="closeDrawer">Dashboard</NuxtLink>
+          <NuxtLink :to="localePath('/parent')" @click="closeDrawer"
+            >Dashboard</NuxtLink
+          >
         </li>
         <li class="mt-auto">
           <button @click="handleLogout" class="btn btn-secondary btn-outline">

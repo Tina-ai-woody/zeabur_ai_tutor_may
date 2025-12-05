@@ -5,6 +5,7 @@ definePageMeta({
   layout: "student",
 });
 
+const localePath = useLocalePath();
 type HomeworkGroup = {
   classroom: typeof classrooms.$inferSelect;
   homeworks: (typeof homeworks.$inferSelect & { isCompleted: boolean })[];
@@ -17,7 +18,7 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
 
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">{{ $t("homeworks.title") }}</h1>
+    <h1 class="text-3xl font-bold mb-6">{{ $t("student.homeworks.title") }}</h1>
 
     <div v-if="status === 'pending'" class="flex justify-center">
       <span class="loading loading-spinner loading-lg"></span>
@@ -38,7 +39,7 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           ></path>
         </svg>
-        <span>{{ $t("homeworks.no_assignments") }}</span>
+        <span>{{ $t("student.homeworks.no_assignments") }}</span>
       </div>
     </div>
 
@@ -54,7 +55,7 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
           </h2>
 
           <div v-if="group.homeworks.length === 0" class="text-gray-500 italic">
-            {{ $t("homeworks.no_homework_in_class") }}
+            {{ $t("student.homeworks.no_homework_in_class") }}
           </div>
 
           <div
@@ -69,10 +70,11 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
               <div class="card-body">
                 <h3 class="card-title text-lg">{{ hw.title }}</h3>
                 <p class="text-sm text-gray-600">
-                  {{ $t("homeworks.subject") }} {{ hw.subject || "N/A" }}
+                  {{ $t("student.homeworks.subject") }}
+                  {{ hw.subject || "N/A" }}
                 </p>
                 <p class="text-sm">
-                  {{ $t("homeworks.deadline") }}
+                  {{ $t("student.homeworks.deadline") }}
                   <span
                     :class="{
                       'text-error font-bold':
@@ -82,27 +84,27 @@ const { data: groupedHomeworks, status } = await useFetch<HomeworkGroup[]>(
                     {{
                       hw.deadline
                         ? new Date(hw.deadline).toLocaleDateString()
-                        : $t("homeworks.no_deadline")
+                        : $t("student.homeworks.no_deadline")
                     }}
                   </span>
                 </p>
                 <div class="card-actions justify-end mt-4">
                   <NuxtLink
                     v-if="hw.isCompleted"
-                    :to="`/student/homeworks/review/${hw.id}`"
+                    :to="localePath(`/student/homeworks/review/${hw.id}`)"
                     class="btn btn-sm btn-secondary"
                   >
-                    {{ $t("homeworks.review_hw") }}
+                    {{ $t("student.homeworks.review_hw") }}
                   </NuxtLink>
                   <NuxtLink
                     v-else
-                    :to="`/student/homeworks/${hw.id}`"
+                    :to="localePath(`/student/homeworks/${hw.id}`)"
                     class="btn btn-sm btn-primary"
                   >
                     {{
                       hw.isCompleted
-                        ? $t("homeworks.completed")
-                        : $t("homeworks.start_hw")
+                        ? $t("student.homeworks.completed")
+                        : $t("student.homeworks.start_hw")
                     }}
                   </NuxtLink>
                 </div>

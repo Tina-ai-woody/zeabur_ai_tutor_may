@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 const {
   data: homeworks,
@@ -21,7 +22,10 @@ const formatDate = (dateString: string | null) => {
       <h1 class="text-3xl font-bold text-primary">
         {{ $t("teacher.homeworks.title") }}
       </h1>
-      <NuxtLink to="/teacher/homeworks/create" class="btn btn-primary">
+      <NuxtLink
+        :to="localePath('/teacher/homeworks/create')"
+        class="btn btn-primary"
+      >
         {{ $t("teacher.homeworks.create_button") }}
       </NuxtLink>
     </div>
@@ -43,7 +47,10 @@ const formatDate = (dateString: string | null) => {
       <p class="text-xl text-gray-500">
         {{ $t("teacher.homeworks.no_homeworks") }}
       </p>
-      <NuxtLink to="/teacher/homeworks/create" class="btn btn-primary mt-4">
+      <NuxtLink
+        :to="localePath('/teacher/homeworks/create')"
+        class="btn btn-primary mt-4"
+      >
         {{ $t("teacher.homeworks.create_button") }}
       </NuxtLink>
     </div>
@@ -90,7 +97,7 @@ const formatDate = (dateString: string | null) => {
 
           <div class="card-actions justify-end mt-6">
             <NuxtLink
-              :to="`/teacher/homeworks/${hw.id}`"
+              :to="localePath(`/teacher/homeworks/${hw.id}`)"
               class="btn btn-primary btn-sm"
               >{{ $t("teacher.homeworks.view_details") }}</NuxtLink
             >

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { signOut } from "../../lib/auth-client";
-
+const { locale } = useI18n();
+const localePath = useLocalePath();
+console.log(locale.value);
 const handleLogout = async () => {
   await signOut();
-  await navigateTo("/");
+  await navigateTo(localePath("/"));
 };
 
 const closeDrawer = () => {
@@ -44,9 +46,11 @@ const closeDrawer = () => {
           </label>
         </div>
         <div class="flex-1 px-2 mx-2">
-          <NuxtLink to="/student" class="btn btn-ghost text-xl">{{
-            $t("student.layout.title")
-          }}</NuxtLink>
+          <NuxtLink
+            :to="localePath('/student')"
+            class="btn btn-ghost text-xl"
+            >{{ $t("student.layout.title") }}</NuxtLink
+          >
         </div>
         <div class="flex-none hidden lg:block">
           <ul class="menu menu-horizontal px-1">
@@ -66,17 +70,17 @@ const closeDrawer = () => {
               </details>
             </li>
             <li>
-              <NuxtLink to="/student/problems">{{
+              <NuxtLink :to="localePath('/student/problems')">{{
                 $t("student.layout.testbank")
               }}</NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/student/classrooms">{{
+              <NuxtLink :to="localePath('/student/classrooms')">{{
                 $t("student.layout.classrooms")
               }}</NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/student/homeworks">{{
+              <NuxtLink :to="localePath('/student/homeworks')">{{
                 $t("student.layout.homework")
               }}</NuxtLink>
             </li>
@@ -110,24 +114,30 @@ const closeDrawer = () => {
           }}</span>
         </li>
         <li>
-          <NuxtLink to="/student" @click="closeDrawer">{{
+          <NuxtLink :to="localePath('/student')" @click="closeDrawer">{{
             $t("student.layout.dashboard")
           }}</NuxtLink>
         </li>
         <li>
-          <NuxtLink to="/student/problems" @click="closeDrawer">{{
-            $t("student.layout.testbank")
-          }}</NuxtLink>
+          <NuxtLink
+            :to="localePath('/student/problems')"
+            @click="closeDrawer"
+            >{{ $t("student.layout.testbank") }}</NuxtLink
+          >
         </li>
         <li>
-          <NuxtLink to="/student/classrooms" @click="closeDrawer">{{
-            $t("student.layout.classrooms")
-          }}</NuxtLink>
+          <NuxtLink
+            :to="localePath('/student/classrooms')"
+            @click="closeDrawer"
+            >{{ $t("student.layout.classrooms") }}</NuxtLink
+          >
         </li>
         <li>
-          <NuxtLink to="/student/homeworks" @click="closeDrawer">{{
-            $t("student.layout.homework")
-          }}</NuxtLink>
+          <NuxtLink
+            :to="localePath('/student/homeworks')"
+            @click="closeDrawer"
+            >{{ $t("student.layout.homework") }}</NuxtLink
+          >
         </li>
         <li class="mt-auto">
           <button @click="handleLogout" class="btn btn-secondary btn-outline">

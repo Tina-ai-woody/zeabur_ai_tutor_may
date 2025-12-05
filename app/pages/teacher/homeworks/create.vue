@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 const searchParams = ref({
   title: "",
@@ -69,7 +70,7 @@ const createHomework = async () => {
     });
     alert(useNuxtApp().$i18n.t("teacher.homeworks.create.success_message"));
     // Redirect to homework list
-    navigateTo("/teacher/homeworks");
+    navigateTo(localePath("/teacher/homeworks"));
   } catch (error) {
     console.error("Failed to create homework:", error);
     alert(useNuxtApp().$i18n.t("teacher.homeworks.create.error_message"));
@@ -86,7 +87,10 @@ const createHomework = async () => {
           <h1 class="text-2xl font-bold">
             {{ $t("teacher.homeworks.create.select_problems") }}
           </h1>
-          <NuxtLink to="/teacher/homeworks" class="btn btn-ghost btn-sm">
+          <NuxtLink
+            :to="localePath('/teacher/homeworks')"
+            class="btn btn-ghost btn-sm"
+          >
             {{ $t("teacher.homeworks.create.cancel") }}
           </NuxtLink>
         </div>

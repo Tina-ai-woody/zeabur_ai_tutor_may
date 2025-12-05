@@ -13,9 +13,9 @@ export default defineNuxtConfig({
   i18n: {
     locales: [
       { code: "en", file: "en.json", name: "English" },
-      { code: "zh-TW", file: "zh-TW.json", name: "繁體中文" },
+      { code: "zhTW", file: "zhTW.json", name: "繁體中文" },
     ],
-    lazy: true,
+
     langDir: "locales",
     defaultLocale: "en",
     strategy: "prefix_and_default", // or 'no_prefix' depending on preference, usually prefix_except_default or prefix_and_default

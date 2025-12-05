@@ -5,6 +5,7 @@ import TeacherProblemPreview from "~/components/teacher/ProblemPreview.vue";
 definePageMeta({
   layout: "teacher",
 });
+const localePath = useLocalePath();
 
 const route = useRoute();
 const problemId = route.params.id as string;
@@ -129,7 +130,7 @@ const updateProblem = async () => {
     });
 
     alert(useNuxtApp().$i18n.t("teacher.problems.edit.success"));
-    navigateTo("/teacher/problems");
+    navigateTo(localePath("/teacher/problems"));
   } catch (error: any) {
     console.error("Error updating problem:", error);
     alert(
@@ -143,7 +144,7 @@ const updateProblem = async () => {
 };
 
 const handleCancel = () => {
-  navigateTo("/teacher/problems");
+  navigateTo(localePath("/teacher/problems"));
 };
 </script>
 

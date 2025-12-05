@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "student",
 });
+const localePath = useLocalePath();
 
 const searchParams = ref({
   title: "",
@@ -64,7 +65,7 @@ const handleSearch = (params: {
           </div>
           <div class="card-actions justify-end mt-4">
             <NuxtLink
-              :to="`/student/problems/${problem.id}`"
+              :to="localePath(`/student/problems/${problem.id}`)"
               class="btn btn-primary btn-sm"
             >
               {{ $t("student.problems.solve") }}

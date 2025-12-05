@@ -4,6 +4,8 @@ import UserSearchBar from "~/components/admin/UserSearchBar.vue";
 definePageMeta({
   layout: "admin",
 });
+const localePath = useLocalePath();
+const { t } = useI18n();
 
 const route = useRoute();
 const pendingParentId = route.query.id as string;
@@ -50,8 +52,7 @@ const handleSearch = async () => {
 };
 
 const linkStudent = async (studentId: string) => {
-  if (!confirm("Are you sure you want to link this student to the parent?"))
-    return;
+  if (!confirm(t("admin.link_student.confirm_link"))) return;
 
   try {
     await $fetch("/api/admin/link-parent-student", {
@@ -61,11 +62,11 @@ const linkStudent = async (studentId: string) => {
         studentId,
       },
     });
-    alert("Successfully linked student and parent!");
-    navigateTo("/admin/pending-parents");
+    alert(t("admin.link_student.success_link"));
+    navigateTo(localePath("/admin/pending-parents"));
   } catch (error) {
     console.error("Failed to link student", error);
-    alert("Failed to link student and parent");
+    alert(t("admin.link_student.failed_link"));
   }
 };
 </script>
@@ -73,7 +74,10 @@ const linkStudent = async (studentId: string) => {
 <template>
   <div class="p-8">
     <div class="flex items-center gap-4 mb-6">
-      <NuxtLink to="/admin/pending-parents" class="btn btn-circle btn-ghost">
+      <NuxtLink
+        :to="localePath('/admin/pending-parents')"
+        class="btn btn-circle btn-ghost"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-6 w-6"
@@ -89,7 +93,7 @@ const linkStudent = async (studentId: string) => {
           />
         </svg>
       </NuxtLink>
-      <h1 class="text-2xl font-bold">Link Student to Parent</h1>
+      <h1 class="text-2xl font-bold">{{ $t("admin.link_student.title") }}</h1>
     </div>
 
     <div
@@ -97,10 +101,14 @@ const linkStudent = async (studentId: string) => {
       class="card bg-base-100 shadow-xl mb-8 border border-base-300"
     >
       <div class="card-body">
-        <h2 class="card-title text-primary">Request Details</h2>
+        <h2 class="card-title text-primary">
+          {{ $t("admin.link_student.request_details") }}
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h3 class="font-bold text-lg mb-2">Parent Account</h3>
+            <h3 class="font-bold text-lg mb-2">
+              {{ $t("admin.link_student.parent_account") }}
+            </h3>
             <div class="flex items-center gap-3">
               <div class="avatar placeholder">
                 <div class="bg-neutral text-neutral-content rounded-full w-12">
@@ -120,14 +128,20 @@ const linkStudent = async (studentId: string) => {
             </div>
           </div>
           <div>
-            <h3 class="font-bold text-lg mb-2">Requested Student Info</h3>
+            <h3 class="font-bold text-lg mb-2">
+              {{ $t("admin.link_student.requested_student_info") }}
+            </h3>
             <div class="bg-base-200 p-4 rounded-lg">
               <div>
-                <span class="font-semibold">Name:</span>
+                <span class="font-semibold">{{
+                  $t("admin.link_student.name")
+                }}</span>
                 {{ pendingParentInfo.studentName }}
               </div>
               <div>
-                <span class="font-semibold">Email:</span>
+                <span class="font-semibold">{{
+                  $t("admin.link_student.email")
+                }}</span>
                 {{ pendingParentInfo.studentEmail }}
               </div>
             </div>
@@ -138,7 +152,9 @@ const linkStudent = async (studentId: string) => {
 
     <div class="card bg-base-100 shadow-xl mb-8">
       <div class="card-body">
-        <h2 class="card-title">Search Student</h2>
+        <h2 class="card-title">
+          {{ $t("admin.link_student.search_student") }}
+        </h2>
         <UserSearchBar
           v-model="searchQuery"
           v-model:roleFilter="roleFilter"
@@ -155,11 +171,11 @@ const linkStudent = async (studentId: string) => {
       <table class="table w-full bg-base-100 shadow-lg rounded-box">
         <thead>
           <tr>
-            <th>Avatar</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Action</th>
+            <th>{{ $t("admin.link_student.table.avatar") }}</th>
+            <th>{{ $t("admin.link_student.table.name") }}</th>
+            <th>{{ $t("admin.link_student.table.email") }}</th>
+            <th>{{ $t("admin.link_student.table.role") }}</th>
+            <th>{{ $t("admin.link_student.table.action") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -186,7 +202,7 @@ const linkStudent = async (studentId: string) => {
                 class="btn btn-sm btn-primary"
                 @click="linkStudent(user.id)"
               >
-                Link
+                {{ $t("admin.link_student.table.link") }}
               </button>
             </td>
           </tr>
@@ -198,7 +214,7 @@ const linkStudent = async (studentId: string) => {
       v-else-if="!loading && searchQuery"
       class="text-center text-gray-500 my-8"
     >
-      No users found matching your search.
+      {{ $t("admin.link_student.no_users_found") }}
     </div>
   </div>
 </template>

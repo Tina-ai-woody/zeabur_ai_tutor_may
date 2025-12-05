@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const localePath = useLocalePath();
 interface ProblemStatus {
   id: string;
   submissionStatus: {
@@ -53,7 +54,11 @@ const getCircleClass = (problem: ProblemStatus, index: number) => {
     >
       <div class="text-sm breadcrumbs">
         <ul>
-          <li><NuxtLink to="/student/homeworks">Homeworks</NuxtLink></li>
+          <li>
+            <NuxtLink :to="localePath('/student/homeworks')"
+              >Homeworks</NuxtLink
+            >
+          </li>
           <li>{{ title }} <span v-if="mode === 'review'">(Review)</span></li>
         </ul>
       </div>
