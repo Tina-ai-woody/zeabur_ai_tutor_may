@@ -13,15 +13,10 @@ const onLocaleChanged = async (event: Event) => {
 </script>
 
 <template>
-  <div class="form-control">
-    <select
-      :value="locale"
-      @change="onLocaleChanged"
-      class="select select-bordered select-sm w-full max-w-xs"
-    >
-      <option v-for="l in locales" :key="l.code" :value="l.code">
-        {{ l.name }}
-      </option>
-    </select>
-  </div>
+  <select :value="locale" @change="onLocaleChanged" class="select">
+    <option disabled selected>Pick a language</option>
+    <option v-for="l in locales" :key="l.code" :value="l.code">
+      {{ l.name }}
+    </option>
+  </select>
 </template>

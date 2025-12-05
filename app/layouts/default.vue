@@ -28,6 +28,9 @@ const localePath = useLocalePath();
             tabindex="0"
             class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
+            <li>
+              <LangSwitcher />
+            </li>
             <li><NuxtLink :to="localePath('/')">Home</NuxtLink></li>
             <li><NuxtLink :to="localePath('/about')">About</NuxtLink></li>
           </ul>

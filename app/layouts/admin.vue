@@ -19,6 +19,9 @@ const handleLogout = async () => {
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
           <li>
+            <LangSwitcher />
+          </li>
+          <li>
             <NuxtLink class="btn btn-ghost" :to="localePath('/admin/')">{{
               $t("admin.layout.home")
             }}</NuxtLink>
@@ -39,9 +42,6 @@ const handleLogout = async () => {
             <button @click="handleLogout" class="btn btn-primary">
               {{ $t("admin.layout.logout") }}
             </button>
-          </li>
-          <li>
-            <LangSwitcher />
           </li>
         </ul>
       </div>

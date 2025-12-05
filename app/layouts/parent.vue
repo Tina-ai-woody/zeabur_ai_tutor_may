@@ -53,12 +53,12 @@ const closeDrawer = () => {
           <ul class="menu menu-horizontal px-1">
             <!-- Navbar menu content here -->
             <li>
+              <LangSwitcher />
+            </li>
+            <li>
               <button @click="handleLogout" class="btn btn-secondary ml-2">
                 Logout
               </button>
-            </li>
-            <li>
-              <LangSwitcher />
             </li>
           </ul>
         </div>
