@@ -2,6 +2,7 @@
   "welcome": "Welcome",
   "lang": "Language",
   "landing": {
+    "title": "AI tutor",
     "hero": {
       "title": "Master Your Learning with AI Tutor",
       "description": "Experience a new way of learning with instant feedback, personalized homework reviews, and comprehensive progress tracking.",
@@ -24,6 +25,7 @@
     }
   },
   "about": {
+    "title": "About us",
     "mission": {
       "title": "Our Mission",
       "description_1": "At AI Tutor, we believe in empowering students with instant, personalized feedback. Our goal is to make learning more efficient and engaging by providing immediate homework reviews and actionable insights.",

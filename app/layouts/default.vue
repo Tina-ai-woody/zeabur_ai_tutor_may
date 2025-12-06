@@ -31,25 +31,31 @@ const localePath = useLocalePath();
             <li>
               <LangSwitcher />
             </li>
-            <li><NuxtLink :to="localePath('/')">Home</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/about')">About</NuxtLink></li>
+            <li>
+              <NuxtLink :to="localePath('/about')">
+                {{ $t("about.title") }}</NuxtLink
+              >
+            </li>
           </ul>
         </div>
-        <NuxtLink :to="localePath('/')" class="btn btn-ghost text-xl"
-          >AI Tutor</NuxtLink
-        >
+        <NuxtLink :to="localePath('/')" class="btn btn-ghost text-xl">{{
+          $t("landing.title")
+        }}</NuxtLink>
       </div>
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li><NuxtLink :to="localePath('/')">Home</NuxtLink></li>
-          <li><NuxtLink :to="localePath('/about')">About</NuxtLink></li>
+          <li>
+            <NuxtLink :to="localePath('/about')">
+              {{ $t("about.title") }}</NuxtLink
+            >
+          </li>
         </ul>
       </div>
       <div class="navbar-end gap-2">
         <LangSwitcher />
-        <NuxtLink :to="localePath('/auth')" class="btn btn-primary"
-          >Get Started</NuxtLink
-        >
+        <NuxtLink :to="localePath('/auth')" class="btn btn-primary">{{
+          $t("auth.title")
+        }}</NuxtLink>
       </div>
     </div>
 
