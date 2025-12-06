@@ -10,17 +10,14 @@ definePageMeta({
     <div class="hero bg-base-100 py-20">
       <div class="hero-content text-center">
         <div class="max-w-2xl">
-          <h1 class="text-5xl font-bold mb-8">Our Mission</h1>
+          <h1 class="text-5xl font-bold mb-8">
+            {{ $t("about.mission.title") }}
+          </h1>
           <p class="text-xl mb-6">
-            At AI Tutor, we believe in empowering students with instant,
-            personalized feedback. Our goal is to make learning more efficient
-            and engaging by providing immediate homework reviews and actionable
-            insights.
+            {{ $t("about.mission.description_1") }}
           </p>
           <p class="text-xl">
-            We also strive to give teachers and parents a clear window into
-            student progress, enabling timely support and better educational
-            outcomes.
+            {{ $t("about.mission.description_2") }}
           </p>
         </div>
       </div>
@@ -28,7 +25,9 @@ definePageMeta({
 
     <!-- Team Section -->
     <div class="container mx-auto px-4 py-20">
-      <h2 class="text-4xl font-bold text-center mb-16">Meet the Team</h2>
+      <h2 class="text-4xl font-bold text-center mb-16">
+        {{ $t("about.team.title") }}
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Team Member 1 -->
         <div class="card bg-base-100 shadow-xl">
@@ -41,10 +40,11 @@ definePageMeta({
           </figure>
           <div class="card-body items-center text-center">
             <h2 class="card-title">Chun-Wei, Hsu</h2>
-            <p class="text-sm uppercase tracking-wide">Founder & CEO</p>
+            <p class="text-sm uppercase tracking-wide">
+              {{ $t("about.team.chun_wei.title") }}
+            </p>
             <p class="mt-4">
-              Passionate about education technology and AI-driven learning
-              solutions.
+              {{ $t("about.team.chun_wei.description") }}
             </p>
           </div>
         </div>
@@ -60,10 +60,11 @@ definePageMeta({
           </figure>
           <div class="card-body items-center text-center">
             <h2 class="card-title">Tina Chong</h2>
-            <p class="text-sm uppercase tracking-wide">Lead Developer</p>
+            <p class="text-sm uppercase tracking-wide">
+              {{ $t("about.team.tina.title") }}
+            </p>
             <p class="mt-4">
-              Expert in full-stack development and building scalable web
-              applications.
+              {{ $t("about.team.tina.description") }}
             </p>
           </div>
         </div>
@@ -79,10 +80,11 @@ definePageMeta({
           </figure>
           <div class="card-body items-center text-center">
             <h2 class="card-title">Fang-Yu, Hsu</h2>
-            <p class="text-sm uppercase tracking-wide">Product Designer</p>
+            <p class="text-sm uppercase tracking-wide">
+              {{ $t("about.team.fang_yu.title") }}
+            </p>
             <p class="mt-4">
-              Dedicated to creating intuitive and beautiful user experiences for
-              students.
+              {{ $t("about.team.fang_yu.description") }}
             </p>
           </div>
         </div>

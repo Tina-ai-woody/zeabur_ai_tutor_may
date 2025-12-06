@@ -1,6 +1,90 @@
 {
   "welcome": "Welcome",
   "lang": "Language",
+  "landing": {
+    "hero": {
+      "title": "Master Your Learning with AI Tutor",
+      "description": "Experience a new way of learning with instant feedback, personalized homework reviews, and comprehensive progress tracking.",
+      "get_started": "Get Started"
+    },
+    "features": {
+      "title": "Why Choose AI Tutor?",
+      "online_homework": {
+        "title": "Online Homework System",
+        "description": "Seamlessly complete assignments online. No more lost papers or messy handwriting."
+      },
+      "progress_tracking": {
+        "title": "Progress Tracking",
+        "description": "Teachers and parents can easily monitor student progress and identify areas for improvement."
+      },
+      "instant_feedback": {
+        "title": "Instant Feedback",
+        "description": "Get immediate feedback on your answers. Learn from mistakes instantly with AI-powered explanations."
+      }
+    }
+  },
+  "about": {
+    "mission": {
+      "title": "Our Mission",
+      "description_1": "At AI Tutor, we believe in empowering students with instant, personalized feedback. Our goal is to make learning more efficient and engaging by providing immediate homework reviews and actionable insights.",
+      "description_2": "We also strive to give teachers and parents a clear window into student progress, enabling timely support and better educational outcomes."
+    },
+    "team": {
+      "title": "Meet the Team",
+      "chun_wei": {
+        "title": "Founder & CEO",
+        "description": "Passionate about education technology and AI-driven learning solutions."
+      },
+      "tina": {
+        "title": "Lead Developer",
+        "description": "Expert in full-stack development and building scalable web applications."
+      },
+      "fang_yu": {
+        "title": "Product Designer",
+        "description": "Dedicated to creating intuitive and beautiful user experiences for students."
+      }
+    }
+  },
+  "auth": {
+    "title": "Login now!",
+    "description": "Access the AI Learning Assistant to start solving problems and getting smart explanations.",
+    "google_login": "Login with Google"
+  },
+  "login_success": {
+    "title": "Login Successful!",
+    "success_message": "You have been successfully authenticated.",
+    "role": "Role",
+    "role_desc": "User permission level",
+    "user_details": "User Details",
+    "full_session": "Full Session Object (Debug)",
+    "name": "Name",
+    "email": "Email",
+    "user_id": "User ID",
+    "go_to_admin": "Go to Admin",
+    "go_to_teacher": "Go to Teacher",
+    "go_to_student": "Go to Student",
+    "go_to_parent": "Go to Parent"
+  },
+  "pending": {
+    "title": "Account Pending",
+    "description": "Your account is currently pending approval. Please wait for an administrator to assign you a role before you can access the platform.",
+    "logout": "Logout"
+  },
+  "role_picking": {
+    "title": "Select Your Role",
+    "description": "Please select the role you would like to apply for.",
+    "teacher": "Teacher",
+    "student": "Student",
+    "parent": "Parent",
+    "submit": "Submit Request",
+    "logout": "Logout",
+    "error_submit": "Failed to submit role request"
+  },
+  "unauthorized": {
+    "title": "Unauthorized",
+    "description": "You do not have permission to access this page. Please contact an administrator if you believe this is an error.",
+    "go_home": "Go Home"
+  },
   "student": {
     "dashboard": {
       "title": "Student Dashboard",

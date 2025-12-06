@@ -11,21 +11,22 @@ const localePath = useLocalePath();
     <div class="hero min-h-[70vh] bg-base-100">
       <div class="hero-content text-center">
         <div class="max-w-md">
-          <h1 class="text-5xl font-bold">Master Your Learning with AI Tutor</h1>
+          <h1 class="text-5xl font-bold">{{ $t("landing.hero.title") }}</h1>
           <p class="py-6">
-            Experience a new way of learning with instant feedback, personalized
-            homework reviews, and comprehensive progress tracking.
+            {{ $t("landing.hero.description") }}
           </p>
-          <NuxtLink :to="localePath('/auth')" class="btn btn-primary"
-            >Get Started</NuxtLink
-          >
+          <NuxtLink :to="localePath('/auth')" class="btn btn-primary">{{
+            $t("landing.hero.get_started")
+          }}</NuxtLink>
         </div>
       </div>
     </div>
 
     <!-- Features Section -->
     <div class="py-20 container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Why Choose AI Tutor?</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">
+        {{ $t("landing.features.title") }}
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Feature 1 -->
         <div class="card bg-base-100 shadow-xl">
@@ -46,10 +47,11 @@ const localePath = useLocalePath();
                 />
               </svg>
             </div>
-            <h3 class="card-title">Online Homework System</h3>
+            <h3 class="card-title">
+              {{ $t("landing.features.online_homework.title") }}
+            </h3>
             <p>
-              Seamlessly complete assignments online. No more lost papers or
-              messy handwriting.
+              {{ $t("landing.features.online_homework.description") }}
             </p>
           </div>
         </div>
@@ -73,10 +75,11 @@ const localePath = useLocalePath();
                 />
               </svg>
             </div>
-            <h3 class="card-title">Progress Tracking</h3>
+            <h3 class="card-title">
+              {{ $t("landing.features.progress_tracking.title") }}
+            </h3>
             <p>
-              Teachers and parents can easily monitor student progress and
-              identify areas for improvement.
+              {{ $t("landing.features.progress_tracking.description") }}
             </p>
           </div>
         </div>
@@ -100,10 +103,11 @@ const localePath = useLocalePath();
                 />
               </svg>
             </div>
-            <h3 class="card-title">Instant Feedback</h3>
+            <h3 class="card-title">
+              {{ $t("landing.features.instant_feedback.title") }}
+            </h3>
             <p>
-              Get immediate feedback on your answers. Learn from mistakes
-              instantly with AI-powered explanations.
+              {{ $t("landing.features.instant_feedback.description") }}
             </p>
           </div>
         </div>

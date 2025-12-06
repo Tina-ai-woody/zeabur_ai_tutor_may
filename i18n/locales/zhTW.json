@@ -1,6 +1,90 @@
 {
   "welcome": "歡迎",
   "lang": "語言",
+  "landing": {
+    "hero": {
+      "title": "使用 AI 家教掌握您的學習",
+      "description": "體驗全新的學習方式，透過即時回饋、個人化的作業檢討以及全面的進度追蹤。",
+      "get_started": "開始使用"
+    },
+    "features": {
+      "title": "為什麼選擇 AI 家教？",
+      "online_homework": {
+        "title": "線上作業系統",
+        "description": "無縫地在線上完成作業。不再有遺失的考卷或潦草的字跡。"
+      },
+      "progress_tracking": {
+        "title": "進度追蹤",
+        "description": "老師和家長可以輕鬆監控學生的進度並找出需要改進的地方。"
+      },
+      "instant_feedback": {
+        "title": "即時回饋",
+        "description": "立即獲得答案的回饋。透過 AI 驅動的解析，從錯誤中即時學習。"
+      }
+    }
+  },
+  "about": {
+    "mission": {
+      "title": "我們的使命",
+      "description_1": "在 AI 家教，我們相信透過即時、個人化的回饋能賦予學生力量。我們的目標是透過提供立即的作業檢討和可執行的洞察，讓學習更有效率且更具吸引力。",
+      "description_2": "我們也致力於讓老師和家長清楚了解學生的學習進度，從而提供及時的支援並創造更好的教育成果。"
+    },
+    "team": {
+      "title": "認識團隊",
+      "chun_wei": {
+        "title": "創辦人 & 執行長",
+        "description": "熱衷於教育科技和 AI 驅動的學習解決方案。"
+      },
+      "tina": {
+        "title": "首席開發者",
+        "description": "擅長全端開發和建構可擴展的網頁應用程式。"
+      },
+      "fang_yu": {
+        "title": "產品設計師",
+        "description": "致力於為學生創造直覺且美觀的使用者體驗。"
+      }
+    }
+  },
+  "auth": {
+    "title": "立即登入！",
+    "description": "使用 AI 學習助手，開始解決問題並獲得智慧解析。",
+    "google_login": "使用 Google 登入"
+  },
+  "login_success": {
+    "title": "登入成功！",
+    "success_message": "您已成功通過驗證。",
+    "role": "角色",
+    "role_desc": "使用者權限等級",
+    "user_details": "使用者詳情",
+    "full_session": "完整工作階段物件 (除錯)",
+    "name": "姓名",
+    "email": "電子郵件",
+    "user_id": "使用者 ID",
+    "go_to_admin": "前往管理員",
+    "go_to_teacher": "前往教師",
+    "go_to_student": "前往學生",
+    "go_to_parent": "前往家長"
+  },
+  "pending": {
+    "title": "帳號審核中",
+    "description": "您的帳號目前正在等待批准。請等待管理員為您分配角色，然後才能存取平台。",
+    "logout": "登出"
+  },
+  "role_picking": {
+    "title": "選擇您的角色",
+    "description": "請選擇您想要申請的角色。",
+    "teacher": "老師",
+    "student": "學生",
+    "parent": "家長",
+    "submit": "提交申請",
+    "logout": "登出",
+    "error_submit": "提交角色申請失敗"
+  },
+  "unauthorized": {
+    "title": "未經授權",
+    "description": "您沒有權限存取此頁面。如果您認為這是一個錯誤，請聯絡管理員。",
+    "go_home": "回首頁"
+  },
   "student": {
     "dashboard": {
       "title": "學生儀表板",

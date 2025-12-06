@@ -43,10 +43,10 @@ const handleLogout = async () => {
     <div class="card w-96 bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title text-2xl font-bold mb-6 justify-center">
-          Select Your Role
+          {{ $t("role_picking.title") }}
         </h2>
         <p class="text-center text-base-content/70 mb-6">
-          Please select the role you would like to apply for.
+          {{ $t("role_picking.description") }}
         </p>
 
         <div class="form-control gap-4">
@@ -56,7 +56,9 @@ const handleLogout = async () => {
               'border-primary bg-primary/10': selectedRole === 'teacher',
             }"
           >
-            <span class="label-text font-medium">Teacher</span>
+            <span class="label-text font-medium">{{
+              $t("role_picking.teacher")
+            }}</span>
             <input
               type="radio"
               name="role"
@@ -72,7 +74,9 @@ const handleLogout = async () => {
               'border-primary bg-primary/10': selectedRole === 'student',
             }"
           >
-            <span class="label-text font-medium">Student</span>
+            <span class="label-text font-medium">{{
+              $t("role_picking.student")
+            }}</span>
             <input
               type="radio"
               name="role"
@@ -88,7 +92,9 @@ const handleLogout = async () => {
               'border-primary bg-primary/10': selectedRole === 'parent',
             }"
           >
-            <span class="label-text font-medium">Parent</span>
+            <span class="label-text font-medium">{{
+              $t("role_picking.parent")
+            }}</span>
             <input
               type="radio"
               name="role"
@@ -110,10 +116,10 @@ const handleLogout = async () => {
             @click="handleSubmit"
           >
             <span v-if="isLoading" class="loading loading-spinner"></span>
-            Submit Request
+            {{ $t("role_picking.submit") }}
           </button>
           <button class="btn btn-ghost w-full" @click="handleLogout">
-            Logout
+            {{ $t("role_picking.logout") }}
           </button>
         </div>
       </div>

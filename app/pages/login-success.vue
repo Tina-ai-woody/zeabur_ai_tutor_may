@@ -9,7 +9,9 @@ const localePath = useLocalePath();
   <div class="min-h-screen bg-base-200 flex items-center justify-center">
     <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title text-2xl mb-4">Login Successful!</h2>
+        <h2 class="card-title text-2xl mb-4">
+          {{ $t("login_success.title") }}
+        </h2>
 
         <div v-if="session.data" class="space-y-4">
           <div class="alert alert-success">
@@ -26,52 +28,70 @@ const localePath = useLocalePath();
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span>You have been successfully authenticated.</span>
+            <span>{{ $t("login_success.success_message") }}</span>
           </div>
 
           <div class="stats shadow w-full">
             <div class="stat">
-              <div class="stat-title">Role</div>
+              <div class="stat-title">{{ $t("login_success.role") }}</div>
               <div class="stat-value text-primary">
                 {{ session.data.user.role || "No Role" }}
               </div>
-              <div class="stat-desc">User permission level</div>
+              <div class="stat-desc">{{ $t("login_success.role_desc") }}</div>
             </div>
           </div>
 
-          <div class="divider">User Details</div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="label">
-                <span class="label-text font-bold">Name</span>
-              </label>
-              <div class="p-3 bg-base-200 rounded-lg">
-                {{ session.data.user.name }}
-              </div>
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="checkbox" />
+            <div class="collapse-title text-xl font-medium">
+              {{ $t("login_success.user_details") }}
             </div>
-            <div>
-              <label class="label">
-                <span class="label-text font-bold">Email</span>
-              </label>
-              <div class="p-3 bg-base-200 rounded-lg">
-                {{ session.data.user.email }}
-              </div>
-            </div>
-            <div class="md:col-span-2">
-              <label class="label">
-                <span class="label-text font-bold">User ID</span>
-              </label>
-              <div class="p-3 bg-base-200 rounded-lg font-mono text-sm">
-                {{ session.data.user.id }}
+            <div class="collapse-content">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div>
+                  <label class="label">
+                    <span class="label-text font-bold">{{
+                      $t("login_success.name")
+                    }}</span>
+                  </label>
+                  <div class="p-3 bg-base-100 rounded-lg">
+                    {{ session.data.user.name }}
+                  </div>
+                </div>
+                <div>
+                  <label class="label">
+                    <span class="label-text font-bold">{{
+                      $t("login_success.email")
+                    }}</span>
+                  </label>
+                  <div class="p-3 bg-base-100 rounded-lg">
+                    {{ session.data.user.email }}
+                  </div>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="label">
+                    <span class="label-text font-bold">{{
+                      $t("login_success.user_id")
+                    }}</span>
+                  </label>
+                  <div class="p-3 bg-base-100 rounded-lg font-mono text-sm">
+                    {{ session.data.user.id }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="divider">Full Session Object (Debug)</div>
-
-          <div class="mockup-code">
-            <pre><code>{{ JSON.stringify(session.data, null, 2) }}</code></pre>
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="checkbox" />
+            <div class="collapse-title text-xl font-medium">
+              {{ $t("login_success.full_session") }}
+            </div>
+            <div class="collapse-content">
+              <div class="mockup-code mt-4">
+                <pre><code>{{ JSON.stringify(session.data, null, 2) }}</code></pre>
+              </div>
+            </div>
           </div>
 
           <div class="card-actions justify-end mt-6">
@@ -79,25 +99,25 @@ const localePath = useLocalePath();
               v-if="session.data.user.role === 'admin'"
               :to="localePath('/admin')"
               class="btn btn-primary"
-              >Go to Admin</NuxtLink
+              >{{ $t("login_success.go_to_admin") }}</NuxtLink
             >
             <NuxtLink
               v-if="session.data.user.role === 'teacher'"
               :to="localePath('/teacher')"
               class="btn btn-primary"
-              >Go to Teacher</NuxtLink
+              >{{ $t("login_success.go_to_teacher") }}</NuxtLink
             >
             <NuxtLink
               v-if="session.data.user.role === 'student'"
               :to="localePath('/student')"
               class="btn btn-primary"
-              >Go to Student</NuxtLink
+              >{{ $t("login_success.go_to_student") }}</NuxtLink
             >
             <NuxtLink
               v-if="session.data.user.role === 'parent'"
               :to="localePath('/parent')"
               class="btn btn-primary"
-              >Go to Parent</NuxtLink
+              >{{ $t("login_success.go_to_parent") }}</NuxtLink
             >
           </div>
         </div>
