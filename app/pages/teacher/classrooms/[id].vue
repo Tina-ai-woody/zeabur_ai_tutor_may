@@ -180,23 +180,6 @@ const deleteClassroom = async () => {
               </p>
             </div>
             <div class="flex gap-2 w-full md:w-auto">
-              <button class="btn btn-primary" @click="isAddingStudent = true">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
-                {{ $t("teacher.classrooms.add_student") }}
-              </button>
               <button
                 class="btn btn-ghost btn-circle"
                 :title="$t('teacher.classrooms.settings')"
@@ -229,11 +212,33 @@ const deleteClassroom = async () => {
           <!-- Students List -->
           <div class="card bg-base-100 shadow-xl border border-base-200">
             <div class="card-body">
-              <h2 class="card-title mb-4">
-                {{ $t("teacher.classrooms.enrolled_students") }} ({{
-                  classroom.students.length
-                }})
-              </h2>
+              <div class="flex w-full items-center justify-between">
+                <h2 class="card-title mb-4">
+                  {{ $t("teacher.classrooms.enrolled_students") }} ({{
+                    classroom.students.length
+                  }})
+                </h2>
+                <button
+                  class="btn btn-primary justify-end mt-2 mr-2"
+                  @click="isAddingStudent = true"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    />
+                  </svg>
+                  {{ $t("teacher.classrooms.add_student") }}
+                </button>
+              </div>
 
               <div v-if="classroom.students.length > 0" class="overflow-x-auto">
                 <table class="table w-full">
