@@ -55,9 +55,6 @@ const closeDrawer = () => {
           <ul class="menu menu-horizontal px-1">
             <!-- Navbar menu content here -->
             <li>
-              <LangSwitcher />
-            </li>
-            <li>
               <NuxtLink :to="localePath('/teacher/problems')">{{
                 $t("teacher.layout.problems")
               }}</NuxtLink>
@@ -76,6 +73,9 @@ const closeDrawer = () => {
               <NuxtLink :to="localePath('/teacher/students_dashboard')">{{
                 $t("teacher.layout.students")
               }}</NuxtLink>
+            </li>
+            <li>
+              <LangSwitcher />
             </li>
             <li>
               <button @click="handleLogout" class="btn btn-secondary ml-2">
