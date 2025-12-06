@@ -8,8 +8,14 @@ dotenv.config({ path: ".env.local", override: true });
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n"],
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@nuxtjs/mcp-toolkit"],
   i18n: {
     locales: [
       { code: "en", file: "en.json", name: "English" },

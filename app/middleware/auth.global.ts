@@ -5,6 +5,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const getRouteBaseName = useRouteBaseName();
   const routeBaseName = getRouteBaseName(to);
 
+  // Allow access to MCP routes
+  console.log("Middleware checking path:", to.path);
+  if (to.path.includes("/mcp")) return;
+
   const { data: session } = await authClient.getSession({
     fetchOptions: {
       headers: useRequestHeaders(),
@@ -51,7 +55,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // Admin routes
-  if (routeBaseName?.startsWith("admin")) {
+  if (typeof routeBaseName === "string" && routeBaseName.startsWith("admin")) {
     console.log(userRole);
     if (userRole !== "admin") {
       return navigateTo(localePath("/unauthorized"));
@@ -59,21 +63,27 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // Teacher routes
-  if (routeBaseName?.startsWith("teacher")) {
+  if (
+    typeof routeBaseName === "string" &&
+    routeBaseName.startsWith("teacher")
+  ) {
     if (userRole !== "teacher" && userRole !== "admin") {
       return navigateTo(localePath("/unauthorized"));
     }
   }
 
   // Student routes
-  if (routeBaseName?.startsWith("student")) {
+  if (
+    typeof routeBaseName === "string" &&
+    routeBaseName.startsWith("student")
+  ) {
     if (userRole !== "student" && userRole !== "admin") {
       return navigateTo(localePath("/unauthorized"));
     }
   }
 
   // Parent routes
-  if (routeBaseName?.startsWith("parent")) {
+  if (typeof routeBaseName === "string" && routeBaseName.startsWith("parent")) {
     if (userRole !== "parent" && userRole !== "admin") {
       return navigateTo(localePath("/unauthorized"));
     }
