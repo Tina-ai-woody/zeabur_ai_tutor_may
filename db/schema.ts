@@ -232,3 +232,18 @@ export const parentStudents = pgTable("parent_students", {
     .references(() => user.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const chatHistory = pgTable("chat_history", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  studentId: text("student_id")
+    .notNull()
+    .references(() => user.id),
+  title: text("title"),
+  messages: jsonb("messages")
+    .$type<{ role: "user" | "assistant"; content: string }[]>()
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
