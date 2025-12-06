@@ -103,7 +103,7 @@ export default defineEventHandler(async (event) => {
           title: args.title,
           source: args.source,
           hashtag: args.hashtag,
-          limit: 5,
+          limit: 3,
         });
 
         messages.push({

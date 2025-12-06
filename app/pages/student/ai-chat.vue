@@ -9,7 +9,10 @@ const currentChatId = ref<string | null>(null);
 const messages = ref<{ role: string; content: string }[]>([]);
 const filteredMessages = computed(() => {
   return messages.value.filter(
-    (msg) => msg.role === "user" || msg.role === "assistant"
+    (msg) =>
+      msg.role === "user" ||
+      msg.role === "assistant" ||
+      (msg.role === "tool" && (msg as any).name === "search_problems")
   );
 });
 const userMessage = ref("");
@@ -128,21 +131,43 @@ async function sendMessage() {
           :class="msg.role === 'user' ? 'chat-end' : 'chat-start'"
         >
           <div class="chat-header capitalize text-xs opacity-50 mb-1">
-            {{ msg.role === "assistant" ? "AI Tutor" : "You" }}
+            {{
+              msg.role === "assistant"
+                ? "AI Tutor"
+                : msg.role === "tool"
+                ? "Recommended Problems"
+                : "You"
+            }}
           </div>
           <div
             class="chat-bubble"
             :class="
               msg.role === 'user'
                 ? 'chat-bubble-primary'
+                : msg.role === 'tool'
+                ? 'bg-transparent text-base-content p-0 shadow-none'
                 : 'chat-bubble-secondary'
             "
           >
+            <!-- Assistant Message -->
             <MarkdownRenderer
               v-if="msg.role === 'assistant'"
               :content="msg.content"
             />
 
+            <!-- Tool Output (Problem Cards) -->
+            <div
+              v-else-if="msg.role === 'tool' && (msg as any).name === 'search_problems'"
+              class="grid grid-cols-1 gap-2"
+            >
+              <ProblemCard
+                v-for="problem in JSON.parse(msg.content)"
+                :key="problem.id"
+                :problem="problem"
+              />
+            </div>
+
+            <!-- User Message -->
             <div v-else>{{ msg.content }}</div>
           </div>
         </div>
