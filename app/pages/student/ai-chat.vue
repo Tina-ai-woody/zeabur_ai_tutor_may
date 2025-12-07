@@ -3,7 +3,6 @@ definePageMeta({
   layout: "student",
 });
 
-const { t } = useI18n();
 const chats = ref([]);
 const currentChatId = ref<string | null>(null);
 const messages = ref<{ role: string; content: string }[]>([]);
