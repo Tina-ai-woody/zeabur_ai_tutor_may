@@ -1,4 +1,12 @@
-import { pgTable, text, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  jsonb,
+  integer,
+  foreignKey,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -247,3 +255,37 @@ export const chatHistory = pgTable("chat_history", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const classMaterials = pgTable(
+  "class_materials",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    teacherId: text("teacher_id")
+      .notNull()
+      .references(() => user.id),
+    name: text("name").notNull(),
+    path: text("path").notNull(), // Full path in bucket or virtual path for folders
+    url: text("url"),
+    type: text("type"), // MIME type or 'folder'
+    size: integer("size"),
+    subject: text("subject"),
+    chapter: text("chapter"),
+    source: text("source"),
+    hashtags: jsonb("hashtags").$type<string[]>().default([]),
+    isFolder: boolean("is_folder").default(false).notNull(),
+    parentId: text("parent_id"), // Self-reference, can be null for root
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      parentFk: foreignKey({
+        columns: [table.parentId],
+        foreignColumns: [table.id],
+        name: "class_materials_parent_id_fk",
+      }),
+    };
+  }
+);

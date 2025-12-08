@@ -75,6 +75,11 @@ const closeDrawer = () => {
               }}</NuxtLink>
             </li>
             <li>
+              <NuxtLink :to="localePath('/teacher/materials')">{{
+                $t("teacher.layout.materials")
+              }}</NuxtLink>
+            </li>
+            <li>
               <ThemeSwitcher />
             </li>
             <li>
