@@ -313,10 +313,10 @@ export const posts = pgTable("posts", {
   teacherId: text("teacher_id")
     .notNull()
     .references(() => user.id),
-  studentId: text("student_id").references(() => user.id), // Optional
   content: text("content"),
-  classDate: timestamp("class_date"),
+  classDatetime: timestamp("class_datetime"), // Renamed from classDate
   classLength: integer("class_length"), // in minutes
+  attendees: jsonb("attendees").$type<string[]>().default([]), // List of student IDs
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

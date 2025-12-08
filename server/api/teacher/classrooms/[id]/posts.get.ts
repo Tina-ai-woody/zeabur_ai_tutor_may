@@ -1,18 +1,9 @@
 import { eq, desc, and } from "drizzle-orm";
 import { db } from "../../../../../server/utils/db";
-import { posts, user } from "../../../../../db/schema";
+import { posts } from "../../../../../db/schema";
 
 export default defineEventHandler(async (event) => {
   const { id: classroomId } = getRouterParams(event);
-
-  // Validate teacher access (optional but recommended)
-  // const session = await requireUserSession(event);
-  // if (session.user.role !== "teacher") {
-  //   throw createError({
-  //     statusCode: 403,
-  //     statusMessage: "Forbidden",
-  //   });
-  // }
 
   if (!classroomId) {
     throw createError({
@@ -25,14 +16,12 @@ export default defineEventHandler(async (event) => {
     .select({
       id: posts.id,
       content: posts.content,
-      classDate: posts.classDate,
+      classDatetime: posts.classDatetime,
       classLength: posts.classLength,
       createdAt: posts.createdAt,
-      studentName: user.name,
-      studentId: posts.studentId,
+      attendees: posts.attendees,
     })
     .from(posts)
-    .leftJoin(user, eq(posts.studentId, user.id))
     .where(eq(posts.classroomId, classroomId))
     .orderBy(desc(posts.createdAt));
 

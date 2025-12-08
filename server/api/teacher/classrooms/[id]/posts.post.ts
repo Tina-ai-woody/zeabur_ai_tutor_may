@@ -14,10 +14,10 @@ export default defineEventHandler(async (event) => {
   }
 
   // Basic validation
-  if (!body.content || !body.classDate) {
+  if (!body.content || !body.classDatetime) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Content and Class Date are required",
+      statusMessage: "Content and Class Datetime are required",
     });
   }
 
@@ -27,9 +27,9 @@ export default defineEventHandler(async (event) => {
       classroomId,
       teacherId: session.user.id,
       content: body.content,
-      classDate: new Date(body.classDate),
+      classDatetime: new Date(body.classDatetime),
       classLength: body.classLength ? parseInt(body.classLength) : null,
-      studentId: body.studentId || null,
+      attendees: body.attendees || [],
     })
     .returning();
 

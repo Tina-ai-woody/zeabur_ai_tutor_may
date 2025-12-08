@@ -374,20 +374,57 @@ const deleteClassroom = async () => {
                   <div class="flex justify-between items-start">
                     <div>
                       <p class="font-bold">
-                        {{ new Date(post.classDate).toLocaleDateString() }}
+                        {{ new Date(post.classDatetime).toLocaleDateString() }}
+                        {{
+                          new Date(post.classDatetime).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        }}
                         <span v-if="post.classLength">
-                          - {{ post.classLength }} min
+                          - {{ Math.floor(post.classLength / 60) }}h
+                          {{ post.classLength % 60 }}m
                         </span>
                       </p>
-                      <p v-if="post.studentName" class="text-sm opacity-70">
-                        Student: {{ post.studentName }}
-                      </p>
+                      <!-- Display Attendees -->
+                      <div
+                        v-if="
+                          post.attendees &&
+                          post.attendees.length > 0 &&
+                          classroom
+                        "
+                        class="text-sm opacity-70 mt-1"
+                      >
+                        <span class="font-semibold">Attendees: </span>
+                        {{
+                          post.attendees
+                            .map(
+                              (id: string) =>
+                                classroom.students.find((s: any) => s.id === id)
+                                  ?.name
+                            )
+                            .filter(Boolean)
+                            .join(", ")
+                        }}
+                      </div>
+                      <div
+                        v-else-if="
+                          post.attendees && post.attendees.length === 0
+                        "
+                        class="text-sm opacity-50 mt-1"
+                      >
+                        No attendees selected
+                      </div>
                     </div>
-                    <span class="text-xs opacity-50">
-                      {{ new Date(post.createdAt).toLocaleDateString() }}
-                    </span>
+                    <div class="flex flex-col items-end">
+                      <span class="text-xs opacity-50">
+                        Created:
+                        {{ new Date(post.createdAt).toLocaleDateString() }}
+                      </span>
+                    </div>
                   </div>
-                  <p class="mt-2 whitespace-pre-wrap">{{ post.content }}</p>
+                  <div class="divider my-2"></div>
+                  <p class="whitespace-pre-wrap">{{ post.content }}</p>
                 </div>
               </div>
               <div v-else class="text-center py-10 opacity-50">
