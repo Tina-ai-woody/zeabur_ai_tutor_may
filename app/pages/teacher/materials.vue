@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import type { Database } from "~/types/database.types"; // Assuming types exist or inferred
 
 definePageMeta({
   layout: "teacher",
@@ -31,7 +30,7 @@ const {
   refresh,
   error,
 } = await useFetch("/api/teacher/materials", {
-  query: computed(() => ({ parentId: currentFolder.value.id })),
+  query: computed(() => ({ parentId: currentFolder.value?.id })),
 });
 
 // Actions
@@ -61,7 +60,7 @@ async function createFolder() {
       method: "POST",
       body: {
         name: newFolderName.value,
-        parentId: currentFolder.value.id,
+        parentId: currentFolder.value?.id,
       },
     });
     newFolderName.value = "";
@@ -88,7 +87,7 @@ async function handleUpload() {
   isUploading.value = true;
 
   const formData = new FormData();
-  if (currentFolder.value.id)
+  if (currentFolder.value?.id)
     formData.append("parentId", currentFolder.value.id);
   formData.append("subject", uploadMeta.value.subject);
   formData.append("chapter", uploadMeta.value.chapter);
@@ -101,7 +100,10 @@ async function handleUpload() {
   formData.append("hashtags", JSON.stringify(tags));
 
   for (let i = 0; i < uploadFiles.value.length; i++) {
-    formData.append("files", uploadFiles.value[i]);
+    const file = uploadFiles.value[i];
+    if (file) {
+      formData.append("files", file);
+    }
   }
 
   try {
@@ -347,7 +349,7 @@ async function shareToClassroom() {
               type="file"
               multiple
               class="file-input file-input-bordered w-full"
-              @change="(e) => (uploadFiles = e.target.files)"
+              @change="(e) => (uploadFiles = (e.target as HTMLInputElement).files)"
             />
           </div>
 

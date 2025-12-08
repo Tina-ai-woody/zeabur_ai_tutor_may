@@ -30,12 +30,13 @@ if (status.value) {
           :key="student.id"
           class="card bg-base-100 shadow-xl"
         >
-          <figure class="px-10 pt-10">
+          <figure class="px-5 pt-5">
             <div class="avatar">
               <div
                 class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
               >
                 <img
+                  class="w-full h-full"
                   :src="
                     student.image ||
                     'https://ui-avatars.com/api/?name=' + student.name
