@@ -118,7 +118,7 @@ const handleDelete = async () => {
   if (!confirm(t("components.common.calendar.confirm_delete"))) return;
 
   try {
-    await $fetch(`/api/student/events/${selectedEventId.value}`, {
+    await $fetch(`/api/common/events/${selectedEventId.value}`, {
       method: "DELETE",
     });
 
@@ -164,7 +164,7 @@ const saveEvent = async () => {
 
     if (isEditing.value && selectedEventId.value) {
       // Update existing event
-      await $fetch(`/api/student/events/${selectedEventId.value}`, {
+      await $fetch(`/api/common/events/${selectedEventId.value}`, {
         method: "PUT",
         body: eventData,
       });
@@ -183,7 +183,7 @@ const saveEvent = async () => {
       }
     } else {
       // Create new event
-      const newEvent = await $fetch("/api/student/events", {
+      const newEvent = await $fetch("/api/common/events", {
         method: "POST",
         body: eventData,
       });
@@ -218,7 +218,7 @@ const handleEventDrop = async (info: EventDropArg) => {
   }
 
   try {
-    await $fetch(`/api/student/events/${event.id}`, {
+    await $fetch(`/api/common/events/${event.id}`, {
       method: "PUT",
       body: {
         start: event.start?.toISOString(),
@@ -237,7 +237,7 @@ const handleEventResize = async (info: EventResizeDoneArg) => {
   const { event } = info;
 
   try {
-    await $fetch(`/api/student/events/${event.id}`, {
+    await $fetch(`/api/common/events/${event.id}`, {
       method: "PUT",
       body: {
         start: event.start?.toISOString(),

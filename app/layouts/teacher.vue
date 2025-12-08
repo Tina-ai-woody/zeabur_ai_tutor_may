@@ -52,7 +52,7 @@ const closeDrawer = () => {
           >
         </div>
         <div class="flex-none hidden lg:block">
-          <ul class="menu menu-horizontal px-1">
+          <ul class="menu menu-horizontal px-1 items-center">
             <!-- Navbar menu content here -->
             <li>
               <NuxtLink :to="localePath('/teacher/problems')">{{

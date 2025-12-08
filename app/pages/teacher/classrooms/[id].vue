@@ -148,20 +148,10 @@ const deleteClassroom = async () => {
             :to="localePath('/teacher/classrooms')"
             class="btn btn-ghost btn-sm gap-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
+            <Icon
+              name="heroicons-solid:arrow-sm-left"
+              class="h-5 w-5 mr-2"
+            ></Icon>
             {{ $t("teacher.classrooms.back") }}
           </NuxtLink>
         </div>
@@ -185,26 +175,7 @@ const deleteClassroom = async () => {
                 :title="$t('teacher.classrooms.settings')"
                 @click="openSettings"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                <Icon name="heroicons-solid:cog" class="h-5 w-5 mr-2"></Icon>
               </button>
             </div>
           </div>
@@ -222,20 +193,10 @@ const deleteClassroom = async () => {
                   class="btn btn-primary justify-end mt-2 mr-2"
                   @click="isAddingStudent = true"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
+                  <Icon
+                    name="heroicons-outline:user-add"
                     class="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                    />
-                  </svg>
+                  ></Icon>
                   {{ $t("teacher.classrooms.add_student") }}
                 </button>
               </div>

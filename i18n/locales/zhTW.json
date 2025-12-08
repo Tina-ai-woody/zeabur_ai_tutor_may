@@ -529,7 +529,7 @@
       "title": "管理員",
       "home": "首頁",
       "users": "使用者管理",
-      "link_student_parent": "連結學生與家長",
+      "linking": "連結",
       "logout": "登出"
     },
     "dashboard": {

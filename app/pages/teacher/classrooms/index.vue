@@ -38,20 +38,7 @@ const createClassroom = async () => {
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-3xl font-bold">{{ $t("teacher.classrooms.title") }}</h1>
       <button class="btn btn-primary" @click="isCreating = true">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
+        <Icon name="heroicons-outline:plus" class="h-5 w-5 mr-2" />
         {{ $t("teacher.classrooms.create_button") }}
       </button>
     </div>

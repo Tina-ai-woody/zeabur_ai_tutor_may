@@ -53,21 +53,24 @@ const closeDrawer = () => {
           >
         </div>
         <div class="flex-none hidden lg:block">
-          <ul class="menu menu-horizontal px-1">
-            <!-- Navbar menu content here -->
+          <ul class="menu menu-horizontal px-1 items-center">
             <li>
-              <details>
-                <summary class="list-none marker:content-none">
+              <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost">
                   {{ $t("student.layout.external_links") }}
-                </summary>
-                <ul class="bg-base-100 rounded-t-none p-2">
+                  <Icon name="heroicons-solid:chevron-down" />
+                </div>
+                <ul
+                  tabindex="0"
+                  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                >
                   <li>
                     <NuxtLink to="https://physimhub.studywithwoody.site/">{{
                       $t("student.layout.physimhub")
                     }}</NuxtLink>
                   </li>
                 </ul>
-              </details>
+              </div>
             </li>
             <li>
               <NuxtLink :to="localePath('/student/problems')">{{
@@ -88,7 +91,10 @@ const closeDrawer = () => {
               <NuxtLink :to="localePath('/student/ai-chat')">AI Chat</NuxtLink>
             </li>
             <li>
-              <button @click="handleLogout" class="btn btn-secondary ml-2">
+              <button
+                @click="handleLogout"
+                class="btn btn-secondary ml-2 mr-2 mt-2 mb-2 p-2"
+              >
                 {{ $t("student.layout.logout") }}
               </button>
             </li>

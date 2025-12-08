@@ -8,7 +8,7 @@ onMounted(() => {
 });
 
 const toggleTheme = () => {
-  theme.value = theme.value === "dark" ? "light" : "dark";
+  theme.value = theme.value === "dark" ? "bumblebee" : "dark";
   document.documentElement.setAttribute("data-theme", theme.value);
   localStorage.setItem("theme", theme.value);
 };

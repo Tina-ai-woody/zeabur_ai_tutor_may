@@ -17,7 +17,7 @@ const handleLogout = async () => {
         }}</NuxtLink>
       </div>
       <div class="flex-none">
-        <ul class="menu menu-horizontal px-1">
+        <ul class="menu menu-horizontal px-1 items-center">
           <li>
             <ThemeSwitcher />
           </li>
@@ -38,7 +38,7 @@ const handleLogout = async () => {
             <NuxtLink
               class="btn btn-ghost"
               :to="localePath('/admin/pending-parents')"
-              >{{ $t("admin.layout.link_student_parent") }}</NuxtLink
+              >{{ $t("admin.layout.linking") }}</NuxtLink
             >
           </li>
           <li>
