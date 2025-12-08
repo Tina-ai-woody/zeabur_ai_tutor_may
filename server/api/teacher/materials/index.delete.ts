@@ -2,6 +2,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { classMaterials } from "../../../../db/schema";
 import { db } from "../../../../server/utils/db";
 import { eq, and } from "drizzle-orm";
+import { classMaterialsR2 } from "../../../../server/utils/r2";
 
 export default defineEventHandler(async (event) => {
   const session = await requireAuthSession(event);
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Item not found" });
   }
 
-  const { r2BucketName } = useRuntimeConfig();
+  const { classMaterialsR2BucketName } = useRuntimeConfig();
 
   if (item.isFolder) {
     // Check for children
@@ -42,7 +43,7 @@ export default defineEventHandler(async (event) => {
   } else {
     // Delete file from R2
     try {
-      await r2.send(
+      await classMaterialsR2.send(
         new DeleteObjectCommand({
           Bucket: classMaterialsR2BucketName,
           Key: item.path,

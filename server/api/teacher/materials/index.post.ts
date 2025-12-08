@@ -1,6 +1,7 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { classMaterials } from "../../../../db/schema";
 import { db } from "../../../../server/utils/db";
+import { classMaterialsR2 } from "../../../../server/utils/r2";
 
 export default defineEventHandler(async (event) => {
   const session = await requireAuthSession(event);
@@ -13,7 +14,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { classMaterialsR2BucketName, r2PublicDomain } = useRuntimeConfig();
+  const { classMaterialsR2BucketName, classMaterialsR2PublicDomain } =
+    useRuntimeConfig();
 
   // Parse fields
   const getField = (name: string) => {
@@ -49,7 +51,7 @@ export default defineEventHandler(async (event) => {
 
     // Upload to R2
     try {
-      await r2.send(
+      await classMaterialsR2.send(
         new PutObjectCommand({
           Bucket: classMaterialsR2BucketName,
           Key: key,
@@ -59,7 +61,9 @@ export default defineEventHandler(async (event) => {
       );
 
       // Insert into DB
-      const url = r2PublicDomain ? `${r2PublicDomain}/${key}` : undefined;
+      const url = classMaterialsR2PublicDomain
+        ? `${classMaterialsR2PublicDomain}/${key}`
+        : undefined;
 
       const [record] = await db
         .insert(classMaterials)

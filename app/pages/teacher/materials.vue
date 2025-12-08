@@ -147,13 +147,19 @@ async function deleteItem(id: string) {
     </div>
 
     <!-- Breadcrumbs -->
-    <div class="text-sm breadcrumbs mb-4">
+    <div class="breadcrumbs text-sm mb-4">
       <ul>
         <li v-for="(crumb, index) in pathStack" :key="crumb.name">
-          <a @click="navigateToBreadcrumb(index)" class="cursor-pointer">
+          <a @click="navigateToBreadcrumb(index)">
             <Icon
               v-if="index === 0"
               name="heroicons:home"
+              class="w-4 h-4 mr-1"
+            />
+            <Icon v-else name="heroicons:chevron-right" class="w-4 h-4 mr-1" />
+            <Icon
+              v-if="crumb.id"
+              name="heroicons:folder"
               class="w-4 h-4 mr-1"
             />
             {{ crumb.name }}

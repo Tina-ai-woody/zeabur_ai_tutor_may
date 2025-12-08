@@ -10,3 +10,12 @@ export const r2 = new S3Client({
     secretAccessKey: config.r2SecretAccessKey,
   },
 });
+
+export const classMaterialsR2 = new S3Client({
+  region: "auto",
+  endpoint: `https://${config.classMaterialsR2AccountId}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: config.classMaterialsR2AccessKeyId,
+    secretAccessKey: config.classMaterialsR2SecretAccessKey,
+  },
+});
