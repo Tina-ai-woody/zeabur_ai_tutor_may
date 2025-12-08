@@ -146,6 +146,17 @@ const { data: homeworks } = await useFetch(
           </div>
         </div>
       </div>
+
+      <!-- Class Materials Section -->
+      <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Class Materials</h2>
+          <ClassroomMaterialsList
+            :classroom-id="classroomId"
+            user-type="student"
+          />
+        </div>
+      </div>
     </div>
 
     <div v-else-if="error" class="alert alert-error">

@@ -136,6 +136,42 @@ async function deleteItem(id: string) {
 
 // Icons
 // Using heroicons via Icon component
+
+// Share Logic
+const showShareModal = ref(false);
+const itemToShare = ref<any>(null);
+const selectedClassroomId = ref("");
+const isSharing = ref(false);
+
+const { data: classrooms } = await useFetch("/api/teacher/classrooms");
+
+function openShareModal(item: any) {
+  itemToShare.value = item;
+  selectedClassroomId.value = "";
+  showShareModal.value = true;
+}
+
+async function shareToClassroom() {
+  if (!itemToShare.value || !selectedClassroomId.value) return;
+  isSharing.value = true;
+  try {
+    const res = await $fetch("/api/teacher/materials/share", {
+      method: "POST",
+      body: {
+        classroomId: selectedClassroomId.value,
+        materialId: itemToShare.value.id,
+      },
+    });
+    // @ts-ignore
+    if (res.message) alert(res.message);
+    else alert("Shared successfully!");
+    showShareModal.value = false;
+  } catch (e) {
+    alert("Failed to share material");
+  } finally {
+    isSharing.value = false;
+  }
+}
 </script>
 
 <template>
@@ -196,10 +232,9 @@ async function deleteItem(id: string) {
           v-for="item in materials"
           :key="item.id"
           class="group relative border border-base-200 rounded-lg p-4 hover:bg-base-200 transition-colors cursor-pointer flex flex-col items-center text-center"
-          @click="openItem(item)"
         >
           <!-- Icon -->
-          <div class="mb-2">
+          <div class="mb-2" @click="openItem(item)">
             <Icon
               v-if="item.isFolder"
               name="heroicons:folder-solid"
@@ -259,6 +294,9 @@ async function deleteItem(id: string) {
                 </li>
                 <li v-if="!item.isFolder && item.url">
                   <a :href="item.url" target="_blank" @click.stop>Download</a>
+                </li>
+                <li v-if="item.isFolder">
+                  <a @click.stop="openShareModal(item)">Share</a>
                 </li>
               </ul>
             </div>
@@ -373,6 +411,38 @@ async function deleteItem(id: string) {
           >
             <span v-if="isUploading" class="loading loading-spinner"></span>
             {{ isUploading ? "Uploading..." : "Upload" }}
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Share Modal -->
+    <dialog class="modal" :class="{ 'modal-open': showShareModal }">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Share "{{ itemToShare?.name }}"</h3>
+        <div class="form-control w-full mt-4">
+          <label class="label">
+            <span class="label-text">Select Classroom</span>
+          </label>
+          <select
+            v-model="selectedClassroomId"
+            class="select select-bordered w-full"
+          >
+            <option disabled value="">Pick a classroom</option>
+            <option v-for="c in classrooms" :key="c.id" :value="c.id">
+              {{ c.name }}
+            </option>
+          </select>
+        </div>
+        <div class="modal-action">
+          <button class="btn" @click="showShareModal = false">Cancel</button>
+          <button
+            class="btn btn-primary"
+            @click="shareToClassroom"
+            :disabled="isSharing || !selectedClassroomId"
+          >
+            <span v-if="isSharing" class="loading loading-spinner"></span>
+            Share
           </button>
         </div>
       </div>

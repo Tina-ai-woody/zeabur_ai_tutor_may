@@ -289,3 +289,16 @@ export const classMaterials = pgTable(
     };
   }
 );
+
+export const classroomMaterials = pgTable("classroom_materials", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  classroomId: text("classroom_id")
+    .notNull()
+    .references(() => classrooms.id),
+  materialId: text("material_id")
+    .notNull()
+    .references(() => classMaterials.id), // Linking to the root folder/file being shared
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

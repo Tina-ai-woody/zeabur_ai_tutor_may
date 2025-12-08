@@ -80,7 +80,7 @@ const settingsError = ref("");
 
 const openSettings = () => {
   if (classroom.value) {
-    settingsForm.value.name = classroom.value.name;
+    settingsForm.value.name = classroom.value.name || "";
     settingsForm.value.description = classroom.value.description || "";
     isSettingsOpen.value = true;
   }
@@ -326,6 +326,16 @@ const deleteClassroom = async () => {
                   {{ $t("teacher.classrooms.go_to_problems") }}
                 </NuxtLink>
               </div>
+            </div>
+          </div>
+          <!-- Class Materials Section -->
+          <div class="card bg-base-100 shadow-xl border border-base-200">
+            <div class="card-body">
+              <h2 class="card-title mb-4">Class Materials</h2>
+              <ClassroomMaterialsList
+                :classroom-id="classroomId"
+                user-type="teacher"
+              />
             </div>
           </div>
         </div>
