@@ -314,7 +314,9 @@ export const posts = pgTable("posts", {
     .notNull()
     .references(() => user.id),
   content: text("content"),
-  classDatetime: timestamp("class_datetime"), // Renamed from classDate
+  classDate: text("class_date"),
+  classStartTime: text("class_start_time"),
+  classEndTime: text("class_end_time"),
   classLength: integer("class_length"), // in minutes
   attendees: jsonb("attendees").$type<string[]>().default([]), // List of student IDs
   createdAt: timestamp("created_at").defaultNow().notNull(),

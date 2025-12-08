@@ -16,7 +16,9 @@ export default defineEventHandler(async (event) => {
     .select({
       id: posts.id,
       content: posts.content,
-      classDatetime: posts.classDatetime,
+      classDate: posts.classDate,
+      classStartTime: posts.classStartTime,
+      classEndTime: posts.classEndTime,
       classLength: posts.classLength,
       createdAt: posts.createdAt,
       attendees: posts.attendees,

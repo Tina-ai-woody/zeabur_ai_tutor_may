@@ -19,7 +19,13 @@ const form = ref({
   endTime: "10:00",
   content: "",
   attendees: [] as string[],
+  summary: "",
+  template: "",
 });
+
+const generating = ref(false);
+const isSubmitting = ref(false);
+const error = ref("");
 
 // Select all students by default when classroom loads
 watch(
@@ -40,8 +46,35 @@ const classLength = computed(() => {
   return Math.max(0, Math.floor(diffMs / 60000)); // minutes
 });
 
-const isSubmitting = ref(false);
-const error = ref("");
+const handleBender = async () => {
+  if (!form.value.summary || !form.value.template) return;
+
+  generating.value = true;
+  error.value = "";
+
+  try {
+    const { generatedContent } = await $fetch(
+      `/api/teacher/classrooms/${classroomId}/posts/generate`,
+      {
+        method: "POST",
+        body: {
+          summary: form.value.summary,
+          template: form.value.template,
+        },
+      }
+    );
+
+    if (generatedContent) {
+      form.value.content = generatedContent;
+    }
+  } catch (e: any) {
+    console.error("AI Generation failed", e);
+    error.value =
+      "Failed to generate content with AI. Please try again or type manually.";
+  } finally {
+    generating.value = false;
+  }
+};
 
 const submitPost = async () => {
   if (!form.value.content || !form.value.date) {
@@ -53,16 +86,13 @@ const submitPost = async () => {
   error.value = "";
 
   try {
-    // Combine date and start time
-    const classDatetime = new Date(
-      `${form.value.date}T${form.value.startTime}`
-    ).toISOString();
-
     await $fetch(`/api/teacher/classrooms/${classroomId}/posts`, {
       method: "POST",
       body: {
         content: form.value.content,
-        classDatetime: classDatetime,
+        classDate: form.value.date,
+        classStartTime: form.value.startTime,
+        classEndTime: form.value.endTime,
         classLength: classLength.value,
         attendees: form.value.attendees,
       },
@@ -168,6 +198,75 @@ const toggleAllAttendees = () => {
             >
           </div>
 
+          <!-- Summary and Template Section -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Class Summary</span>
+                <span class="label-text-alt text-base-content/70"
+                  >Briefly describe today's class</span
+                >
+              </label>
+              <textarea
+                v-model="form.summary"
+                class="textarea textarea-bordered h-32"
+                placeholder="e.g. Covered Chapter 3, assigned exercise 4..."
+              ></textarea>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Template</span>
+                <span class="label-text-alt text-base-content/70"
+                  >Define the structure</span
+                >
+              </label>
+              <textarea
+                v-model="form.template"
+                class="textarea textarea-bordered h-32"
+                placeholder="Topic: ...&#10;Homework: ...&#10;Key points: ..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Bender AI Button -->
+          <div class="flex justify-center">
+            <button
+              type="button"
+              class="btn btn-secondary gap-2"
+              @click="handleBender"
+              :disabled="generating || !form.summary || !form.template"
+            >
+              <Icon
+                v-if="generating"
+                name="lucide:loader-2"
+                class="size-5 animate-spin"
+              />
+              <Icon v-else name="lucide:bot" class="size-5" />
+              <span>Generate Content with AI</span>
+            </button>
+          </div>
+
+          <!-- Content Input -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">
+                {{ $t("teacher.posts.content_label", "Content / Notes") }}
+              </span>
+            </label>
+            <textarea
+              v-model="form.content"
+              class="textarea textarea-bordered h-32"
+              required
+              :placeholder="
+                $t(
+                  'teacher.posts.content_placeholder',
+                  'Enter class notes, homework, or feedback...'
+                )
+              "
+            ></textarea>
+          </div>
+
           <!-- Attendees -->
           <div class="form-control w-full">
             <label class="label cursor-pointer justify-start gap-4">
@@ -212,26 +311,6 @@ const toggleAllAttendees = () => {
                 {{ form.attendees.length }} selected
               </span>
             </label>
-          </div>
-
-          <!-- Content -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">
-                {{ $t("teacher.posts.content_label", "Content / Notes") }}
-              </span>
-            </label>
-            <textarea
-              v-model="form.content"
-              class="textarea textarea-bordered h-32"
-              required
-              :placeholder="
-                $t(
-                  'teacher.posts.content_placeholder',
-                  'Enter class notes, homework, or feedback...'
-                )
-              "
-            ></textarea>
           </div>
 
           <div v-if="error" class="alert alert-error">

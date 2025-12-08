@@ -6,6 +6,10 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const session = await requireAuthSession(event);
 
+  console.log("Creating post. Body:", body);
+  console.log("Classroom ID:", classroomId);
+  console.log("Session User:", session?.user);
+
   if (!classroomId) {
     throw createError({
       statusCode: 400,
@@ -14,10 +18,15 @@ export default defineEventHandler(async (event) => {
   }
 
   // Basic validation
-  if (!body.content || !body.classDatetime) {
+  if (
+    !body.content ||
+    !body.classDate ||
+    !body.classStartTime ||
+    !body.classEndTime
+  ) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Content and Class Datetime are required",
+      statusMessage: "Content, Date, Start Time, and End Time are required",
     });
   }
 
@@ -27,7 +36,9 @@ export default defineEventHandler(async (event) => {
       classroomId,
       teacherId: session.user.id,
       content: body.content,
-      classDatetime: new Date(body.classDatetime),
+      classDate: body.classDate,
+      classStartTime: body.classStartTime,
+      classEndTime: body.classEndTime,
       classLength: body.classLength ? parseInt(body.classLength) : null,
       attendees: body.attendees || [],
     })

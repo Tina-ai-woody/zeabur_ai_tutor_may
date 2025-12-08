@@ -374,13 +374,8 @@ const deleteClassroom = async () => {
                   <div class="flex justify-between items-start">
                     <div>
                       <p class="font-bold">
-                        {{ new Date(post.classDatetime).toLocaleDateString() }}
-                        {{
-                          new Date(post.classDatetime).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                        }}
+                        {{ post.classDate }} {{ post.classStartTime }} -
+                        {{ post.classEndTime }}
                         <span v-if="post.classLength">
                           - {{ Math.floor(post.classLength / 60) }}h
                           {{ post.classLength % 60 }}m
