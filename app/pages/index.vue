@@ -2,6 +2,9 @@
 definePageMeta({
   layout: "default",
 });
+
+const theme = useState<string>("theme", () => "dark");
+const robotTheme = computed(() => (theme.value === "dark" ? "dark" : "light"));
 const localePath = useLocalePath();
 </script>
 
@@ -10,7 +13,7 @@ const localePath = useLocalePath();
     <!-- Hero Section -->
     <div class="grid grid-cols-2 gap-4">
       <div class="hero min-h-[70vh] bg-base-100 rounded-lg">
-        <common-robot />
+        <common-robot :theme="robotTheme" />
       </div>
 
       <div class="hero min-h-[70vh] bg-base-100 rounded-lg">

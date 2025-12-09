@@ -2,6 +2,7 @@
 <template>
   <section
     class="relative min-h-[60vh] lg:min-h-screen flex items-end justify-center overflow-hidden mb-6 rounded-lg"
+    :class="textColorClass"
   >
     <canvas ref="canvasEl" class="absolute inset-0 w-full h-full"></canvas>
 
@@ -23,19 +24,27 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, watch, computed } from "vue";
 import * as THREE from "three";
 // @ts-ignore
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 // @ts-ignore
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+const props = withDefaults(defineProps<{ theme?: "light" | "dark" }>(), {
+  theme: "light",
+});
+
+const textColorClass = computed(() => {
+  return props.theme === "dark" ? "text-white" : "text-gray-900";
+});
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
-let controls: any;
+// let controls: any;
 let animationId = 0;
 
 // Eye groups
@@ -227,12 +236,114 @@ function onResize() {
   camera.updateProjectionMatrix();
 }
 
+function updateSceneBackground() {
+  const isDark = props.theme === "dark";
+
+  // Update Shader Uniforms
+  if (scene && scene.userData.bgMaterial) {
+    const mat = scene.userData.bgMaterial as THREE.ShaderMaterial;
+    if (isDark) {
+      // Dark Theme (Industrial/Sci-Fi)
+      mat.uniforms.colorTop.value.setHex(0x5a2ff7);
+      mat.uniforms.colorMid.value.setHex(0x1a1f2e);
+      mat.uniforms.colorBottom.value.setHex(0x5a2ff7);
+    } else {
+      // Light Theme (Clean/Sky)
+      mat.uniforms.colorTop.value.setHex(0xffffff);
+      mat.uniforms.colorMid.value.setHex(0xe0f2fe); // Sky 100
+      mat.uniforms.colorBottom.value.setHex(0xbae6fd); // Sky 200
+    }
+  }
+
+  // Fallback / Renderer Clean Color (mostly transparent if sphere covers all)
+  const color = isDark ? 0x1d232a : 0xf6f7fb;
+  // if (scene) scene.background = new THREE.Color(color); // Disabled for shader
+  if (renderer) renderer.setClearColor(color, 1);
+}
+
+watch(
+  () => props.theme,
+  () => {
+    updateSceneBackground();
+  }
+);
+
 function createScene(canvas: HTMLCanvasElement) {
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf6f7fb);
+
+  // Shader Background
+  const bgGeometry = new THREE.SphereGeometry(50, 64, 64);
+  const bgMaterial = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    uniforms: {
+      colorTop: { value: new THREE.Color(0x0d1117) },
+      colorMid: { value: new THREE.Color(0x1a1f2e) },
+      colorBottom: { value: new THREE.Color(0xb52b12) },
+    },
+    vertexShader: `
+    varying vec3 vWorldPosition;
+    void main() {
+      vec4 worldPos = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPos.xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+    fragmentShader: `
+    uniform vec3 colorTop;
+    uniform vec3 colorMid;
+    uniform vec3 colorBottom;
+    varying vec3 vWorldPosition;
+    
+    // Simple noise function
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+    
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+        f.y
+      );
+    }
+    
+    void main() {
+      vec3 dir = normalize(vWorldPosition);
+      float h = dir.y * 0.5 + 0.5;
+      
+      // Three-way gradient
+      vec3 color;
+      if (h > 0.5) {
+        color = mix(colorMid, colorTop, (h - 0.5) * 2.0);
+      } else {
+        color = mix(colorBottom, colorMid, h * 2.0);
+      }
+      
+      // Add subtle noise texture
+      float n = noise(dir.xz * 8.0) * 0.03;
+      color += vec3(n);
+      
+      // Vignette
+      float vignette = 1.0 - length(dir.xz) * 0.3;
+      color *= vignette;
+      
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `,
+  });
+  const bgSphere = new THREE.Mesh(bgGeometry, bgMaterial);
+  scene.add(bgSphere);
+
+  // Store reference to update uniforms later
+  (scene as any).userData = { bgMaterial }; // Hacky but effective storage
+
+  updateSceneBackground();
 
   camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 10, 30); // Moved back slightly to see the whole robot
+  camera.position.set(0, 3.25, 20); // Moved back slightly to see the whole robot
 
   renderer = new THREE.WebGLRenderer({
     canvas,
@@ -244,12 +355,12 @@ function createScene(canvas: HTMLCanvasElement) {
   onResize();
 
   // Controls
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
+  // controls = new OrbitControls(camera, renderer.domElement);
+  // controls.enableDamping = true;
+  // controls.dampingFactor = 0.05;
 
   // Lights
-  const hemi = new THREE.HemisphereLight(0xffffff, 0xcccccc, 0.8);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xcccccc, 1);
   scene.add(hemi);
   const key = new THREE.DirectionalLight(0xffffff, 0.9);
   key.position.set(3, 4, 5);
@@ -392,7 +503,7 @@ function lookAtPointForEye(
 function animate() {
   animationId = requestAnimationFrame(animate);
 
-  if (controls) controls.update();
+  // if (controls) controls.update();
 
   // Robot Body Rotation
   if (robotModel) {
