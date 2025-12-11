@@ -80,12 +80,6 @@ const closeDrawer = () => {
             Logout
           </button>
         </li>
-        <li class="items-center">
-          <LangSwitcher />
-        </li>
-        <li class="items-center">
-          <ThemeSwitcher />
-        </li>
       </ul>
     </div>
   </div>

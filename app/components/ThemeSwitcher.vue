@@ -48,6 +48,7 @@ onMounted(() => {
       type="checkbox"
       data-toggle-theme="dark,retro"
       data-act-class="ACTIVECLASS"
+      :checked="theme === 'retro'"
     />
 
     <!-- sun icon -->

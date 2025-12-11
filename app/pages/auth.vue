@@ -5,6 +5,8 @@ const handleGoogleLogin = async () => {
   await signIn.social({
     provider: "google",
     callbackURL: "/login-success",
+    // @ts-expect-error - prompt is not typed but passed to provider
+    // prompt: "select_account",
   });
 };
 

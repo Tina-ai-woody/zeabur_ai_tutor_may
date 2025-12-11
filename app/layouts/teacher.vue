@@ -156,12 +156,6 @@ const closeDrawer = () => {
             {{ $t("teacher.layout.logout") }}
           </button>
         </li>
-        <li>
-          <LangSwitcher />
-        </li>
-        <li>
-          <ThemeSwitcher />
-        </li>
       </ul>
     </div>
   </div>
