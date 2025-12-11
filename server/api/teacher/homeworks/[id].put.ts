@@ -1,4 +1,4 @@
-import { homeworks } from "../../../../db/schema";
+import { homeworks, homeworkClassrooms } from "../../../../db/schema";
 import { eq, and } from "drizzle-orm";
 import { auth } from "../../../../server/utils/auth";
 
@@ -23,42 +23,62 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const { title, subject, deadline, classroomId } = body;
+  const { title, subject, deadline, classroomIds } = body;
 
-  if (!title || !classroomId) {
+  if (!title || !classroomIds || !Array.isArray(classroomIds)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Title and Classroom are required",
+      statusMessage: "Title and Classroom IDs (array) are required",
     });
   }
 
   try {
-    // Verify ownership and update
-    const result = await useDrizzle()
-      .update(homeworks)
-      .set({
-        title,
-        subject,
-        deadline: deadline ? new Date(deadline) : null,
-        classroomId,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(homeworks.id, homeworkId),
-          eq(homeworks.teacherId, session.user.id)
+    const updatedHomework = await useDrizzle().transaction(async (tx) => {
+      // Verify ownership and update homework basic details
+      const [result] = await tx
+        .update(homeworks)
+        .set({
+          title,
+          subject,
+          deadline: deadline ? new Date(deadline) : null,
+          classroomId: classroomIds[0] || null, // Update legacy column
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(homeworks.id, homeworkId),
+            eq(homeworks.teacherId, session.user.id)
+          )
         )
-      )
-      .returning();
+        .returning();
 
-    if (result.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Homework not found or unauthorized",
-      });
-    }
+      if (!result) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: "Homework not found or unauthorized",
+        });
+      }
 
-    return { success: true, homework: result[0] };
+      // Update Classroom Assignments
+      // 1. Delete existing assignments
+      await tx
+        .delete(homeworkClassrooms)
+        .where(eq(homeworkClassrooms.homeworkId, homeworkId));
+
+      // 2. Insert new assignments
+      if (classroomIds.length > 0) {
+        await tx.insert(homeworkClassrooms).values(
+          classroomIds.map((cid: string) => ({
+            homeworkId: homeworkId,
+            classroomId: cid,
+          }))
+        );
+      }
+
+      return result;
+    });
+
+    return { success: true, homework: updatedHomework };
   } catch (error: any) {
     throw createError({
       statusCode: 500,

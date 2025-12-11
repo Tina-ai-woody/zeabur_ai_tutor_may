@@ -18,6 +18,9 @@ interface HomeworkDetails {
     createdAt: string;
     classroomName: string | null;
     classroomId: string | null;
+    // New fields
+    classrooms?: { id: string; name: string }[];
+    classroomIds?: string[];
   };
   problems: {
     id: string;
@@ -47,7 +50,7 @@ const settingsForm = ref({
   title: "",
   subject: "",
   deadline: "",
-  classroomId: "",
+  classroomIds: [] as string[],
 });
 const isUpdatingSettings = ref(false);
 const settingsError = ref("");
@@ -59,7 +62,19 @@ const openSettings = () => {
   if (data.value && data.value.homework) {
     settingsForm.value.title = data.value.homework.title || "";
     settingsForm.value.subject = data.value.homework.subject || "";
-    settingsForm.value.classroomId = data.value.homework.classroomId || "";
+
+    // Initialize classroomIds from new usage, falling back to legacy single ID
+    if (
+      data.value.homework.classroomIds &&
+      data.value.homework.classroomIds.length > 0
+    ) {
+      settingsForm.value.classroomIds = [...data.value.homework.classroomIds];
+    } else if (data.value.homework.classroomId) {
+      settingsForm.value.classroomIds = [data.value.homework.classroomId];
+    } else {
+      settingsForm.value.classroomIds = [];
+    }
+
     // Format deadline for datetime-local input (YYYY-MM-DDThh:mm)
     if (data.value.homework.deadline) {
       const date = new Date(data.value.homework.deadline);
@@ -76,7 +91,8 @@ const openSettings = () => {
 };
 
 const updateHomework = async () => {
-  if (!settingsForm.value.title || !settingsForm.value.classroomId) return;
+  if (!settingsForm.value.title || settingsForm.value.classroomIds.length === 0)
+    return;
 
   isUpdatingSettings.value = true;
   settingsError.value = "";
@@ -210,8 +226,23 @@ const deleteHomework = async () => {
                   <div class="text-sm text-gray-500">
                     {{ $t("teacher.homeworks.detail.classroom_label") }}
                   </div>
-                  <div class="font-semibold text-lg">
-                    {{ data.homework.classroomName }}
+                  <div
+                    class="font-semibold text-lg flex flex-wrap gap-2 justify-end"
+                  >
+                    <span
+                      v-if="
+                        data.homework.classrooms &&
+                        data.homework.classrooms.length > 0
+                      "
+                      v-for="cls in data.homework.classrooms"
+                      :key="cls.id"
+                      class="badge badge-ghost"
+                    >
+                      {{ cls.name }}
+                    </span>
+                    <span v-else>
+                      {{ data.homework.classroomName }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -423,22 +454,23 @@ const deleteHomework = async () => {
                 $t("teacher.homeworks.settings.classroom_label")
               }}</span>
             </label>
-            <select
-              v-model="settingsForm.classroomId"
-              class="select select-bordered w-full"
-              required
-            >
-              <option disabled value="">
-                {{ $t("teacher.homeworks.settings.select_classroom") }}
-              </option>
-              <option
+            <div class="space-y-2">
+              <div
                 v-for="classroom in classrooms"
                 :key="classroom.id"
-                :value="classroom.id"
+                class="form-control"
               >
-                {{ classroom.name }}
-              </option>
-            </select>
+                <label class="label justify-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-primary"
+                    :value="classroom.id"
+                    v-model="settingsForm.classroomIds"
+                  />
+                  <span class="label-text">{{ classroom.name }}</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           <div class="mt-6">

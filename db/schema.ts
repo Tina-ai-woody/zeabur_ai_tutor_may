@@ -123,9 +123,8 @@ export const homeworks = pgTable("homeworks", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  classroomId: text("classroom_id")
-    .notNull()
-    .references(() => classrooms.id),
+  classroomId: text("classroom_id") // Kept for backward compatibility, but made nullable logically if needed. Though schema says notNull(), we might make it nullable or just leave it. Let's make it nullable in definition if we can, or just keep it as is and fill with one ID.
+    .references(() => classrooms.id), // Removing .notNull() to allow flexible assignment in future.
   teacherId: text("teacher_id")
     .notNull()
     .references(() => user.id),
@@ -134,6 +133,18 @@ export const homeworks = pgTable("homeworks", {
   deadline: timestamp("deadline"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const homeworkClassrooms = pgTable("homework_classrooms", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  homeworkId: text("homework_id")
+    .notNull()
+    .references(() => homeworks.id),
+  classroomId: text("classroom_id")
+    .notNull()
+    .references(() => classrooms.id),
 });
 
 export const homeworkProblems = pgTable("homework_problems", {

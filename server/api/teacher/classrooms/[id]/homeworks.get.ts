@@ -1,4 +1,4 @@
-import { and, eq, desc } from "drizzle-orm";
+import { and, eq, desc, inArray, or } from "drizzle-orm";
 import * as tables from "../../../../../db/schema";
 
 export default defineEventHandler(async (event) => {
@@ -37,10 +37,36 @@ export default defineEventHandler(async (event) => {
   }
 
   // Fetch homeworks for the classroom
+  // A homework belongs if:
+  // a) homeworks.classroomId == classroomId (Legacy)
+  // b) homework_classrooms has entry (homeworkId, classroomId)
+
+  // To avoid duplicates if we join, we need to be careful.
+  // Let's use EXISTS or a distinct select if possible, or just specific filtering conditions.
+  // Actually, since we want homeworks for ONE specific classroom, we can simple join or use subquery.
+
   const homeworks = await useDrizzle()
-    .select()
+    .selectDistinct({
+      id: tables.homeworks.id,
+      classroomId: tables.homeworks.classroomId,
+      teacherId: tables.homeworks.teacherId,
+      subject: tables.homeworks.subject,
+      title: tables.homeworks.title,
+      deadline: tables.homeworks.deadline,
+      createdAt: tables.homeworks.createdAt,
+      updatedAt: tables.homeworks.updatedAt,
+    })
     .from(tables.homeworks)
-    .where(eq(tables.homeworks.classroomId, classroomId))
+    .leftJoin(
+      tables.homeworkClassrooms,
+      eq(tables.homeworks.id, tables.homeworkClassrooms.homeworkId)
+    )
+    .where(
+      or(
+        eq(tables.homeworks.classroomId, classroomId),
+        eq(tables.homeworkClassrooms.classroomId, classroomId)
+      )
+    )
     .orderBy(desc(tables.homeworks.createdAt));
 
   return homeworks;

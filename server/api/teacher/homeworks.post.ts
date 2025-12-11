@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import * as tables from "../../../db/schema";
 
 const createHomeworkSchema = z.object({
-  classroomId: z.string(),
+  classroomIds: z.array(z.string()), // Changed from classroomId to classroomIds
   subject: z.string().optional(),
   title: z.string().optional(),
   deadline: z.string().optional(), // Receive as string, convert to Date
@@ -30,33 +30,37 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { classroomId, subject, title, deadline, problemIds } = result.data;
+  const { classroomIds, subject, title, deadline, problemIds } = result.data;
 
-  // Verify that the classroom belongs to the teacher
-  const [classroom] = await useDrizzle()
+  // Verify that all classrooms belong to the teacher
+  const classrooms = await useDrizzle()
     .select()
     .from(tables.classrooms)
     .where(
       and(
-        eq(tables.classrooms.id, classroomId),
+        inArray(tables.classrooms.id, classroomIds),
         eq(tables.classrooms.teacherId, session.user.id)
       )
     );
 
-  if (!classroom) {
+  if (classrooms.length !== classroomIds.length) {
     throw createError({
       statusCode: 404,
-      message: "Classroom not found or access denied",
+      message: "One or more classrooms not found or access denied",
     });
   }
 
   try {
     const newHomework = await useDrizzle().transaction(async (tx) => {
       // 1. Create Homework
+      // For backward compatibility or primary classroom, we might store the first ID, or leave it null.
+      // Since we made it nullable in schema (removed .notNull()), we can skip it or set it to the first one.
+      // Let's set it to the first one for now to keep things working if something relies on it,
+      // but rely on the new table for real logic.
       const [homework] = await tx
         .insert(tables.homeworks)
         .values({
-          classroomId,
+          classroomId: classroomIds[0], // Optional: Deprecate use of this column
           teacherId: session.user.id,
           subject,
           title,
@@ -64,14 +68,28 @@ export default defineEventHandler(async (event) => {
         })
         .returning();
 
-      // 2. Add Problems to Homework
-      await tx.insert(tables.homeworkProblems).values(
-        problemIds.map((problemId, index) => ({
-          homeworkId: homework.id,
-          problemId,
-          order: String(index), // Store order as string since schema defines it as text
-        }))
-      );
+      // 2. Add Classrooms to Homework
+      if (classroomIds.length > 0) {
+        await tx.insert(tables.homeworkClassrooms).values(
+          classroomIds.map((cid) => ({
+            homeworkId: homework.id,
+            classroomId: cid,
+          }))
+        );
+      }
+
+      // 3. Add Problems to Homework
+      if (problemIds.length > 0) {
+        await tx.insert(tables.homeworkProblems).values(
+          problemIds.map((problemId, index) => ({
+            homeworkId: homework.id,
+            problemId,
+            order: String(index),
+          }))
+        );
+      }
+
+      return homework;
     });
 
     return newHomework;

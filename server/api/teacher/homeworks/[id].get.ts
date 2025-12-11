@@ -1,9 +1,10 @@
-import { eq, and, asc } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import {
   homeworks,
   homeworkProblems,
   problems,
   classrooms,
+  homeworkClassrooms,
 } from "../../../../db/schema";
 
 export default defineEventHandler(async (event) => {
@@ -34,11 +35,10 @@ export default defineEventHandler(async (event) => {
         subject: homeworks.subject,
         deadline: homeworks.deadline,
         createdAt: homeworks.createdAt,
-        classroomName: classrooms.name,
-        classroomId: classrooms.id,
+        // Legacy support if needed, but we will fetch multiple classrooms below
+        classroomId: homeworks.classroomId,
       })
       .from(homeworks)
-      .leftJoin(classrooms, eq(homeworks.classroomId, classrooms.id))
       .where(
         and(eq(homeworks.id, homeworkId), eq(homeworks.teacherId, user.id))
       );
@@ -50,27 +50,54 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // 2. Fetch Associated Problems
+    // 2. Fetch Assigned Classrooms
+    const assignedClassrooms = await useDrizzle()
+      .select({
+        id: classrooms.id,
+        name: classrooms.name,
+      })
+      .from(homeworkClassrooms)
+      .innerJoin(classrooms, eq(homeworkClassrooms.classroomId, classrooms.id))
+      .where(eq(homeworkClassrooms.homeworkId, homeworkId));
+
+    // Fallback: if no classrooms in new table, check legacy column
+    if (assignedClassrooms.length === 0 && homework.classroomId) {
+      const [legacyClassroom] = await useDrizzle()
+        .select({
+          id: classrooms.id,
+          name: classrooms.name,
+        })
+        .from(classrooms)
+        .where(eq(classrooms.id, homework.classroomId));
+
+      if (legacyClassroom) {
+        assignedClassrooms.push(legacyClassroom);
+      }
+    }
+
+    // 3. Fetch Associated Problems
     const associatedProblems = await useDrizzle()
       .select({
         id: problems.id,
         title: problems.title,
         difficulty: problems.difficulty,
-        type: problems.choices, // Assuming choices structure implies type or we just show content
+        type: problems.choices,
         content: problems.content,
         order: homeworkProblems.order,
       })
       .from(homeworkProblems)
       .innerJoin(problems, eq(homeworkProblems.problemId, problems.id))
       .where(eq(homeworkProblems.homeworkId, homeworkId));
-    // .orderBy(asc(homeworkProblems.order)); // Order is text, might need casting if we want numeric sort, or just sort by creation if order is null
-    // Let's try to sort by order if it exists
-
-    // Sort manually if needed or just return as is. The schema has order as text.
-    // Let's assume simple retrieval for now.
 
     return {
-      homework,
+      homework: {
+        ...homework,
+        classrooms: assignedClassrooms,
+        classroomIds: assignedClassrooms.map((c) => c.id), // Convenience for frontend
+        // Keep single name for compatibility with list view if needed, or just use first one
+        classroomName: assignedClassrooms[0]?.name || "Unassigned",
+        classroomId: assignedClassrooms[0]?.id || null,
+      },
       problems: associatedProblems,
     };
   } catch (error: any) {
