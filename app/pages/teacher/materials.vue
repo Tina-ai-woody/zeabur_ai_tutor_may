@@ -25,16 +25,43 @@ const currentFolder = computed(
   () => pathStack.value[pathStack.value.length - 1]
 );
 
+const searchFilters = ref({
+  keyword: "",
+  subject: "",
+  chapter: "",
+  source: "",
+  hashtag: "",
+});
+
 const {
   data: materials,
   refresh,
   error,
 } = await useFetch("/api/teacher/materials", {
-  query: computed(() => ({ parentId: currentFolder.value?.id })),
+  query: computed(() => ({
+    parentId: currentFolder.value?.id,
+    ...searchFilters.value,
+  })),
 });
+
+const isSearching = computed(() => {
+  return Object.values(searchFilters.value).some((v) => !!v);
+});
+
+function onSearch(params: any) {
+  searchFilters.value = params;
+}
 
 // Actions
 function enterFolder(folder: any) {
+  // Clear search when entering a folder to return to navigation mode
+  searchFilters.value = {
+    keyword: "",
+    subject: "",
+    chapter: "",
+    source: "",
+    hashtag: "",
+  };
   pathStack.value.push({ id: folder.id, name: folder.name });
 }
 
@@ -177,9 +204,39 @@ async function shareToClassroom() {
 </script>
 
 <template>
-  <div class="p-6">
-    <div class="flex justify-between items-center mb-6">
+  <div class="items-center p-6">
+    <div class="flex justify-between mb-6">
       <h1 class="text-2xl font-bold">Class Materials Workspace</h1>
+    </div>
+
+    <SearchMaterial @search="onSearch" />
+
+    <!-- Breadcrumbs -->
+    <div class="flex justify-between items-center mb-2 mt-2">
+      <div v-if="!isSearching" class="breadcrumbs text-sm">
+        <ul>
+          <li v-for="(crumb, index) in pathStack" :key="crumb.name">
+            <a @click="navigateToBreadcrumb(index)">
+              <Icon
+                v-if="index === 0"
+                name="heroicons:home"
+                class="w-4 h-4 mr-1"
+              />
+              <Icon
+                v-else
+                name="heroicons:chevron-right"
+                class="w-4 h-4 mr-1"
+              />
+              <Icon
+                v-if="crumb.id"
+                name="heroicons:folder"
+                class="w-4 h-4 mr-1"
+              />
+              {{ crumb.name }}
+            </a>
+          </li>
+        </ul>
+      </div>
       <div class="flex gap-2">
         <button class="btn btn-outline" @click="showNewFolderModal = true">
           <Icon name="heroicons:folder-plus" class="w-5 h-5 mr-1" />
@@ -190,28 +247,6 @@ async function shareToClassroom() {
           Upload
         </button>
       </div>
-    </div>
-
-    <!-- Breadcrumbs -->
-    <div class="breadcrumbs text-sm mb-4">
-      <ul>
-        <li v-for="(crumb, index) in pathStack" :key="crumb.name">
-          <a @click="navigateToBreadcrumb(index)">
-            <Icon
-              v-if="index === 0"
-              name="heroicons:home"
-              class="w-4 h-4 mr-1"
-            />
-            <Icon v-else name="heroicons:chevron-right" class="w-4 h-4 mr-1" />
-            <Icon
-              v-if="crumb.id"
-              name="heroicons:folder"
-              class="w-4 h-4 mr-1"
-            />
-            {{ crumb.name }}
-          </a>
-        </li>
-      </ul>
     </div>
 
     <!-- File Explorer -->
@@ -236,9 +271,14 @@ async function shareToClassroom() {
           class="group relative border border-base-200 rounded-lg p-4 hover:bg-base-200 transition-colors cursor-pointer flex flex-col items-center text-center"
         >
           <!-- Icon -->
-          <div class="mb-2" @click="openItem(item)">
+          <div class="mb-2" @click="item && openItem(item)">
             <Icon
-              v-if="item.isFolder"
+              v-if="!item"
+              name="heroicons:question-mark-circle"
+              class="w-16 h-16 text-gray-300"
+            />
+            <Icon
+              v-else-if="item.isFolder"
               name="heroicons:folder-solid"
               class="w-16 h-16 text-yellow-500"
             />
@@ -266,7 +306,7 @@ async function shareToClassroom() {
 
           <!-- Metadata Badge (optional) -->
           <div
-            v-if="!item.isFolder && item.subject"
+            v-if="item && !item.isFolder && item.subject"
             class="mt-1 badge badge-xs badge-ghost"
           >
             {{ item.subject }}
