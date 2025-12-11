@@ -6,6 +6,7 @@ import {
   jsonb,
   integer,
   foreignKey,
+  interval,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -326,9 +327,9 @@ export const posts = pgTable("posts", {
     .references(() => user.id),
   content: text("content"),
   classDate: text("class_date"),
-  classStartTime: text("class_start_time"),
-  classEndTime: text("class_end_time"),
-  classLength: integer("class_length"), // in minutes
+  classStartTime: timestamp("class_start_time"),
+  classEndTime: timestamp("class_end_time"),
+  classLength: interval("class_length"), // derived from start/end
   attendees: jsonb("attendees").$type<string[]>().default([]), // List of student IDs
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

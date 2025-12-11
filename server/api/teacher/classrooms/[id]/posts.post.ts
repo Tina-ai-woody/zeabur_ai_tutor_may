@@ -37,9 +37,13 @@ export default defineEventHandler(async (event) => {
       teacherId: session.user.id,
       content: body.content,
       classDate: body.classDate,
-      classStartTime: body.classStartTime,
-      classEndTime: body.classEndTime,
-      classLength: body.classLength ? parseInt(body.classLength) : null,
+      classStartTime: new Date(body.classStartTime),
+      classEndTime: new Date(body.classEndTime),
+      classLength: `${
+        (new Date(body.classEndTime).getTime() -
+          new Date(body.classStartTime).getTime()) /
+        60000
+      } minutes`,
       attendees: body.attendees || [],
     })
     .returning();

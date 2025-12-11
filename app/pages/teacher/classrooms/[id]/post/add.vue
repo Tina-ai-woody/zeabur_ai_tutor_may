@@ -91,9 +91,12 @@ const submitPost = async () => {
       body: {
         content: form.value.content,
         classDate: form.value.date,
-        classStartTime: form.value.startTime,
-        classEndTime: form.value.endTime,
-        classLength: classLength.value,
+        classStartTime: new Date(
+          `${form.value.date}T${form.value.startTime}`
+        ).toISOString(),
+        classEndTime: new Date(
+          `${form.value.date}T${form.value.endTime}`
+        ).toISOString(),
         attendees: form.value.attendees,
       },
     });
