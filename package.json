@@ -9,6 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "db:start": "docker desktop start",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
     "db:studio": "npx drizzle-kit studio"
   },
   "dependencies": {
