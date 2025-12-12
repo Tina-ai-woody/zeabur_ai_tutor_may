@@ -28,7 +28,15 @@ const props = defineProps({
     type: Array as PropType<Student[]>,
     default: () => [],
   },
+  editable: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+const route = useRoute();
+const localePath = useLocalePath();
+const classroomId = route.params.id as string;
 
 const formatDuration = (minutes: number) => {
   const h = Math.floor(minutes / 60);
@@ -55,9 +63,25 @@ const attendeeNames = computed(() => {
       <!-- Header: Date and Time -->
       <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
         <div class="flex-1">
-          <h3 class="card-title text-lg font-bold">
-            {{ post.classDate || "No Date" }}
-          </h3>
+          <div class="flex justify-between items-center">
+            <h3 class="card-title text-lg font-bold">
+              {{ post.classDate || "No Date" }}
+            </h3>
+            <!-- Edit Button -->
+            <NuxtLink
+              v-if="editable"
+              :to="
+                localePath({
+                  path: `/teacher/classrooms/${classroomId}/post/edit`,
+                  query: { postId: post.id },
+                })
+              "
+              class="btn btn-ghost btn-xs text-info"
+            >
+              <Icon name="heroicons:pencil-square" class="size-4 mr-1" />
+              Edit
+            </NuxtLink>
+          </div>
           <div
             class="flex flex-wrap items-center gap-2 text-sm opacity-80 mt-1"
           >

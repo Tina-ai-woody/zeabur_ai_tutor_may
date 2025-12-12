@@ -371,6 +371,7 @@ const deleteClassroom = async () => {
                   :key="post.id"
                   :post="post"
                   :students="classroom.students"
+                  :editable="true"
                 />
               </div>
               <div v-else class="text-center py-10 opacity-50">
