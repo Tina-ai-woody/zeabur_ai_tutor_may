@@ -7,6 +7,7 @@ import {
   integer,
   foreignKey,
   interval,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -361,3 +362,30 @@ export const errorProblems = pgTable("error_problems", {
   understood: boolean("understood").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const problemsStatus = pgTable(
+  "problems_status",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id),
+    problemId: text("problem_id")
+      .notNull()
+      .references(() => problems.id),
+    isFavorite: boolean("is_favorite").default(false).notNull(),
+    isWrong: boolean("is_wrong").default(false).notNull(),
+    understood: boolean("understood").default(false).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      userProblemUnique: uniqueIndex("problems_status_user_problem_unique").on(
+        table.userId,
+        table.problemId
+      ),
+    };
+  }
+);

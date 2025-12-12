@@ -1,7 +1,13 @@
 import { db } from "../../../db";
-import { problems, favorites, errorProblems } from "../../../db/schema";
+import {
+  problems,
+  favorites,
+  errorProblems,
+  problemsStatus,
+} from "../../../db/schema";
 import { auth } from "../../../server/utils/auth";
-import { and, ilike, sql } from "drizzle-orm";
+import { and, ilike, sql, eq } from "drizzle-orm";
+import { updateProblemStatus } from "../../../server/utils/problemStatus";
 
 export default defineEventHandler(async (event) => {
   const session = await auth.api.getSession({
@@ -28,6 +34,9 @@ export default defineEventHandler(async (event) => {
     filters.push(sql`${problems.hashtags} @> ${JSON.stringify([hashtag])}`);
   }
 
+  // Sync status first
+  await updateProblemStatus(session.user.id);
+
   const allProblems = await db
     .select({
       id: problems.id,
@@ -35,20 +44,31 @@ export default defineEventHandler(async (event) => {
       difficulty: problems.difficulty,
       source: problems.source,
       hashtags: problems.hashtags,
-      isFavorite: sql<boolean>`EXISTS (
-        SELECT 1 FROM ${favorites} 
-        WHERE ${favorites.problemId} = ${problems.id} 
-        AND ${favorites.userId} = ${session.user.id}
-      )`,
-      isError: sql<boolean>`EXISTS (
-        SELECT 1 FROM ${errorProblems}
-        WHERE ${errorProblems.problemId} = ${problems.id}
-        AND ${errorProblems.userId} = ${session.user.id}
-        AND ${errorProblems.understood} = false
-      )`,
+      isFavorite: problemsStatus.isFavorite,
+      isWrong: problemsStatus.isWrong,
+      understood: problemsStatus.understood,
     })
     .from(problems)
+    .leftJoin(
+      problemsStatus,
+      and(
+        eq(problemsStatus.problemId, problems.id),
+        eq(problemsStatus.userId, session.user.id)
+      )
+    )
     .where(and(...filters));
 
-  return allProblems;
+  return allProblems.map((p) => ({
+    ...p,
+    // Map nulls (if no status record found) to false
+    isFavorite: p.isFavorite ?? false,
+    isWrong: p.isWrong ?? false,
+    // Frontend expects isError for the X mark. We map isWrong to isError.
+    // And if implied understood is false? User said "understood follows error_problems".
+    // If isWrong is true, understood might be true or false.
+    // Existing logic was: isError = (in error_problems AND understood=false).
+    // New logic: isWrong comes from error_problems. understood comes from error_problems.
+    // So isError = isWrong && !understood?
+    isError: (p.isWrong && !p.understood) ?? false,
+  }));
 });
