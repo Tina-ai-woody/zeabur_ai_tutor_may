@@ -109,6 +109,7 @@ const { data: posts } = await useFetch(
                   <th>{{ $t("student.classrooms.table.subject") }}</th>
                   <th>{{ $t("student.classrooms.table.deadline") }}</th>
                   <th>{{ $t("student.classrooms.table.created_at") }}</th>
+                  <th>{{ $t("student.classrooms.table.completed_at") }}</th>
                   <th>{{ $t("student.classrooms.table.actions") }}</th>
                 </tr>
               </thead>
@@ -134,11 +135,31 @@ const { data: posts } = await useFetch(
                   </td>
                   <td>{{ new Date(hw.createdAt).toLocaleDateString() }}</td>
                   <td>
+                    {{
+                      hw.completedAt
+                        ? new Date(hw.completedAt).toLocaleDateString()
+                        : "-"
+                    }}
+                  </td>
+                  <td>
                     <NuxtLink
-                      :to="localePath(`/student/homeworks/${hw.id}`)"
-                      class="btn btn-sm btn-primary"
+                      :to="
+                        hw.completedAt
+                          ? localePath(`/student/homeworks/review/${hw.id}`)
+                          : localePath(`/student/homeworks/${hw.id}`)
+                      "
+                      class="btn btn-sm"
+                      :class="
+                        hw.completedAt
+                          ? 'btn-success text-white'
+                          : 'btn-primary'
+                      "
                     >
-                      {{ $t("student.classrooms.view_hw") }}
+                      {{
+                        hw.completedAt
+                          ? $t("student.classrooms.review_hw", "Review")
+                          : $t("student.classrooms.view_hw")
+                      }}
                     </NuxtLink>
                   </td>
                 </tr>

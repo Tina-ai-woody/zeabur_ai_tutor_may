@@ -122,7 +122,8 @@
         "subject": "Subject",
         "deadline": "Deadline",
         "created_at": "Created At",
-        "actions": "Actions"
+        "actions": "Actions",
+        "completed_at": "Completed At"
       },
       "no_students": "No other students enrolled yet.",
       "homeworks": "Homeworks",

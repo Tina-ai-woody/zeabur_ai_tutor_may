@@ -1,10 +1,5 @@
 import { db } from "../../../db";
-import {
-  problems,
-  favorites,
-  errorProblems,
-  problemsStatus,
-} from "../../../db/schema";
+import { problems, problemsStatus } from "../../../db/schema";
 import { auth } from "../../../server/utils/auth";
 import { and, ilike, sql, eq } from "drizzle-orm";
 import { updateProblemStatus } from "../../../server/utils/problemStatus";
@@ -70,6 +65,6 @@ export default defineEventHandler(async (event) => {
     // Existing logic was: isError = (in error_problems AND understood=false).
     // New logic: isWrong comes from error_problems. understood comes from error_problems.
     // So isError = isWrong && !understood?
-    isError: (p.isWrong && !p.understood) ?? false,
+    // isError: (p.isWrong && !p.understood) ?? false,
   }));
 });

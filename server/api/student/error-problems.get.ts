@@ -1,7 +1,13 @@
 import { db } from "../../../db";
-import { problems, errorProblems, favorites } from "../../../db/schema";
+import {
+  problems,
+  errorProblems,
+  favorites,
+  problemsStatus,
+} from "../../../db/schema";
 import { auth } from "../../../server/utils/auth";
 import { and, eq, ilike, sql, desc } from "drizzle-orm";
+import { updateProblemStatus } from "../../../server/utils/problemStatus";
 
 export default defineEventHandler(async (event) => {
   const session = await auth.api.getSession({
@@ -37,6 +43,9 @@ export default defineEventHandler(async (event) => {
     filters.push(sql`${problems.hashtags} @> ${JSON.stringify([hashtag])}`);
   }
 
+  // Sync status first
+  await updateProblemStatus(session.user.id);
+
   const results = await db
     .select({
       id: problems.id,
@@ -44,20 +53,26 @@ export default defineEventHandler(async (event) => {
       difficulty: problems.difficulty,
       source: problems.source,
       hashtags: problems.hashtags,
-      // We need isFavorite to keep the UI consistent if we reuse the card
-      isFavorite: sql<boolean>`EXISTS (
-        SELECT 1 FROM ${favorites}
-        WHERE ${favorites.problemId} = ${problems.id}
-        AND ${favorites.userId} = ${session.user.id}
-      )`,
-      // It's definitely an error problem if it's in this list, but let's include the flag for UI consistency
-      isError: sql<boolean>`true`,
+      isFavorite: problemsStatus.isFavorite,
+      isWrong: sql<boolean>`true`, // Always true for this list
+      understood: problemsStatus.understood,
       errorCreatedAt: errorProblems.createdAt,
     })
     .from(errorProblems)
     .innerJoin(problems, eq(errorProblems.problemId, problems.id))
+    .leftJoin(
+      problemsStatus,
+      and(
+        eq(problemsStatus.problemId, problems.id),
+        eq(problemsStatus.userId, session.user.id)
+      )
+    )
     .where(and(...filters))
     .orderBy(desc(errorProblems.createdAt));
 
-  return results;
+  return results.map((p) => ({
+    ...p,
+    isFavorite: p.isFavorite ?? false,
+    understood: p.understood ?? false,
+  }));
 });

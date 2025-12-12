@@ -122,7 +122,8 @@
         "subject": "科目",
         "deadline": "截止日期",
         "created_at": "建立日期",
-        "actions": "操作"
+        "actions": "操作",
+        "completed_at": "完成日期"
       },
       "no_students": "尚無其他學生加入。",
       "homeworks": "作業",

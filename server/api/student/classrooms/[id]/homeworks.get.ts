@@ -2,6 +2,7 @@ import {
   homeworks,
   classroomStudents,
   homeworkClassrooms,
+  homeworkCompletions,
 } from "../../../../../db/schema";
 import { eq, and, desc, or } from "drizzle-orm";
 import { auth } from "../../../../../server/utils/auth";
@@ -56,11 +57,19 @@ export default defineEventHandler(async (event) => {
       deadline: homeworks.deadline,
       createdAt: homeworks.createdAt,
       updatedAt: homeworks.updatedAt,
+      completedAt: homeworkCompletions.completedAt,
     })
     .from(homeworks)
     .leftJoin(
       homeworkClassrooms,
       eq(homeworks.id, homeworkClassrooms.homeworkId)
+    )
+    .leftJoin(
+      homeworkCompletions,
+      and(
+        eq(homeworks.id, homeworkCompletions.homeworkId),
+        eq(homeworkCompletions.userId, session.user.id)
+      )
     )
     .where(
       or(

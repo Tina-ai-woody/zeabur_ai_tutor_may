@@ -1,7 +1,8 @@
 import { db } from "../../../db";
-import { problems, favorites, errorProblems } from "../../../db/schema";
+import { problems, favorites, problemsStatus } from "../../../db/schema";
 import { requireAuthSession } from "../../utils/auth";
 import { and, eq, ilike, sql, desc } from "drizzle-orm";
+import { updateProblemStatus } from "../../../server/utils/problemStatus";
 
 export default defineEventHandler(async (event) => {
   const session = await requireAuthSession(event);
@@ -19,6 +20,9 @@ export default defineEventHandler(async (event) => {
     filters.push(sql`${problems.hashtags} @> ${JSON.stringify([hashtag])}`);
   }
 
+  // Sync status first
+  await updateProblemStatus(session.user.id);
+
   const favoriteProblems = await db
     .select({
       id: problems.id,
@@ -26,19 +30,28 @@ export default defineEventHandler(async (event) => {
       difficulty: problems.difficulty,
       source: problems.source,
       hashtags: problems.hashtags,
-      isFavorite: sql<boolean>`true`, // It's the favorites endpoint, so it's always true
-      isError: sql<boolean>`EXISTS (
-        SELECT 1 FROM ${errorProblems}
-        WHERE ${errorProblems.problemId} = ${problems.id}
-        AND ${errorProblems.userId} = ${session.user.id}
-        AND ${errorProblems.understood} = false
-      )`,
+      isFavorite: sql<boolean>`true`,
+      isWrong: problemsStatus.isWrong,
+      understood: problemsStatus.understood,
       createdAt: favorites.createdAt,
     })
     .from(favorites)
     .innerJoin(problems, eq(favorites.problemId, problems.id))
+    .leftJoin(
+      problemsStatus,
+      and(
+        eq(problemsStatus.problemId, problems.id),
+        eq(problemsStatus.userId, session.user.id)
+      )
+    )
     .where(and(...filters))
     .orderBy(desc(favorites.createdAt));
+
+  return favoriteProblems.map((p) => ({
+    ...p,
+    isWrong: p.isWrong ?? false,
+    understood: p.understood ?? false,
+  }));
 
   return favoriteProblems;
 });
