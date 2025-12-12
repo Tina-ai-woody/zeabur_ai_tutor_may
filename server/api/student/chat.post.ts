@@ -114,11 +114,16 @@ export default defineEventHandler(async (event) => {
 
   // Handle tool calls
   while (responseMessage.tool_calls) {
-    messages.push(responseMessage); // Add assistant message with tool calls to DB history
     apiMessages.push(responseMessage); // Add to current context
 
+    const validToolCalls: any[] = [];
+    const validToolMessages: any[] = [];
+
     for (const toolCall of responseMessage.tool_calls) {
-      if (toolCall.function.name === "search_problems") {
+      let toolResultContent = "[]";
+      let toolName = toolCall.function.name;
+
+      if (toolName === "search_problems") {
         const args = JSON.parse(toolCall.function.arguments);
         const searchResults = await searchProblems({
           title: args.title,
@@ -126,32 +131,43 @@ export default defineEventHandler(async (event) => {
           hashtag: args.hashtag,
           limit: 3,
         });
-
-        const toolMessage = {
-          tool_call_id: toolCall.id,
-          role: "tool",
-          name: "search_problems",
-          content: JSON.stringify(searchResults),
-        };
-        messages.push(toolMessage);
-        apiMessages.push(toolMessage);
-      } else if (toolCall.function.name === "recommend_materials") {
+        toolResultContent = JSON.stringify(searchResults);
+      } else if (toolName === "recommend_materials") {
         const args = JSON.parse(toolCall.function.arguments);
         const recommendations = await recommendMaterials({
           studentId: args.studentId || user.id,
           keyword: args.keyword,
           limit: args.limit,
         });
-
-        const toolMessage = {
-          tool_call_id: toolCall.id,
-          role: "tool",
-          name: "recommend_materials",
-          content: JSON.stringify(recommendations),
-        };
-        messages.push(toolMessage);
-        apiMessages.push(toolMessage);
+        toolResultContent = JSON.stringify(recommendations);
       }
+
+      const toolMessage = {
+        tool_call_id: toolCall.id,
+        role: "tool",
+        name: toolName,
+        content: toolResultContent,
+      };
+
+      apiMessages.push(toolMessage);
+
+      // Only add to history if content is not empty array
+      if (toolResultContent !== "[]") {
+        validToolCalls.push(toolCall);
+        validToolMessages.push(toolMessage);
+      }
+    }
+
+    if (validToolCalls.length > 0) {
+      messages.push({
+        ...responseMessage,
+        tool_calls: validToolCalls,
+      });
+      messages.push(...validToolMessages);
+    } else if (responseMessage.content) {
+      // If no valid tool calls but there is content, keep the message without tool_calls
+      const { tool_calls, ...contentOnlyMessage } = responseMessage;
+      messages.push(contentOnlyMessage);
     }
 
     // Get next response
@@ -159,7 +175,7 @@ export default defineEventHandler(async (event) => {
       model: "gpt-4o",
       messages: apiMessages,
       tools: tools,
-      tool_choice: "auto", // Or none?
+      tool_choice: "auto",
     });
     responseMessage = response.choices[0].message;
   }

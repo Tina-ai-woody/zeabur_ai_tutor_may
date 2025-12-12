@@ -11,7 +11,7 @@ const filteredMessages = computed(() => {
   return messages.value.filter(
     (msg) =>
       msg.role === "user" ||
-      msg.role === "assistant" ||
+      (msg.role === "assistant" && msg.content) ||
       (msg.role === "tool" &&
         ((msg as any).name === "search_problems" ||
           (msg as any).name === "recommend_materials"))
