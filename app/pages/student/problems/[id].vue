@@ -22,6 +22,32 @@ const submissionResult = ref<{
 const isExplaining = ref(false);
 const aiExplanation = ref<string | null>(null);
 
+// Understood Button Logic
+const isUnderstood = ref(false);
+const isTogglingUnderstood = ref(false);
+
+const toggleUnderstood = async () => {
+  if (isTogglingUnderstood.value) return;
+
+  isTogglingUnderstood.value = true;
+  try {
+    const result = await $fetch<{ understood: boolean }>(
+      "/api/student/problems/understood",
+      {
+        method: "POST",
+        body: {
+          problemId,
+        },
+      }
+    );
+    isUnderstood.value = result.understood;
+  } catch (e) {
+    console.error("Failed to toggle understood status", e);
+  } finally {
+    isTogglingUnderstood.value = false;
+  }
+};
+
 // Submit Answer
 const submitAnswer = async () => {
   if (selectedAnswer.value === null) return;
@@ -36,6 +62,10 @@ const submitAnswer = async () => {
       },
     });
     submissionResult.value = result;
+    // Reset understood status on new submission, especially if it's incorrect (backend resets it too)
+    if (!result.correct) {
+      isUnderstood.value = false;
+    }
   } catch (e) {
     console.error("Submission failed", e);
   } finally {
@@ -249,6 +279,59 @@ const askAI = async () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Understood Button -->
+        <div
+          v-if="submissionResult && !submissionResult.correct"
+          class="flex justify-end mt-4"
+        >
+          <button
+            class="btn gap-2 transition-all duration-300"
+            :class="
+              isUnderstood
+                ? 'btn-success text-white'
+                : 'btn-outline btn-warning'
+            "
+            @click="toggleUnderstood"
+            :disabled="isTogglingUnderstood"
+          >
+            <span
+              v-if="isTogglingUnderstood"
+              class="loading loading-spinner loading-sm"
+            ></span>
+            <svg
+              v-if="isUnderstood"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{
+              isUnderstood
+                ? $t("student.problems.understood")
+                : $t("student.problems.mark_as_understood")
+            }}
+          </button>
         </div>
       </div>
     </div>

@@ -178,7 +178,9 @@
       "ai_tutor": "AI Tutor",
       "ai_tutor_desc": "Still confused? Ask the AI for a personalized explanation.",
       "ask_ai_button": "Explain this to me",
-      "error_loading": "Error loading problem:"
+      "error_loading": "Error loading problem:",
+      "understood": "Understood",
+      "mark_as_understood": "Mark as understood"
     }
   },
   "calendar_help": {

@@ -90,12 +90,18 @@ const toggleFavorite = async (problem: any) => {
             </div>
           </div>
           <div class="card-actions justify-between mt-4 items-center gap-2">
-            <div>
+            <div class="flex items-center gap-1">
               <Icon
-                v-if="problem.isError"
+                v-if="problem.isWrong"
                 name="heroicons:x-mark-20-solid"
                 class="w-6 h-6 text-red-500 font-bold"
                 title="Incorrectly answered"
+              />
+              <Icon
+                v-if="problem.understood"
+                name="heroicons:check-circle-20-solid"
+                class="w-6 h-6 text-green-500 font-bold"
+                title="Understood"
               />
             </div>
             <div class="flex gap-2 items-center">

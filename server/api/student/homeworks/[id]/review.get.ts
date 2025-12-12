@@ -5,6 +5,7 @@ import {
   problems,
   hwRecords,
   homeworkCompletions,
+  errorProblems,
 } from "~~/db/schema";
 
 export default defineEventHandler(async (event) => {
@@ -78,9 +79,24 @@ export default defineEventHandler(async (event) => {
       )
     );
 
+  // 5. Fetch error problem records to know "understood" status
+  const errorRecords = await useDrizzle()
+    .select()
+    .from(errorProblems)
+    .where(
+      and(
+        eq(errorProblems.userId, session.user.id)
+        // OPTIONAL: Filter by problem IDs to be more efficient,
+        // but fetching all for user might be okay if not too many,
+        // or we can use `inArray(errorProblems.problemId, problemList.map(p => p.id))`
+      )
+    );
+
   // Map records
   const problemsWithStatus = problemList.map((problem) => {
     const record = records.find((r) => r.problemId === problem.id);
+    const errorRecord = errorRecords.find((r) => r.problemId === problem.id);
+
     return {
       ...problem,
       submissionStatus: record
@@ -90,6 +106,7 @@ export default defineEventHandler(async (event) => {
             userAnswer: record.userAnswer,
           }
         : null,
+      understood: errorRecord ? errorRecord.understood : false,
     };
   });
 

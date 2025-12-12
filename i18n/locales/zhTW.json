@@ -178,7 +178,9 @@
       "ai_tutor": "AI 家教",
       "ai_tutor_desc": "仍然感到困惑？請 AI 為您提供個人化的解釋。",
       "ask_ai_button": "向我解釋",
-      "error_loading": "載入題目時發生錯誤："
+      "error_loading": "載入題目時發生錯誤：",
+      "understood": "已理解",
+      "mark_as_understood": "標記為已理解"
     }
   },
   "calendar_help": {

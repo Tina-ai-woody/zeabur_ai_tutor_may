@@ -63,6 +63,7 @@ export default defineEventHandler(async (event) => {
     // Map nulls (if no status record found) to false
     isFavorite: p.isFavorite ?? false,
     isWrong: p.isWrong ?? false,
+    understood: p.understood ?? false,
     // Frontend expects isError for the X mark. We map isWrong to isError.
     // And if implied understood is false? User said "understood follows error_problems".
     // If isWrong is true, understood might be true or false.
