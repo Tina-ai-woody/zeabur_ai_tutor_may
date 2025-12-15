@@ -1,0 +1,79 @@
+erDiagram
+
+    user {
+        text id PK
+        text name
+        text email
+        boolean email_verified
+        text image
+        timestamp created_at
+        timestamp updated_at
+        timestamp last_login
+        text role
+        boolean banned
+    }
+
+    session {
+        text id PK
+        text user_id FK
+        timestamp expires_at
+        text token
+    }
+
+    account {
+        text id PK
+        text user_id FK
+        text provider_id
+        text account_id
+    }
+
+    verification {
+        text id PK
+        text identifier
+        text value
+        timestamp expires_at
+    }
+
+    role_requests {
+        text id PK
+        text user_id FK
+        text role
+    }
+
+    parent_students {
+        text id PK
+        text parent_id FK
+        text student_id FK
+    }
+
+    pending_parent {
+        text id PK
+        text parent_id FK
+        text student_name
+        text student_email
+    }
+
+    personal_events {
+        text id PK
+        text user_id FK
+        text title
+        timestamp start
+        timestamp end
+    }
+
+    chat_history {
+        text id PK
+        text student_id FK
+        jsonb messages
+    }
+
+    %% Relationships
+    user ||--o{ session : "has"
+    user ||--o{ account : "auth via"
+    user ||--o{ role_requests : "requests"
+    user ||--o{ parent_students : "is parent"
+    user ||--o{ parent_students : "is student"
+    user ||--o{ pending_parent : "pending"
+    user ||--o{ personal_events : "events"
+    user ||--o{ chat_history : "chat history"
+

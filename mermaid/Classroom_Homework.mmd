@@ -1,0 +1,101 @@
+erDiagram
+
+    user {
+        text id PK
+    }
+
+    classrooms {
+        text id PK
+        text teacher_id FK
+        text name
+    }
+
+    classroom_students {
+        text id PK
+        text classroom_id FK
+        text student_id FK
+    }
+
+    posts {
+        text id PK
+        text classroom_id FK
+        text teacher_id FK
+        text content
+    }
+
+    class_materials {
+        text id PK
+        text teacher_id FK
+        text parent_id FK
+        text name
+        text path
+        boolean is_folder
+    }
+
+    classroom_materials {
+        text id PK
+        text classroom_id FK
+        text material_id FK
+    }
+
+    homeworks {
+        text id PK
+        text classroom_id FK
+        text teacher_id FK
+        text title
+        timestamp deadline
+    }
+
+    homework_classrooms {
+        text id PK
+        text homework_id FK
+        text classroom_id FK
+    }
+
+    homework_problems {
+        text id PK
+        text homework_id FK
+        text problem_id FK
+        text order
+    }
+
+    homework_completions {
+        text id PK
+        text homework_id FK
+        text classroom_id FK
+        text user_id FK
+    }
+
+    hw_records {
+        text id PK
+        text homework_id FK
+        text classroom_id FK
+        text user_id FK
+        text problem_id FK
+        boolean correctness
+    }
+
+    posts_template {
+        text id PK
+        text user_id FK
+        text classroom_id FK
+    }
+
+    %% Relationships
+    user ||--o{ classrooms : "teaches"
+    classrooms ||--o{ classroom_students : "students"
+    classrooms ||--o{ posts : "posts"
+    classrooms ||--o{ classroom_materials : "shared materials"
+    classrooms ||--o{ homeworks : "homework"
+
+    class_materials ||--o{ class_materials : "folder parent"
+    class_materials ||--o{ classroom_materials : "shared to"
+
+    homeworks ||--o{ homework_classrooms : "assigned to classes"
+    homeworks ||--o{ homework_problems : "has problems"
+    homeworks ||--o{ homework_completions : "completion"
+    homeworks ||--o{ hw_records : "records"
+
+    classrooms ||--o{ posts_template : "templates"
+    user ||--o{ posts_template : "template owner"
+

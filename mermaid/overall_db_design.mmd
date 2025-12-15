@@ -1,0 +1,297 @@
+erDiagram
+
+    user {
+        text id PK
+        text name
+        text email
+        boolean email_verified
+        text image
+        timestamp created_at
+        timestamp updated_at
+        timestamp last_login
+        text role
+        boolean banned
+    }
+
+    session {
+        text id PK
+        timestamp expires_at
+        text token
+        timestamp created_at
+        timestamp updated_at
+        text ip_address
+        text user_agent
+        text user_id FK
+    }
+
+    account {
+        text id PK
+        text account_id
+        text provider_id
+        text user_id FK
+        text access_token
+        text refresh_token
+        text id_token
+        timestamp access_token_expires_at
+        timestamp refresh_token_expires_at
+        text scope
+        text password
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    verification {
+        text id PK
+        text identifier
+        text value
+        timestamp expires_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    problems {
+        text id PK
+        text title
+        text content
+        jsonb choices
+        text correct_answer
+        text explanation
+        text difficulty
+        text source
+        text image_url
+        jsonb hashtags
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    classrooms {
+        text id PK
+        text name
+        text description
+        text teacher_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    classroom_students {
+        text id PK
+        text classroom_id FK
+        text student_id FK
+        timestamp joined_at
+    }
+
+    submissions {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        text user_answer
+        boolean is_correct
+        timestamp created_at
+    }
+
+    homeworks {
+        text id PK
+        text classroom_id FK
+        text teacher_id FK
+        text subject
+        text title
+        timestamp deadline
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    homework_classrooms {
+        text id PK
+        text homework_id FK
+        text classroom_id FK
+    }
+
+    homework_problems {
+        text id PK
+        text homework_id FK
+        text problem_id FK
+        text order
+    }
+
+    hw_records {
+        text id PK
+        text homework_id FK
+        text classroom_id FK
+        text user_id FK
+        text problem_id FK
+        text user_answer
+        boolean correctness
+        boolean submitted
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    homework_completions {
+        text id PK
+        text homework_id FK
+        text classroom_id FK
+        text user_id FK
+        timestamp completed_at
+    }
+
+    personal_events {
+        text id PK
+        text user_id FK
+        text title
+        timestamp start
+        timestamp end
+        boolean all_day
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    pending_parent {
+        text id PK
+        text parent_id FK
+        text student_name
+        text student_email
+        text status
+        timestamp created_at
+    }
+
+    role_requests {
+        text id PK
+        text user_id FK
+        text role
+        timestamp created_at
+    }
+
+    parent_students {
+        text id PK
+        text parent_id FK
+        text student_id FK
+        timestamp created_at
+    }
+
+    chat_history {
+        text id PK
+        text student_id FK
+        text title
+        jsonb messages
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    class_materials {
+        text id PK
+        text teacher_id FK
+        text name
+        text path
+        text url
+        text type
+        integer size
+        text subject
+        text chapter
+        text source
+        jsonb hashtags
+        boolean is_folder
+        text parent_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    classroom_materials {
+        text id PK
+        text classroom_id FK
+        text material_id FK
+        timestamp created_at
+    }
+
+    posts {
+        text id PK
+        text classroom_id FK
+        text teacher_id FK
+        text content
+        text class_date
+        timestamp class_start_time
+        timestamp class_end_time
+        interval class_length
+        jsonb attendees
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    favorites {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        timestamp created_at
+    }
+
+    error_problems {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        boolean understood
+        timestamp created_at
+    }
+
+    problems_status {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        boolean is_favorite
+        boolean is_wrong
+        boolean understood
+        timestamp updated_at
+    }
+
+    posts_template {
+        text id PK
+        text user_id FK
+        text classroom_id FK
+        text template
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Relationships
+    user ||--o{ session : "has many"
+    user ||--o{ account : "has many"
+    user ||--o{ classrooms : "teaches"
+    user ||--o{ classroom_students : "is student"
+    user ||--o{ submissions : "submits"
+    user ||--o{ homeworks : "creates"
+    user ||--o{ hw_records : "answer"
+    user ||--o{ homework_completions : "complete"
+    user ||--o{ personal_events : "owns"
+    user ||--o{ pending_parent : "is parent"
+    user ||--o{ role_requests : "requests"
+    user ||--o{ parent_students : "parent"
+    user ||--o{ parent_students : "student"
+    user ||--o{ chat_history : "has chats"
+    user ||--o{ posts : "teaches"
+    user ||--o{ favorites : "favorites"
+    user ||--o{ error_problems : "errors"
+    user ||--o{ problems_status : "problem status"
+    user ||--o{ posts_template : "templates"
+    user ||--o{ class_materials : "teacher"
+
+    classrooms ||--o{ classroom_students : "has students"
+    classrooms ||--o{ homeworks : "has assignments"
+    classrooms ||--o{ homework_classrooms : "is assigned to"
+    classrooms ||--o{ hw_records : "records"
+    classrooms ||--o{ homework_completions : "completion"
+    classrooms ||--o{ posts : "class posts"
+    classrooms ||--o{ classroom_materials : "materials"
+    classrooms ||--o{ posts_template : "templates"
+
+    problems ||--o{ submissions : "has submissions"
+    problems ||--o{ homework_problems : "assigned to HW"
+    problems ||--o{ hw_records : "HW records"
+    problems ||--o{ favorites : "favorited"
+    problems ||--o{ error_problems : "errors"
+    problems ||--o{ problems_status : "status"
+
+    homeworks ||--o{ homework_classrooms : "in classrooms"
+    homeworks ||--o{ homework_problems : "has problems"
+    homeworks ||--o{ hw_records : "records"
+    homeworks ||--o{ homework_completions : "completion"
+
+    class_materials ||--o{ classroom_materials : "shared to classroom"
+    class_materials ||--o{ class_materials : "folder parent"

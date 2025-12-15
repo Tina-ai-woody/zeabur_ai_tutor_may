@@ -1,0 +1,67 @@
+erDiagram
+
+    user {
+        text id PK
+    }
+
+    problems {
+        text id PK
+        text title
+        jsonb choices
+    }
+
+    submissions {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        text user_answer
+        boolean is_correct
+    }
+
+    favorites {
+        text id PK
+        text user_id FK
+        text problem_id FK
+    }
+
+    error_problems {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        boolean understood
+    }
+
+    problems_status {
+        text id PK
+        text user_id FK
+        text problem_id FK
+        boolean is_favorite
+        boolean is_wrong
+        boolean understood
+    }
+
+    hw_records {
+        text id PK
+        text problem_id FK
+        text user_id FK
+        boolean correctness
+    }
+
+    homework_problems {
+        text id PK
+        text problem_id FK
+        text homework_id FK
+    }
+
+    %% Relationships
+    problems ||--o{ submissions : "user answers"
+    problems ||--o{ favorites : "favorited"
+    problems ||--o{ error_problems : "wrong"
+    problems ||--o{ problems_status : "status"
+    problems ||--o{ hw_records : "HW answer"
+    problems ||--o{ homework_problems : "assigned"
+    user ||--o{ submissions : "submits"
+    user ||--o{ favorites : "favorites"
+    user ||--o{ error_problems : "wrong"
+    user ||--o{ problems_status : "status"
+    user ||--o{ hw_records : "HW answers"
