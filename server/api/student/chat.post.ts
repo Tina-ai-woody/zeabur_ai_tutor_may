@@ -4,6 +4,8 @@ import { chatHistory } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { searchProblems } from "../../utils/problems";
 import { recommendMaterials } from "../../utils/materials";
+import { getTestbankMetadata } from "../../utils/testbank";
+import { getClassMaterialsMetadata } from "../../utils/materials";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -55,6 +57,8 @@ const tools = [
   },
 ];
 
+const toolsTyped = tools as any;
+
 export default defineEventHandler(async (event) => {
   const session = await requireAuthSession(event);
   const user = session.user;
@@ -87,11 +91,28 @@ export default defineEventHandler(async (event) => {
   // Append user message
   messages.push({ role: "user", content: message });
 
+  // Prepare system content
+  let systemContent = `You are a helpful AI Tutor. Current Student ID: ${user.id}. Name: ${user.name}. When recommending materials, use the provided Student ID.`;
+
+  if (body.includeTestbank) {
+    const testbankData = await getTestbankMetadata();
+    systemContent += `\n\nYou have access to the following problem bank metadata: ${JSON.stringify(
+      testbankData
+    )}. Use this to answer user questions about available problems.`;
+  }
+
+  if (body.includeClassMaterials) {
+    const classMaterialsData = await getClassMaterialsMetadata(user.id);
+    systemContent += `\n\nYou have access to the following class materials metadata: ${JSON.stringify(
+      classMaterialsData
+    )}. Use this to answer user questions about available class materials.`;
+  }
+  console.log(systemContent);
   // Create messages for API call (including system context)
   const apiMessages = [
     {
       role: "system",
-      content: `You are a helpful AI Tutor. Current Student ID: ${user.id}. Name: ${user.name}. When recommending materials, use the provided Student ID.`,
+      content: `You are a helpful AI Tutor. Current Student ID: ${user.id}. Name: ${user.name}. When recommending materials, use the provided Student ID. when recommending problems, use the following metadata: ${systemContent}`,
     },
     ...messages,
   ];
@@ -106,20 +127,20 @@ export default defineEventHandler(async (event) => {
   let response = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: apiMessages,
-    tools: tools,
+    tools: toolsTyped,
     tool_choice: "auto",
   });
 
   let responseMessage = response.choices[0].message;
 
   // Handle tool calls
-  while (responseMessage.tool_calls) {
+  while (responseMessage?.tool_calls) {
     messages.push(responseMessage); // Add assistant message with tool calls to DB history
     apiMessages.push(responseMessage); // Add to current context
 
     for (const toolCall of responseMessage.tool_calls) {
-      if (toolCall.function.name === "search_problems") {
-        const args = JSON.parse(toolCall.function.arguments);
+      if ((toolCall as any).function.name === "search_problems") {
+        const args = JSON.parse((toolCall as any).function.arguments);
         const searchResults = await searchProblems({
           title: args.title,
           source: args.source,
@@ -135,8 +156,8 @@ export default defineEventHandler(async (event) => {
         };
         messages.push(toolMessage);
         apiMessages.push(toolMessage);
-      } else if (toolCall.function.name === "recommend_materials") {
-        const args = JSON.parse(toolCall.function.arguments);
+      } else if ((toolCall as any).function.name === "recommend_materials") {
+        const args = JSON.parse((toolCall as any).function.arguments);
         const recommendations = await recommendMaterials({
           studentId: args.studentId || user.id,
           keyword: args.keyword,
@@ -158,14 +179,16 @@ export default defineEventHandler(async (event) => {
     response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: apiMessages,
-      tools: tools,
+      tools: toolsTyped,
       tool_choice: "auto", // Or none?
     });
     responseMessage = response.choices[0].message;
   }
 
   // Add final response
-  messages.push(responseMessage);
+  if (responseMessage) {
+    messages.push(responseMessage);
+  }
 
   // Generate title if new chat
   if (!currentChatId && messages.length > 0) {
@@ -197,6 +220,6 @@ export default defineEventHandler(async (event) => {
   return {
     chatId: currentChatId,
     messages: messages,
-    response: responseMessage.content,
+    response: responseMessage?.content || "",
   };
 });
