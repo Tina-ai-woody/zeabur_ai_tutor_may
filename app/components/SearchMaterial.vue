@@ -42,19 +42,25 @@ const clearFilters = () => {
 <template>
   <div class="card bg-base-100 shadow-xl mb-6">
     <div class="card-body">
-      <h2 class="card-title text-2xl mb-6">Search Materials</h2>
+      <h2 class="card-title text-2xl mb-6">
+        {{ $t("components.common.search_material.title") }}
+      </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <!-- Keyword Search -->
         <div class="form-control">
           <label class="label">
-            <span class="label-text font-medium">Name</span>
+            <span class="label-text font-medium">{{
+              $t("components.common.search_material.name_label")
+            }}</span>
           </label>
           <div class="relative">
             <input
               v-model="filters.keyword"
               type="text"
-              placeholder="Search by name..."
+              :placeholder="
+                $t('components.common.search_material.name_placeholder')
+              "
               class="input input-bordered w-full pl-10"
               @keyup.enter="handleSearch"
             />
@@ -72,12 +78,16 @@ const clearFilters = () => {
         <!-- Subject Filter -->
         <div class="form-control">
           <label class="label">
-            <span class="label-text font-medium">Subject</span>
+            <span class="label-text font-medium">{{
+              $t("components.common.search_material.subject_label")
+            }}</span>
           </label>
           <input
             v-model="filters.subject"
             type="text"
-            placeholder="e.g. Math"
+            :placeholder="
+              $t('components.common.search_material.subject_placeholder')
+            "
             class="input input-bordered w-full"
             @keyup.enter="handleSearch"
           />
@@ -86,12 +96,16 @@ const clearFilters = () => {
         <!-- Chapter Filter -->
         <div class="form-control">
           <label class="label">
-            <span class="label-text font-medium">Chapter</span>
+            <span class="label-text font-medium">{{
+              $t("components.common.search_material.chapter_label")
+            }}</span>
           </label>
           <input
             v-model="filters.chapter"
             type="text"
-            placeholder="e.g. Unit 1"
+            :placeholder="
+              $t('components.common.search_material.chapter_placeholder')
+            "
             class="input input-bordered w-full"
             @keyup.enter="handleSearch"
           />
@@ -100,12 +114,16 @@ const clearFilters = () => {
         <!-- Source Filter -->
         <div class="form-control">
           <label class="label">
-            <span class="label-text font-medium">Source</span>
+            <span class="label-text font-medium">{{
+              $t("components.common.search_material.source_label")
+            }}</span>
           </label>
           <input
             v-model="filters.source"
             type="text"
-            placeholder="e.g. Pearson"
+            :placeholder="
+              $t('components.common.search_material.source_placeholder')
+            "
             class="input input-bordered w-full"
             @keyup.enter="handleSearch"
           />
@@ -114,13 +132,17 @@ const clearFilters = () => {
         <!-- Hashtag Filter -->
         <div class="form-control">
           <label class="label">
-            <span class="label-text font-medium">Hashtag</span>
+            <span class="label-text font-medium">{{
+              $t("components.common.search_material.hashtag_label")
+            }}</span>
           </label>
           <div class="relative">
             <input
               v-model="filters.hashtag"
               type="text"
-              placeholder="Tag..."
+              :placeholder="
+                $t('components.common.search_material.hashtag_placeholder')
+              "
               class="input input-bordered w-full pl-10"
               @keyup.enter="handleSearch"
             />
@@ -136,11 +158,11 @@ const clearFilters = () => {
       <div class="card-actions justify-end mt-6 gap-3">
         <button class="btn btn-ghost" @click="clearFilters">
           <Icon name="heroicons:x-mark" class="w-5 h-5 mr-2" />
-          Clear
+          {{ $t("components.common.search_material.clear") }}
         </button>
         <button class="btn btn-primary" @click="handleSearch">
           <Icon name="heroicons:funnel" class="w-5 h-5 mr-2" />
-          Search
+          {{ $t("components.common.search_material.search") }}
         </button>
       </div>
     </div>

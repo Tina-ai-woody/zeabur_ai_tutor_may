@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+const { t } = useI18n();
 
 definePageMeta({
   layout: "teacher",
@@ -9,7 +10,7 @@ const currentPath = ref<string[]>([]); // Breadcrumbs names
 const currentParentId = ref<string | undefined>(undefined);
 const breadcrumbs = computed(() => {
   return [
-    { id: undefined, name: "Home" },
+    { id: undefined, name: t("teacher.materials.home") },
     ...currentPath.value.map((name, i) => ({ name, id: "TODO_FIND_ID" })),
   ];
   // Complex to track IDs in breadcrumbs if we only store names.
@@ -18,7 +19,7 @@ const breadcrumbs = computed(() => {
 
 // Using a stack for breadcrumbs
 const pathStack = ref<{ id: string | undefined; name: string }[]>([
-  { id: undefined, name: "Home" },
+  { id: undefined, name: t("teacher.materials.home") },
 ]);
 
 const currentFolder = computed(
@@ -94,7 +95,7 @@ async function createFolder() {
     showNewFolderModal.value = false;
     refresh();
   } catch (e) {
-    alert("Failed to create folder");
+    alert(t("teacher.materials.error_create_folder"));
   }
 }
 
@@ -143,7 +144,7 @@ async function handleUpload() {
     uploadMeta.value = { subject: "", chapter: "", source: "", hashtags: "" };
     refresh();
   } catch (e) {
-    alert("Upload failed");
+    alert(t("teacher.materials.error_upload"));
   } finally {
     isUploading.value = false;
   }
@@ -151,7 +152,7 @@ async function handleUpload() {
 
 // Delete
 async function deleteItem(id: string) {
-  if (!confirm("Are you sure you want to delete this item?")) return;
+  if (!confirm(t("teacher.materials.confirm_delete"))) return;
   try {
     await $fetch("/api/teacher/materials", {
       method: "DELETE",
@@ -159,7 +160,7 @@ async function deleteItem(id: string) {
     });
     refresh();
   } catch (e) {
-    alert("Delete failed. If folder, make sure it is empty.");
+    alert(t("teacher.materials.error_delete"));
   }
 }
 
@@ -193,10 +194,10 @@ async function shareToClassroom() {
     });
     // @ts-ignore
     if (res.message) alert(res.message);
-    else alert("Shared successfully!");
+    else alert(t("teacher.materials.share_success"));
     showShareModal.value = false;
   } catch (e) {
-    alert("Failed to share material");
+    alert(t("teacher.materials.error_share"));
   } finally {
     isSharing.value = false;
   }
@@ -206,7 +207,9 @@ async function shareToClassroom() {
 <template>
   <div class="items-center p-6">
     <div class="flex justify-between mb-6">
-      <h1 class="text-2xl font-bold">Class Materials Workspace</h1>
+      <h1 class="text-2xl font-bold">
+        {{ $t("teacher.materials.workspace_title") }}
+      </h1>
     </div>
 
     <SearchMaterial @search="onSearch" />
@@ -240,11 +243,11 @@ async function shareToClassroom() {
       <div class="flex gap-2">
         <button class="btn btn-outline" @click="showNewFolderModal = true">
           <Icon name="heroicons:folder-plus" class="w-5 h-5 mr-1" />
-          New Folder
+          {{ $t("teacher.materials.new_folder") }}
         </button>
         <button class="btn btn-primary" @click="showUploadModal = true">
           <Icon name="heroicons:arrow-up-tray" class="w-5 h-5 mr-1" />
-          Upload
+          {{ $t("teacher.materials.upload") }}
         </button>
       </div>
     </div>
@@ -258,7 +261,7 @@ async function shareToClassroom() {
         class="flex flex-col items-center justify-center h-64 text-base-content/50"
       >
         <Icon name="heroicons:folder-open" class="w-16 h-16 mb-2" />
-        <p>This folder is empty</p>
+        <p>{{ $t("teacher.materials.empty_folder") }}</p>
       </div>
 
       <div
@@ -330,15 +333,19 @@ async function shareToClassroom() {
                 class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32 border border-base-200"
               >
                 <li>
-                  <a @click.stop="deleteItem(item.id)" class="text-error"
-                    >Delete</a
-                  >
+                  <a @click.stop="deleteItem(item.id)" class="text-error">{{
+                    $t("teacher.materials.delete")
+                  }}</a>
                 </li>
                 <li v-if="!item.isFolder && item.url">
-                  <a :href="item.url" target="_blank" @click.stop>Download</a>
+                  <a :href="item.url" target="_blank" @click.stop>{{
+                    $t("teacher.materials.download")
+                  }}</a>
                 </li>
                 <li v-if="item.isFolder">
-                  <a @click.stop="openShareModal(item)">Share</a>
+                  <a @click.stop="openShareModal(item)">{{
+                    $t("teacher.materials.share")
+                  }}</a>
                 </li>
               </ul>
             </div>
@@ -350,25 +357,27 @@ async function shareToClassroom() {
     <!-- New Folder Modal -->
     <dialog class="modal" :class="{ 'modal-open': showNewFolderModal }">
       <div class="modal-box">
-        <h3 class="font-bold text-lg">Create New Folder</h3>
+        <h3 class="font-bold text-lg">
+          {{ $t("teacher.materials.create_folder_title") }}
+        </h3>
         <input
           v-model="newFolderName"
           type="text"
-          placeholder="Folder Name"
+          :placeholder="$t('teacher.materials.folder_name_placeholder')"
           class="input input-bordered w-full mt-4"
           autofocus
           @keyup.enter="createFolder"
         />
         <div class="modal-action">
           <button class="btn" @click="showNewFolderModal = false">
-            Cancel
+            {{ $t("components.common.cancel") }}
           </button>
           <button
             class="btn btn-primary"
             @click="createFolder"
             :disabled="!newFolderName"
           >
-            Create
+            {{ $t("components.common.create") }}
           </button>
         </div>
       </div>
@@ -377,13 +386,17 @@ async function shareToClassroom() {
     <!-- Upload Modal -->
     <dialog class="modal" :class="{ 'modal-open': showUploadModal }">
       <div class="modal-box w-11/12 max-w-2xl">
-        <h3 class="font-bold text-lg mb-4">Upload Materials</h3>
+        <h3 class="font-bold text-lg mb-4">
+          {{ $t("teacher.materials.upload_title") }}
+        </h3>
 
         <div class="grid grid-cols-1 gap-4">
           <!-- File Input -->
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text">Select Files</span>
+              <span class="label-text">{{
+                $t("teacher.materials.select_files")
+              }}</span>
             </label>
             <input
               type="file"
@@ -397,62 +410,76 @@ async function shareToClassroom() {
           <div class="grid grid-cols-2 gap-4">
             <div class="form-control">
               <label class="label"
-                ><span class="label-text">Subject</span></label
+                ><span class="label-text">{{
+                  $t("teacher.materials.subject_label")
+                }}</span></label
               >
               <input
                 v-model="uploadMeta.subject"
                 type="text"
                 class="input input-bordered"
-                placeholder="e.g. Math"
+                :placeholder="$t('teacher.materials.subject_placeholder')"
               />
             </div>
             <div class="form-control">
               <label class="label"
-                ><span class="label-text">Chapter/Unit</span></label
+                ><span class="label-text">{{
+                  $t("teacher.materials.chapter_label")
+                }}</span></label
               >
               <input
                 v-model="uploadMeta.chapter"
                 type="text"
                 class="input input-bordered"
-                placeholder="e.g. Unit 1"
+                :placeholder="$t('teacher.materials.chapter_placeholder')"
               />
             </div>
           </div>
 
           <div class="form-control">
             <label class="label"
-              ><span class="label-text">Source/Textbook</span></label
+              ><span class="label-text">{{
+                $t("teacher.materials.source_label")
+              }}</span></label
             >
             <input
               v-model="uploadMeta.source"
               type="text"
               class="input input-bordered"
-              placeholder="e.g. Pearson"
+              :placeholder="$t('teacher.materials.source_placeholder')"
             />
           </div>
 
           <div class="form-control">
             <label class="label"
-              ><span class="label-text">Hashtags (comma separated)</span></label
+              ><span class="label-text">{{
+                $t("teacher.materials.hashtags_label")
+              }}</span></label
             >
             <input
               v-model="uploadMeta.hashtags"
               type="text"
               class="input input-bordered"
-              placeholder="e.g. algebra, basics"
+              :placeholder="$t('teacher.materials.hashtags_placeholder')"
             />
           </div>
         </div>
 
         <div class="modal-action">
-          <button class="btn" @click="showUploadModal = false">Cancel</button>
+          <button class="btn" @click="showUploadModal = false">
+            {{ $t("components.common.cancel") }}
+          </button>
           <button
             class="btn btn-primary"
             @click="handleUpload"
             :disabled="isUploading || !uploadFiles"
           >
             <span v-if="isUploading" class="loading loading-spinner"></span>
-            {{ isUploading ? "Uploading..." : "Upload" }}
+            {{
+              isUploading
+                ? $t("teacher.materials.uploading")
+                : $t("teacher.materials.upload")
+            }}
           </button>
         </div>
       </div>
@@ -461,30 +488,38 @@ async function shareToClassroom() {
     <!-- Share Modal -->
     <dialog class="modal" :class="{ 'modal-open': showShareModal }">
       <div class="modal-box">
-        <h3 class="font-bold text-lg">Share "{{ itemToShare?.name }}"</h3>
+        <h3 class="font-bold text-lg">
+          {{ $t("teacher.materials.share_title", { name: itemToShare?.name }) }}
+        </h3>
         <div class="form-control w-full mt-4">
           <label class="label">
-            <span class="label-text">Select Classroom</span>
+            <span class="label-text">{{
+              $t("teacher.materials.select_classroom")
+            }}</span>
           </label>
           <select
             v-model="selectedClassroomId"
             class="select select-bordered w-full"
           >
-            <option disabled value="">Pick a classroom</option>
+            <option disabled value="">
+              {{ $t("teacher.materials.pick_classroom_placeholder") }}
+            </option>
             <option v-for="c in classrooms" :key="c.id" :value="c.id">
               {{ c.name }}
             </option>
           </select>
         </div>
         <div class="modal-action">
-          <button class="btn" @click="showShareModal = false">Cancel</button>
+          <button class="btn" @click="showShareModal = false">
+            {{ $t("components.common.cancel") }}
+          </button>
           <button
             class="btn btn-primary"
             @click="shareToClassroom"
             :disabled="isSharing || !selectedClassroomId"
           >
             <span v-if="isSharing" class="loading loading-spinner"></span>
-            Share
+            {{ $t("teacher.materials.share") }}
           </button>
         </div>
       </div>
