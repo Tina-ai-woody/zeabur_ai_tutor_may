@@ -88,6 +88,14 @@
     "go_home": "Go Home"
   },
   "student": {
+    "errors": {
+      "title": "Error",
+      "no_problems": "No problems found"
+    },
+    "favorites": {
+      "title": "Favorites",
+      "no_favorites": "No favorites yet"
+    },
     "dashboard": {
       "title": "Student Dashboard",
       "calendar_help": "How to use the calendar"
@@ -110,6 +118,7 @@
       "title": "My Classrooms",
       "no_description": "No description provided.",
       "view_details": "View Details",
+      "materials": "Materials",
       "empty": {
         "title": "No classrooms yet",
         "desc": "You are not enrolled in any classrooms."
@@ -131,6 +140,7 @@
       "untitled": "Untitled",
       "no_deadline": "No deadline",
       "view_hw": "View HW",
+      "review_hw": "Review HW",
       "no_homeworks": "No homeworks assigned to this classroom yet.",
       "error_loading": "Error loading classroom:"
     },
@@ -183,6 +193,20 @@
       "error_loading": "Error loading problem:",
       "understood": "Understood",
       "mark_as_understood": "Mark as understood"
+    },
+    "chat": {
+      "new_chat": "New Chat",
+      "history_title": "Chat History",
+      "start_prompt": "Start a conversation with your AI Tutor!",
+      "header_ai": "AI Tutor",
+      "header_tool": "Recommended Problems",
+      "header_user": "You",
+      "no_materials": "No materials found.",
+      "use_testbank": "Use Testbank Resource",
+      "use_materials": "Use Class Materials",
+      "placeholder": "Type your message...",
+      "send": "Send",
+      "error_response": "Sorry, I encountered an error. Please try again."
     }
   },
   "calendar_help": {

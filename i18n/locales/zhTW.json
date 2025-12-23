@@ -88,6 +88,14 @@
     "go_home": "回首頁"
   },
   "student": {
+    "errors": {
+      "title": "錯題記錄",
+      "no_problems": "未找到錯題"
+    },
+    "favorites": {
+      "title": "收藏夾",
+      "no_favorites": "沒有收藏"
+    },
     "dashboard": {
       "title": "學生儀表板",
       "calendar_help": "如何使用行事曆"
@@ -110,6 +118,7 @@
       "title": "我的教室",
       "no_description": "無描述。",
       "view_details": "查看詳情",
+      "materials": "教材",
       "empty": {
         "title": "尚無教室",
         "desc": "您尚未加入任何教室。"
@@ -131,6 +140,7 @@
       "untitled": "無標題",
       "no_deadline": "無截止日期",
       "view_hw": "查看作業",
+      "review_hw": "複習作業",
       "no_homeworks": "此教室尚無作業。",
       "error_loading": "載入教室時發生錯誤："
     },
@@ -183,6 +193,20 @@
       "error_loading": "載入題目時發生錯誤：",
       "understood": "已理解",
       "mark_as_understood": "標記為已理解"
+    },
+    "chat": {
+      "new_chat": "新對話",
+      "history_title": "對話紀錄",
+      "start_prompt": "開始與您的 AI 助教對話吧！",
+      "header_ai": "AI 助教",
+      "header_tool": "推薦題目",
+      "header_user": "您",
+      "no_materials": "未找到教材。",
+      "use_testbank": "使用題庫資源",
+      "use_materials": "使用課堂教材",
+      "placeholder": "輸入您的訊息...",
+      "send": "傳送",
+      "error_response": "抱歉，發生錯誤。請再試一次。"
     }
   },
   "calendar_help": {

@@ -131,21 +131,21 @@ export default defineEventHandler(async (event) => {
     tool_choice: "auto",
   });
 
-  let responseMessage = response.choices[0].message;
+  let responseMessage = response.choices[0]?.message;
 
   // Handle tool calls
   while (responseMessage?.tool_calls) {
-    messages.push(responseMessage); // Add assistant message with tool calls to DB history
-    apiMessages.push(responseMessage); // Add to current context
+    // Add assistant message to API context immediately
+    apiMessages.push(responseMessage);
 
     const validToolCalls: any[] = [];
     const validToolMessages: any[] = [];
 
     for (const toolCall of responseMessage.tool_calls) {
       let toolResultContent = "[]";
-      let toolName = toolCall.function.name;
+      let toolName = (toolCall as any).function?.name || "";
 
-      if ((toolCall as any).function.name === "search_problems") {
+      if (toolName === "search_problems") {
         const args = JSON.parse((toolCall as any).function.arguments);
         const searchResults = await searchProblems({
           title: args.title,
@@ -153,16 +153,8 @@ export default defineEventHandler(async (event) => {
           hashtag: args.hashtag,
           limit: 3,
         });
-
-        const toolMessage = {
-          tool_call_id: toolCall.id,
-          role: "tool",
-          name: "search_problems",
-          content: JSON.stringify(searchResults),
-        };
-        messages.push(toolMessage);
-        apiMessages.push(toolMessage);
-      } else if ((toolCall as any).function.name === "recommend_materials") {
+        toolResultContent = JSON.stringify(searchResults);
+      } else if (toolName === "recommend_materials") {
         const args = JSON.parse((toolCall as any).function.arguments);
         const recommendations = await recommendMaterials({
           studentId: args.studentId || user.id,
@@ -179,23 +171,27 @@ export default defineEventHandler(async (event) => {
         content: toolResultContent,
       };
 
+      // Always add to API context (OpenAI requires this)
       apiMessages.push(toolMessage);
 
-      // Only add to history if content is not empty array
+      // Filter for DB/Frontend: only add if content is not empty array
       if (toolResultContent !== "[]") {
         validToolCalls.push(toolCall);
         validToolMessages.push(toolMessage);
       }
     }
 
+    // Update DB/Frontend messages
     if (validToolCalls.length > 0) {
+      // Add the assistant message with ONLY the relevant tool calls
       messages.push({
         ...responseMessage,
         tool_calls: validToolCalls,
       });
+      // Add the corresponding tool results
       messages.push(...validToolMessages);
     } else if (responseMessage.content) {
-      // If no valid tool calls but there is content, keep the message without tool_calls
+      // If no valid tools but there is text content, strip tool_calls and add
       const { tool_calls, ...contentOnlyMessage } = responseMessage;
       messages.push(contentOnlyMessage);
     }

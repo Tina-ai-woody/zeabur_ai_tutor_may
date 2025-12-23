@@ -72,7 +72,7 @@ async function sendMessage() {
       console.error(error.value);
       messages.value.push({
         role: "assistant",
-        content: "Sorry, checking error...",
+        content: t("student.chat.error_response"),
       });
     } else if (data.value) {
       currentChatId.value = data.value.chatId;
@@ -94,7 +94,7 @@ async function sendMessage() {
       class="w-64 bg-base-200 p-4 border-r border-base-300 flex flex-col hidden lg:flex"
     >
       <button class="btn btn-primary w-full mb-4" @click="startNewChat">
-        + New Chat
+        + {{ $t("student.chat.new_chat") }}
       </button>
       <div class="flex-1 overflow-y-auto space-y-2">
         <div
@@ -105,7 +105,7 @@ async function sendMessage() {
           @click="loadChat(chat.id)"
         >
           <div class="text-sm font-medium truncate">
-            {{ chat.title || "New Chat" }}
+            {{ chat.title || $t("student.chat.new_chat") }}
           </div>
           <div class="text-xs text-base-content/60">
             {{ new Date(chat.updatedAt).toLocaleDateString() }}
@@ -127,7 +127,7 @@ async function sendMessage() {
           v-if="filteredMessages.length === 0"
           class="text-center text-base-content/50 mt-10"
         >
-          Start a conversation with your AI Tutor!
+          {{ $t("student.chat.start_prompt") }}
         </div>
 
         <div
@@ -139,10 +139,10 @@ async function sendMessage() {
           <div class="chat-header capitalize text-xs opacity-50 mb-1">
             {{
               msg.role === "assistant"
-                ? "AI Tutor"
+                ? $t("student.chat.header_ai")
                 : msg.role === "tool"
-                ? "Recommended Problems"
-                : "You"
+                ? $t("student.chat.header_tool")
+                : $t("student.chat.header_user")
             }}
           </div>
           <div
@@ -182,7 +182,7 @@ async function sendMessage() {
                 v-if="JSON.parse(msg.content).length === 0"
                 class="text-sm opacity-60"
               >
-                No materials found.
+                {{ $t("student.chat.no_materials") }}
               </div>
               <ClassMaterialCard
                 v-for="material in JSON.parse(msg.content)"
@@ -211,7 +211,9 @@ async function sendMessage() {
             v-model="useTestbank"
             class="checkbox checkbox-xs"
           />
-          <span class="label-text text-xs">Use Testbank Resource</span>
+          <span class="label-text text-xs">{{
+            $t("student.chat.use_testbank")
+          }}</span>
         </label>
         <label class="label cursor-pointer justify-start gap-2 w-fit">
           <input
@@ -219,7 +221,9 @@ async function sendMessage() {
             v-model="useClassMaterials"
             class="checkbox checkbox-xs"
           />
-          <span class="label-text text-xs">Use Class Materials</span>
+          <span class="label-text text-xs">{{
+            $t("student.chat.use_materials")
+          }}</span>
         </label>
       </div>
 
@@ -229,7 +233,7 @@ async function sendMessage() {
             v-model="userMessage"
             @keyup.enter="sendMessage"
             type="text"
-            placeholder="Type your message..."
+            :placeholder="$t('student.chat.placeholder')"
             class="input input-bordered flex-1"
             :disabled="isLoading"
           />
@@ -238,7 +242,7 @@ async function sendMessage() {
             @click="sendMessage"
             :disabled="isLoading"
           >
-            Send
+            {{ $t("student.chat.send") }}
           </button>
         </div>
       </div>

@@ -176,7 +176,9 @@ const { data: posts } = await useFetch(
       <!-- Class Materials Section -->
       <div class="card bg-base-100 shadow-xl border border-base-200">
         <div class="card-body">
-          <h2 class="card-title mb-4">Class Materials</h2>
+          <h2 class="card-title mb-4">
+            {{ $t("student.classrooms.materials", "Class Materials") }}
+          </h2>
           <ClassroomMaterialsList
             :classroom-id="classroomId"
             user-type="student"

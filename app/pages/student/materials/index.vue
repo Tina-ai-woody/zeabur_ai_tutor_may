@@ -12,7 +12,9 @@ const { data: userClassrooms, status } = await useFetch<
 
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Class Materials</h1>
+    <h1 class="text-3xl font-bold mb-6">
+      {{ $t("student.classrooms.materials", "Class Materials") }}
+    </h1>
 
     <div v-if="status === 'pending'" class="flex justify-center">
       <span class="loading loading-spinner loading-lg"></span>
