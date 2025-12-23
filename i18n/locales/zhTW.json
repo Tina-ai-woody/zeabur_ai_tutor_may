@@ -223,6 +223,36 @@
     }
   },
   "teacher": {
+    "posts": {
+      "back": "返回教室",
+      "add_title": "新增貼文",
+      "edit_title": "編輯貼文",
+      "date_label": "日期",
+      "start_time_label": "開始時間",
+      "end_time_label": "結束時間",
+      "duration": "時長",
+      "class_summary_label": "課堂總結",
+      "class_summary_desc": "簡短描述今天的課堂",
+      "class_summary_placeholder": "例如：涵蓋了第 3 章，分配了練習 4...",
+      "template_label": "模板",
+      "template_desc": "定義結構",
+      "update_template": "更新模板",
+      "updating": "更新中...",
+      "generate_ai": "使用 AI 產生內容",
+      "content_label": "內容 / 筆記",
+      "content_placeholder": "輸入課堂筆記、作業或回饋...",
+      "attendees_label": "出席者",
+      "select_all": "全選",
+      "deselect_all": "取消全選",
+      "no_students": "無學生",
+      "selected": "已選擇 {count} 位",
+      "submit": "建立貼文",
+      "save_changes": "儲存變更",
+      "error_required": "內容和日期為必填項",
+      "error_create": "建立貼文失敗",
+      "error_generate": "使用 AI 產生內容失敗。請再試一次或手動輸入。",
+      "error_update_template": "更新模板失敗"
+    },
     "dashboard": {
       "title": "教師儀表板"
     },

@@ -223,6 +223,36 @@
     }
   },
   "teacher": {
+    "posts": {
+      "back": "Back to Classroom",
+      "add_title": "Add New Post",
+      "edit_title": "Edit Post",
+      "date_label": "Date",
+      "start_time_label": "Start Time",
+      "end_time_label": "End Time",
+      "duration": "Duration",
+      "class_summary_label": "Class Summary",
+      "class_summary_desc": "Briefly describe today's class",
+      "class_summary_placeholder": "e.g. Covered Chapter 3, assigned exercise 4...",
+      "template_label": "Template",
+      "template_desc": "Define the structure",
+      "update_template": "Update Template",
+      "updating": "Updating...",
+      "generate_ai": "Generate Content with AI",
+      "content_label": "Content / Notes",
+      "content_placeholder": "Enter class notes, homework, or feedback...",
+      "attendees_label": "Attendees",
+      "select_all": "Select All",
+      "deselect_all": "Deselect All",
+      "no_students": "No students",
+      "selected": "{count} selected",
+      "submit": "Create Post",
+      "save_changes": "Save Changes",
+      "error_required": "Content and Date are required",
+      "error_create": "Failed to create post",
+      "error_generate": "Failed to generate content with AI. Please try again or type manually.",
+      "error_update_template": "Failed to update template"
+    },
     "dashboard": {
       "title": "Teacher Dashboard"
     },

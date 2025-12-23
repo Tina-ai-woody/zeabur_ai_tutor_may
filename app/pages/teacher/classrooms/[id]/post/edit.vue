@@ -5,6 +5,7 @@ definePageMeta({
 
 const route = useRoute();
 const localePath = useLocalePath();
+const { t } = useI18n();
 const classroomId = route.params.id as string;
 const postId = route.query.postId as string;
 const router = useRouter();
@@ -117,8 +118,7 @@ const handleBender = async () => {
     }
   } catch (e: any) {
     console.error("AI Generation failed", e);
-    error.value =
-      "Failed to generate content with AI. Please try again or type manually.";
+    error.value = t("teacher.posts.error_generate");
   } finally {
     generating.value = false;
   }
@@ -138,7 +138,7 @@ const handleUpdateTemplate = async () => {
     // Optional: Add success feedback
   } catch (e) {
     console.error("Failed to update template", e);
-    error.value = "Failed to update template";
+    error.value = t("teacher.posts.error_update_template");
   } finally {
     isUpdatingTemplate.value = false;
   }
@@ -146,7 +146,7 @@ const handleUpdateTemplate = async () => {
 
 const updatePost = async () => {
   if (!form.value.content || !form.value.date) {
-    error.value = "Content and Date are required";
+    error.value = t("teacher.posts.error_required");
     return;
   }
 
@@ -170,7 +170,7 @@ const updatePost = async () => {
     });
     router.push(localePath(`/teacher/classrooms/${classroomId}`));
   } catch (e: any) {
-    error.value = e.message || "Failed to update post";
+    error.value = e.message || t("teacher.posts.error_create");
   } finally {
     isSubmitting.value = false;
   }
@@ -277,40 +277,50 @@ const toggleAllAttendees = () => {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="form-control">
               <label class="label">
-                <span class="label-text font-medium">Class Summary</span>
-                <span class="label-text-alt text-base-content/70"
-                  >Briefly describe today's class</span
-                >
+                <span class="label-text font-medium">{{
+                  $t("teacher.posts.class_summary_label")
+                }}</span>
+                <span class="label-text-alt text-base-content/70">{{
+                  $t("teacher.posts.class_summary_desc")
+                }}</span>
               </label>
               <textarea
                 v-model="form.summary"
                 class="textarea textarea-bordered h-32"
-                placeholder="e.g. Covered Chapter 3, assigned exercise 4..."
+                :placeholder="$t('teacher.posts.class_summary_placeholder')"
               ></textarea>
             </div>
 
             <div class="form-control">
               <label class="label justify-between">
                 <div class="flex flex-col">
-                  <span class="label-text font-medium">Template</span>
-                  <span class="label-text-alt text-base-content/70"
-                    >Define the structure</span
-                  >
+                  <span class="label-text font-medium">{{
+                    $t("teacher.posts.template_label")
+                  }}</span>
+                  <span class="label-text-alt text-base-content/70">{{
+                    $t("teacher.posts.template_desc")
+                  }}</span>
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-xs btn-outline btn-primary"
-                  @click="handleUpdateTemplate"
-                  :disabled="isUpdatingTemplate"
-                >
-                  {{ isUpdatingTemplate ? "Updating..." : "Update Template" }}
-                </button>
               </label>
               <textarea
                 v-model="form.template"
                 class="textarea textarea-bordered h-32"
                 :placeholder="DEFAULT_TEMPLATE"
               ></textarea>
+              <div class="flex justify-center">
+                <button
+                  type="button"
+                  class="btn btn-xs btn-outline btn-primary"
+                  @click="handleUpdateTemplate"
+                  :disabled="isUpdatingTemplate"
+                >
+                  {{
+                    isUpdatingTemplate
+                      ? $t("teacher.posts.updating")
+                      : $t("teacher.posts.update_template")
+                  }}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -328,7 +338,7 @@ const toggleAllAttendees = () => {
                 class="size-5 animate-spin"
               />
               <Icon v-else name="lucide:bot" class="size-5" />
-              <span>Generate Content with AI</span>
+              <span>{{ $t("teacher.posts.generate_ai") }}</span>
             </button>
           </div>
 
@@ -364,8 +374,8 @@ const toggleAllAttendees = () => {
                 >{{
                   classroom?.students?.length &&
                   form.attendees.length === classroom.students.length
-                    ? "Deselect All"
-                    : "Select All"
+                    ? $t("teacher.posts.deselect_all")
+                    : $t("teacher.posts.select_all")
                 }}</span
               >
             </label>
@@ -379,7 +389,7 @@ const toggleAllAttendees = () => {
                   classroom.students.length === 0
                 "
               >
-                No students
+                {{ $t("teacher.posts.no_students") }}
               </div>
               <div
                 v-else
@@ -400,7 +410,9 @@ const toggleAllAttendees = () => {
             </div>
             <label class="label">
               <span class="label-text-alt">
-                {{ form.attendees.length }} selected
+                {{
+                  $t("teacher.posts.selected", { count: form.attendees.length })
+                }}
               </span>
             </label>
           </div>
@@ -424,7 +436,7 @@ const toggleAllAttendees = () => {
               :disabled="isSubmitting"
             >
               <span v-if="isSubmitting" class="loading loading-spinner"></span>
-              {{ $t("teacher.posts.save", "Save Changes") }}
+              {{ $t("teacher.posts.save_changes") }}
             </button>
           </div>
         </form>
