@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# python cache
+__pycache__/
+*.pyc
