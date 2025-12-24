@@ -8,7 +8,7 @@ const isLoading = ref(false);
 const error = ref<string | null>(null);
 
 const handleSubmit = async () => {
-  if (!selectedRole.value) return;
+  if (!selectedRole.value || isLoading.value) return;
 
   isLoading.value = true;
   error.value = null;

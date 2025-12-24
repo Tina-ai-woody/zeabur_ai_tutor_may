@@ -22,6 +22,14 @@ export default defineEventHandler(async (event) => {
   const { role } = result.data;
 
   try {
+    const existingRequest = await db.query.roleRequests.findFirst({
+      where: (roleRequests, { eq }) => eq(roleRequests.userId, session.user.id),
+    });
+
+    if (existingRequest) {
+      return { success: true };
+    }
+
     await db.insert(roleRequests).values({
       userId: session.user.id,
       role,
