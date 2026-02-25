@@ -1,63 +1,6 @@
-import OpenAI from "openai";
 import { db } from "../../../db";
 import { chatHistory } from "../../../db/schema";
 import { eq } from "drizzle-orm";
-import { searchProblems } from "../../utils/problems";
-import { recommendMaterials } from "../../utils/materials";
-import { getTestbankMetadata } from "../../utils/testbank";
-import { getClassMaterialsMetadata } from "../../utils/materials";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const tools = [
-  {
-    type: "function",
-    function: {
-      name: "search_problems",
-      description:
-        "Search for problems in the question bank by title, source, or hashtag.",
-      parameters: {
-        type: "object",
-        properties: {
-          title: { type: "string", description: "Filter by problem title" },
-          source: { type: "string", description: "Filter by problem source" },
-          hashtag: { type: "string", description: "Filter by hashtag" },
-        },
-      },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "recommend_materials",
-      description:
-        "Recommend class materials to a student based on their enrolled classrooms and optional search keywords.",
-      parameters: {
-        type: "object",
-        properties: {
-          studentId: {
-            type: "string",
-            description: "The ID of the student to recommend materials for",
-          },
-          keyword: {
-            type: "string",
-            description:
-              "Optional keyword to filter materials by name, subject, or hashtags",
-          },
-          limit: {
-            type: "number",
-            description: "Maximum number of recommendations to return",
-          },
-        },
-        required: ["studentId"],
-      },
-    },
-  },
-];
-
-const toolsTyped = tools as any;
 
 export default defineEventHandler(async (event) => {
   const session = await requireAuthSession(event);
@@ -66,181 +9,115 @@ export default defineEventHandler(async (event) => {
   const { message, chatId } = body;
 
   if (!message) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Message is required",
-    });
+    throw createError({ statusCode: 400, statusMessage: "Message is required" });
   }
 
+  // Load existing chat history from DB
   let messages: any[] = [];
-  let currentChatId = chatId;
+  let currentChatId: string | null = chatId ?? null;
   let title = "New Chat";
 
-  // Load existing chat if chatId provided
   if (currentChatId) {
     const chat = await db.query.chatHistory.findFirst({
       where: eq(chatHistory.id, currentChatId),
     });
-
     if (chat) {
       messages = chat.messages as any[];
       title = chat.title || title;
     }
   }
 
-  // Append user message
-  messages.push({ role: "user", content: message });
+  // Set SSE response headers
+  setHeader(event, "Content-Type", "text/event-stream");
+  setHeader(event, "Cache-Control", "no-cache");
+  setHeader(event, "Connection", "keep-alive");
 
-  // Prepare system content
-  let systemContent = `You are a helpful AI Tutor. Current Student ID: ${user.id}. Name: ${user.name}. When recommending materials, use the provided Student ID.`;
-
-  if (body.includeTestbank) {
-    const testbankData = await getTestbankMetadata();
-    systemContent += `\n\nYou have access to the following problem bank metadata: ${JSON.stringify(
-      testbankData
-    )}. Use this to answer user questions about available problems.`;
-  }
-
-  if (body.includeClassMaterials) {
-    const classMaterialsData = await getClassMaterialsMetadata(user.id);
-    systemContent += `\n\nYou have access to the following class materials metadata: ${JSON.stringify(
-      classMaterialsData
-    )}. Use this to answer user questions about available class materials.`;
-  }
-  console.log(systemContent);
-  // Create messages for API call (including system context)
-  const apiMessages = [
-    {
-      role: "system",
-      content: `You are a helpful AI Tutor. Current Student ID: ${user.id}. Name: ${user.name}. When recommending materials, use the provided Student ID. when recommending problems, use the following metadata: ${systemContent}`,
-    },
-    ...messages,
-  ];
-
-  try {
-    // ... (keep commented out runner if it was there)
-  } catch (e) {
-    // ...
-  }
-
-  // Standard loop approach
-  let response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: apiMessages,
-    tools: toolsTyped,
-    tool_choice: "auto",
+  // Forward to Python microservice streaming endpoint
+  const pythonRes = await fetch("http://localhost:8000/chat/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message,
+      user_id: user.id,
+      messages,
+      classroom_id: body.classroomId ?? null,
+    }),
   });
 
-  let responseMessage = response.choices[0]?.message;
-
-  // Handle tool calls
-  while (responseMessage?.tool_calls) {
-    // Add assistant message to API context immediately
-    apiMessages.push(responseMessage);
-
-    const validToolCalls: any[] = [];
-    const validToolMessages: any[] = [];
-
-    for (const toolCall of responseMessage.tool_calls) {
-      let toolResultContent = "[]";
-      let toolName = (toolCall as any).function?.name || "";
-
-      if (toolName === "search_problems") {
-        const args = JSON.parse((toolCall as any).function.arguments);
-        const searchResults = await searchProblems({
-          title: args.title,
-          source: args.source,
-          hashtag: args.hashtag,
-          limit: 3,
-        });
-        toolResultContent = JSON.stringify(searchResults);
-      } else if (toolName === "recommend_materials") {
-        const args = JSON.parse((toolCall as any).function.arguments);
-        const recommendations = await recommendMaterials({
-          studentId: args.studentId || user.id,
-          keyword: args.keyword,
-          limit: args.limit,
-        });
-        toolResultContent = JSON.stringify(recommendations);
-      }
-
-      const toolMessage = {
-        tool_call_id: toolCall.id,
-        role: "tool",
-        name: toolName,
-        content: toolResultContent,
-      };
-
-      // Always add to API context (OpenAI requires this)
-      apiMessages.push(toolMessage);
-
-      // Filter for DB/Frontend: only add if content is not empty array
-      if (toolResultContent !== "[]") {
-        validToolCalls.push(toolCall);
-        validToolMessages.push(toolMessage);
-      }
-    }
-
-    // Update DB/Frontend messages
-    if (validToolCalls.length > 0) {
-      // Add the assistant message with ONLY the relevant tool calls
-      messages.push({
-        ...responseMessage,
-        tool_calls: validToolCalls,
-      });
-      // Add the corresponding tool results
-      messages.push(...validToolMessages);
-    } else if (responseMessage.content) {
-      // If no valid tools but there is text content, strip tool_calls and add
-      const { tool_calls, ...contentOnlyMessage } = responseMessage;
-      messages.push(contentOnlyMessage);
-    }
-
-    // Get next response
-    response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: apiMessages,
-      tools: toolsTyped,
-      tool_choice: "auto", // Or none?
+  if (!pythonRes.ok || !pythonRes.body) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: "AI service unavailable",
     });
-    responseMessage = response.choices[0].message;
   }
 
-  // Add final response
-  if (responseMessage) {
-    messages.push(responseMessage);
-  }
+  const reader = pythonRes.body.getReader();
+  const decoder = new TextDecoder();
+  let finalContent = "";
+  let buffer = "";
 
-  // Generate title if new chat
-  if (!currentChatId && messages.length > 0) {
-    // Simple title from first message
-    title = (messages[0].content as string).substring(0, 50) + "...";
-  }
+  const stream = new ReadableStream({
+    async pull(controller) {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          // Save the completed conversation to DB
+          const userMsg = { role: "user", content: message };
+          const assistantMsg = { role: "assistant", content: finalContent };
+          const updatedMessages = [...messages, userMsg, assistantMsg];
 
-  // Save to DB
-  if (currentChatId) {
-    await db
-      .update(chatHistory)
-      .set({
-        messages: messages as any,
-        updatedAt: new Date(),
-      })
-      .where(eq(chatHistory.id, currentChatId));
-  } else {
-    const newChat = await db
-      .insert(chatHistory)
-      .values({
-        studentId: user.id,
-        title: title,
-        messages: messages as any,
-      })
-      .returning({ id: chatHistory.id });
-    currentChatId = newChat[0].id;
-  }
+          if (!title || title === "New Chat") {
+            title = message.substring(0, 50) + (message.length > 50 ? "..." : "");
+          }
 
-  return {
-    chatId: currentChatId,
-    messages: messages,
-    response: responseMessage?.content || "",
-  };
+          if (currentChatId) {
+            await db
+              .update(chatHistory)
+              .set({ messages: updatedMessages as any, updatedAt: new Date() })
+              .where(eq(chatHistory.id, currentChatId));
+          } else {
+            const newChat = await db
+              .insert(chatHistory)
+              .values({
+                studentId: user.id,
+                title,
+                messages: updatedMessages as any,
+              })
+              .returning({ id: chatHistory.id });
+            currentChatId = newChat[0].id;
+
+            // Send the chatId to the frontend as a final SSE event
+            const chatIdEvent = `data: ${JSON.stringify({ type: "chat_id", chatId: currentChatId })}\n\n`;
+            controller.enqueue(new TextEncoder().encode(chatIdEvent));
+          }
+
+          controller.close();
+          break;
+        }
+
+        // Decode and parse SSE lines to intercept 'done' event
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.type === "done") {
+                finalContent = data.content ?? "";
+              }
+            } catch {
+              // ignore malformed lines
+            }
+          }
+        }
+
+        // Forward raw bytes to frontend
+        controller.enqueue(value);
+      }
+    },
+  });
+
+  return sendStream(event, stream);
 });

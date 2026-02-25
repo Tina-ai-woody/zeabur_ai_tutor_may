@@ -206,7 +206,8 @@
       "use_materials": "使用課堂教材",
       "placeholder": "輸入您的訊息...",
       "send": "傳送",
-      "error_response": "抱歉，發生錯誤。請再試一次。"
+      "error_response": "抱歉，發生錯誤。請再試一次。",
+      "tool_running": "使用工具中"
     }
   },
   "calendar_help": {

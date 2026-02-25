@@ -35,6 +35,10 @@ class MCPManager:
             print(f"❌ Failed to fetch tools: {e}")
             self._tools = []
 
+    def get_all_tools(self) -> List[BaseTool]:
+        """Return all loaded MCP tools."""
+        return list(self._tools) if self._tools else []
+
     def get_tool(self, name: str) -> Optional[BaseTool]:
         """Retrieves a specific tool by name."""
         if not self._tools:

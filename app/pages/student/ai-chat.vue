@@ -6,21 +6,19 @@ definePageMeta({
 const { t } = useI18n();
 const chats = ref([]);
 const currentChatId = ref<string | null>(null);
-const messages = ref<{ role: string; content: string }[]>([]);
+const messages = ref<{ role: string; content: string; name?: string }[]>([]);
 const filteredMessages = computed(() => {
   return messages.value.filter(
     (msg) =>
       msg.role === "user" ||
       (msg.role === "assistant" && msg.content) ||
-      (msg.role === "tool" &&
-        ((msg as any).name === "search_problems" ||
-          (msg as any).name === "recommend_materials"))
+      msg.role === "tool_status"
   );
 });
 const userMessage = ref("");
 const isLoading = ref(false);
-const useTestbank = ref(false);
-const useClassMaterials = ref(false);
+const streamingContent = ref("");
+const toolStatus = ref("");
 
 const { data: chatHistoryList, refresh: refreshHistory } = await useFetch(
   "/api/student/chats"
@@ -54,35 +52,74 @@ async function sendMessage() {
 
   const msg = userMessage.value;
   userMessage.value = "";
-  messages.value.push({ role: "user", content: msg });
   isLoading.value = true;
+  streamingContent.value = "";
+  toolStatus.value = "";
+
+  // Show user message immediately
+  messages.value.push({ role: "user", content: msg });
+
+  // Add a placeholder assistant message that we'll fill in via SSE tokens
+  const aiMsgIndex = messages.value.length;
+  messages.value.push({ role: "assistant", content: "" });
 
   try {
-    const { data, error } = await useFetch("/api/student/chat", {
+    const res = await fetch("/api/student/chat", {
       method: "POST",
-      body: {
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         message: msg,
         chatId: currentChatId.value,
-        includeTestbank: useTestbank.value,
-        includeClassMaterials: useClassMaterials.value,
-      },
+      }),
     });
 
-    if (error.value) {
-      console.error(error.value);
-      messages.value.push({
-        role: "assistant",
-        content: t("student.chat.error_response"),
-      });
-    } else if (data.value) {
-      currentChatId.value = data.value.chatId;
-      messages.value = data.value.messages;
-      refreshHistory();
+    if (!res.ok || !res.body) {
+      messages.value[aiMsgIndex].content = t("student.chat.error_response");
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+
+          if (data.type === "token") {
+            messages.value[aiMsgIndex].content += data.content;
+          } else if (data.type === "tool_start") {
+            toolStatus.value = `${t("student.chat.tool_running")}: ${data.tool}`;
+          } else if (data.type === "tool_result") {
+            toolStatus.value = "";
+          } else if (data.type === "done") {
+            // Ensure final content is accurate
+            messages.value[aiMsgIndex].content = data.content;
+            toolStatus.value = "";
+          } else if (data.type === "chat_id") {
+            currentChatId.value = data.chatId;
+            await refreshHistory();
+          }
+        } catch {
+          // ignore malformed events
+        }
+      }
     }
   } catch (e) {
     console.error(e);
+    messages.value[aiMsgIndex].content = t("student.chat.error_response");
   } finally {
     isLoading.value = false;
+    toolStatus.value = "";
   }
 }
 </script>
@@ -117,9 +154,7 @@ async function sendMessage() {
     <!-- Main Chat Area -->
     <div class="flex-1 flex flex-col bg-base-100">
       <!-- Mobile Sidebar Toggle -->
-      <div class="lg:hidden p-2 border-b border-base-300">
-        <!-- You might want a drawer toggle here for mobile -->
-      </div>
+      <div class="lg:hidden p-2 border-b border-base-300"></div>
 
       <!-- Messages -->
       <div class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -140,8 +175,6 @@ async function sendMessage() {
             {{
               msg.role === "assistant"
                 ? $t("student.chat.header_ai")
-                : msg.role === "tool"
-                ? $t("student.chat.header_tool")
                 : $t("student.chat.header_user")
             }}
           </div>
@@ -150,53 +183,27 @@ async function sendMessage() {
             :class="
               msg.role === 'user'
                 ? 'chat-bubble-primary'
-                : msg.role === 'tool'
-                ? 'bg-transparent text-base-content p-0 shadow-none'
                 : 'chat-bubble-secondary'
             "
           >
-            <!-- Assistant Message -->
             <MarkdownRenderer
               v-if="msg.role === 'assistant'"
               :content="msg.content"
             />
-
-            <!-- Tool Output (Problem Cards) -->
-            <div
-              v-else-if="msg.role === 'tool' && (msg as any).name === 'search_problems'"
-              class="grid grid-cols-1 gap-2"
-            >
-              <ProblemCard
-                v-for="problem in JSON.parse(msg.content)"
-                :key="problem.id"
-                :problem="problem"
-              />
-            </div>
-
-            <!-- Tool Output (Material Cards) -->
-            <div
-              v-else-if="msg.role === 'tool' && (msg as any).name === 'recommend_materials'"
-              class="grid grid-cols-1 gap-2"
-            >
-              <div
-                v-if="JSON.parse(msg.content).length === 0"
-                class="text-sm opacity-60"
-              >
-                {{ $t("student.chat.no_materials") }}
-              </div>
-              <ClassMaterialCard
-                v-for="material in JSON.parse(msg.content)"
-                :key="material.id"
-                :material="material"
-              />
-            </div>
-
-            <!-- User Message -->
             <div v-else>{{ msg.content }}</div>
           </div>
         </div>
 
-        <div v-if="isLoading" class="chat chat-start">
+        <!-- Tool status indicator while streaming -->
+        <div v-if="toolStatus" class="chat chat-start">
+          <div class="chat-bubble chat-bubble-ghost text-sm opacity-60">
+            <span class="loading loading-dots loading-xs mr-2"></span>
+            {{ toolStatus }}
+          </div>
+        </div>
+
+        <!-- Loading indicator (before first token arrives) -->
+        <div v-if="isLoading && !messages.some(m => m.role === 'assistant' && m.content)" class="chat chat-start">
           <div class="chat-bubble chat-bubble-secondary">
             <span class="loading loading-dots loading-sm"></span>
           </div>
@@ -204,30 +211,7 @@ async function sendMessage() {
       </div>
 
       <!-- Input Area -->
-      <div class="px-4 py-2 bg-base-100 border-t border-base-300">
-        <label class="label cursor-pointer justify-start gap-2 w-fit">
-          <input
-            type="checkbox"
-            v-model="useTestbank"
-            class="checkbox checkbox-xs"
-          />
-          <span class="label-text text-xs">{{
-            $t("student.chat.use_testbank")
-          }}</span>
-        </label>
-        <label class="label cursor-pointer justify-start gap-2 w-fit">
-          <input
-            type="checkbox"
-            v-model="useClassMaterials"
-            class="checkbox checkbox-xs"
-          />
-          <span class="label-text text-xs">{{
-            $t("student.chat.use_materials")
-          }}</span>
-        </label>
-      </div>
-
-      <div class="p-4 pt-0 border-t-0 bg-base-100">
+      <div class="p-4 border-t border-base-300 bg-base-100">
         <div class="flex gap-2 max-w-4xl mx-auto">
           <input
             v-model="userMessage"

@@ -206,7 +206,8 @@
       "use_materials": "Use Class Materials",
       "placeholder": "Type your message...",
       "send": "Send",
-      "error_response": "Sorry, I encountered an error. Please try again."
+      "error_response": "Sorry, I encountered an error. Please try again.",
+      "tool_running": "Using tool"
     }
   },
   "calendar_help": {
