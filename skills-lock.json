@@ -16,6 +16,11 @@
       "sourceType": "github",
       "computedHash": "1570f8d88e1233edc3306d28224604172b016aedba0ced2efa2dd8e38e28ae62"
     },
+    "docker-expert": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "76bd52d934142cb8f3861cb37f2a39ad93bf3b03dcbc94a02beaa0544f6dd7c2"
+    },
     "framework-selection": {
       "source": "langchain-ai/langchain-skills",
       "sourceType": "github",
