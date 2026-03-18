@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
 FROM node:22-alpine AS deps
+LABEL "language"="nodejs"
+LABEL "framework"="nuxt.js"
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
@@ -11,7 +13,7 @@ WORKDIR /app
 RUN corepack enable
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN pnpm build
+RUN NITRO_PRESET=node-server pnpm build && test -d /app/.output
 
 FROM node:22-alpine AS runtime
 WORKDIR /app
