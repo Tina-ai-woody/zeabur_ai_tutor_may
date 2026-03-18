@@ -13,7 +13,7 @@ const getBaseURL = () => {
 
   // return "http://localhost:3000";
   // Server side (SSR, SSG)
-  console.log("SSR BASE URL =", process.env.PUBLIC_BASE_URL);
+  console.log("SSR BASE URL =", process.env.NUXT_PUBLIC_BASE_URL);
 
   return process.env.PUBLIC_BASE_URL || "http://localhost:3000";
 };
