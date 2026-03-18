@@ -1,14 +1,41 @@
+version: "3.9"
+
 services:
   db:
-    image: postgres
-    restart: always
-    ports:
-      - 5432:5432
+    image: postgres:16-alpine
+    container_name: ai-tutor-db
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: Woody880703
-      POSTGRES_DB: local
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ai_tutor
+    ports:
+      - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ai_tutor"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ai-service:
+    build:
+      context: ./packages/ai-service
+      dockerfile: Dockerfile
+    container_name: ai-tutor-ai-service
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PYTHONUNBUFFERED: "1"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      MCP_SERVER_URL: ${MCP_SERVER_URL:-http://host.docker.internal:3000/mcp}
+      # If ai-service needs DB in future, use this:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/ai_tutor
+    ports:
+      - "8000:8000"
+
 volumes:
   pgdata:
